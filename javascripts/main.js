@@ -385,7 +385,7 @@ var setupFundingSection = function() {
 
       d3.selectAll('.funding-bar').transition()
         .duration(250)
-        .style('opacity', function(d, j) { return i === j ? 1 : 0.25; });
+        .attr('opacity', function(d, j) { return i === j ? 1 : 0.25; });
     })
     .on('mouseout', function(d, i) {
       d3.select(this).transition()
@@ -396,7 +396,7 @@ var setupFundingSection = function() {
 
       d3.selectAll('.funding-bar').transition()
         .duration(250)
-        .style('opacity', 1);
+        .attr('opacity', 1);
     })
     .transition()
       .duration(1000)
