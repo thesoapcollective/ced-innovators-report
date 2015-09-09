@@ -1,0 +1,335 @@
+@import 'compass';
+@import 'variables';
+@import 'mixins';
+@import 'fonts';
+
+// ========================================
+// OVERRIDES
+// ========================================
+html {
+  box-sizing: border-box;
+  outline: none;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+  outline: inherit;
+}
+
+body {
+  width: 100vw;
+  height: 100vh;
+  background: image-url('background.jpg') no-repeat fixed 0 0;
+  background-size: cover;
+  color: $white;
+  font-size: $base-font-size;
+  line-height: 1.3;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: $white;
+  text-decoration: none;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+  margin: 0;
+}
+
+h2 { font-size: to-rem(48px); }
+
+// ========================================
+// HELPERS
+// ========================================
+.dis-b { display: block; }
+.dis-ib { display: inline-block; }
+.dis-n { display: none; }
+
+.pos-r { position: relative; }
+.pos-a { position: absolute; }
+.pos-f { position: fixed; }
+
+.vat { vertical-align: top; }
+.vam { vertical-align: middle; }
+
+.list-reset {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.text-overflow {
+  overflow: hidden;
+  text-indent: 100%;
+  white-space: nowrap;
+}
+
+.text-ac { text-align: center; }
+
+.a-hover-opacity {
+  opacity: 0.5;
+  transition: $opacity-transition;
+
+  &:hover { opacity: 1; }
+}
+
+.clearfix {
+  &:after {
+    display: table;
+    content: '';
+    clear: both;
+  }
+}
+
+.float-r { float: right; }
+
+.fullsize {
+  width: 100%;
+  height: 100%;
+}
+
+.width-half { width: 50%; }
+
+// ========================================
+// FONTS
+// ========================================
+.f-adelle { font-family: 'Adelle', Helvetica, sans-serif; }
+.f-inputsans { font-family: 'InputSansCondensed', Helvetica, sans-serif; }
+
+.f-light { font-weight: 300; }
+.f-xlight { font-weight: 200; }
+.f-thin { font-weight: 100; }
+
+.f-italic { font-style: italic; }
+
+.fs-base { font-size: $base-font-size; }
+.fs-small { font-size: to-rem(14px); }
+
+// ========================================
+// ICONS
+// ========================================
+.icons {
+  width: 24px;
+  height: 24px;
+  background: image-url('icons.png') no-repeat;
+  background-size: 120px 24px;
+}
+
+.icons-twitter { background-position: 0 center; }
+.icons-facebook { background-position: -24px center; }
+.icons-printer { background-position: -48px center; }
+.icons-down-arrow { background-position: -72px center; }
+
+// ========================================
+// HEADER
+// ========================================
+.page-header {
+  left: 0;
+  z-index: 2;
+}
+
+.logo-container {
+  width: $logo-background-size;
+  height: $logo-background-size;
+  z-index: 2;
+}
+
+.logo-background {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: $logo-background-size $logo-background-size 0 0;
+  border-color: $red transparent transparent transparent;
+  z-index: 1;
+}
+
+.logo {
+  width: 54px;
+  height: 36px;
+  margin: $grid-size 0 0 $grid-size;
+  background: image-url('ced_logo.png') no-repeat center center;
+  background-size: contain;
+  z-index: 2;
+}
+
+.page-title-container {
+  width: 245px;
+  height: 36px;
+  margin-left: -30px;
+  z-index: 1;
+}
+
+.page-title-background {
+  width: 225px;
+  height: 36px;
+  background: $gray;
+  z-index: 1;
+  transform: skew(-45deg);
+}
+
+.page-title {
+  margin: 6px 0 0 32px;
+  z-index: 2;
+}
+
+.social-list {
+  margin-top: 8px;
+}
+
+.social-list-item {
+  margin-right: 6px;
+}
+
+.social-list-item:last-child {
+  margin-left: 6px;
+  line-height: 1;
+  opacity: 0;
+  transition: $opacity-transition;
+
+  &.is-active {
+    opacity: 1;
+  }
+}
+
+// ========================================
+// CONTENT
+// ========================================
+.page-background-overlay {
+  background: $light-gray;
+  z-index: 1;
+  opacity: 0.1;
+}
+
+.page-background-linear-gradient-overlay {
+  @include background-image(linear-gradient($black, rgba($black, 0)));
+  opacity: 0.65;
+  z-index: 2;
+}
+
+.page-background-radial-gradient-overlay {
+  @include background-image(radial-gradient(circle, $white 10px, rgba($white, 0) 70%));
+  width: 100%;
+  top: -80%;
+  left: 50%;
+  z-index: 3;
+  opacity: 0.2;
+
+  &:before{
+    content: "";
+    display: block;
+    padding-top: 100%;  /* initial ratio of 1:1*/
+  }
+}
+
+.page-container {
+  z-index: 4;
+}
+
+.page-content {
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.content-section { padding: $grid-size; }
+
+.content-header {
+  height: $content-header-height;
+  z-index: 5;
+}
+
+.content-title {}
+
+.funding-left,
+.funding-right {
+  padding: 0 $grid-size;
+  top: $content-header-height + $grid-size-double;
+  bottom: $page-footer-height + $grid-size;
+}
+
+.funding-left { left: 0; }
+.funding-right { right: 0 }
+
+// ========================================
+// DROPDOWN
+// ========================================
+.dropdown-title { margin-right: 10px; }
+
+.dropdown-slash {
+  width: 1px;
+  height: 19px;
+  background: $white;
+  transform: skew(-45deg);
+}
+
+.dropdown-slash-first { margin-right: 3px; }
+
+.dropdown-trigger { margin-left: 10px; }
+
+.dropdown-arrow { margin-left: $grid-size-half; }
+
+.dropdown-list {
+  display: none;
+  right: 0;
+}
+
+.filter-list {
+  right: 0;
+  bottom: 0;
+}
+
+.filter-list-item {
+  margin-right: $grid-size-double;
+
+  &:last-child { margin-right: 0; }
+}
+
+.filter-list-item.is-active {
+  .dropdown-list { display: block; }
+
+  .icons-down-arrow { background-position: -96px center; }
+
+  .dropdown-current,
+  .dropdown-list-item {
+    text-shadow: 0 2px 0 rgba($black, 0.65);
+  }
+}
+
+// ========================================
+// FOOTER
+// ========================================
+.page-footer {
+  width: 100%;
+  height: $page-footer-height;
+  left: 0;
+  bottom: 0;
+  z-index: 2;
+}
+
+.nav-list {}
+
+.nav-list-item {
+  margin: 0 $grid-size-half;
+
+  div {
+    transition: $opacity-transition;
+    opacity: 0.5;
+
+    &:last-child {
+      font-size: 40px;
+      line-height: 0.8;
+    }
+  }
+
+  &.is-active,
+  a:hover {
+    div { opacity: 1; }
+  }
+
+  &.is-active {
+    .f-xlight { font-weight: normal; }
+    .f-italic { font-style: normal; }
+  }
+}
