@@ -63,8 +63,9 @@ h1, h2, h3, h4, h5, h6, p {
   text-indent: 100%;
   white-space: nowrap;
 }
-
 .text-ac { text-align: center; }
+.text-shadow { text-shadow: 0 2px 0 rgba($black, 0.65) }
+.text-shadow-large { text-shadow: 0 4px 0 rgba($black, 0.65) }
 
 .a-hover-opacity {
   opacity: 0.5;
@@ -303,7 +304,7 @@ h1, h2, h3, h4, h5, h6, p {
 
   .dropdown-current,
   .dropdown-list-item {
-    text-shadow: 0 2px 0 rgba($black, 0.65);
+    @extend .text-shadow;
   }
 }
 
