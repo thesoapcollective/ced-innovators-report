@@ -197,6 +197,51 @@ h1, h2, h3, h4, h5, h6, p {
 }
 
 // ========================================
+// DROPDOWN
+// ========================================
+.dropdown-title { margin-right: 10px; }
+
+.dropdown-slash {
+  width: 1px;
+  height: 19px;
+  background: $white;
+  transform: skew(-45deg);
+}
+
+.dropdown-slash-first { margin-right: 3px; }
+
+.dropdown-trigger { margin-left: 10px; }
+
+.dropdown-arrow { margin-left: $grid-size-half; }
+
+.dropdown-list {
+  display: none;
+  right: 0;
+}
+
+.filter-list {
+  right: 0;
+  bottom: 0;
+}
+
+.filter-list-item {
+  margin-right: $grid-size-double;
+
+  &:last-child { margin-right: 0; }
+}
+
+.filter-list-item.is-active {
+  .dropdown-list { display: block; }
+
+  .icons-down-arrow { background-position: -96px center; }
+
+  .dropdown-current,
+  .dropdown-list-item {
+    @extend .text-shadow;
+  }
+}
+
+// ========================================
 // CONTENT
 // ========================================
 .page-background-overlay {
@@ -264,48 +309,29 @@ h1, h2, h3, h4, h5, h6, p {
 }
 
 // ========================================
-// DROPDOWN
+// SHARE BOX
 // ========================================
-.dropdown-title { margin-right: 10px; }
+.share-box-container {}
 
-.dropdown-slash {
-  width: 1px;
-  height: 19px;
-  background: $white;
-  transform: skew(-45deg);
+.share-box {
+  padding: $grid-size;
+  border-radius: 18px;
+  border: 1px dotted $white;
 }
 
-.dropdown-slash-first { margin-right: 3px; }
+.share-box-list {}
 
-.dropdown-trigger { margin-left: 10px; }
-
-.dropdown-arrow { margin-left: $grid-size-half; }
-
-.dropdown-list {
-  display: none;
-  right: 0;
-}
-
-.filter-list {
-  right: 0;
-  bottom: 0;
-}
-
-.filter-list-item {
-  margin-right: $grid-size-double;
-
-  &:last-child { margin-right: 0; }
-}
-
-.filter-list-item.is-active {
-  .dropdown-list { display: block; }
-
-  .icons-down-arrow { background-position: -96px center; }
-
-  .dropdown-current,
-  .dropdown-list-item {
-    @extend .text-shadow;
+.share-box-list-item {
+  &:first-child {
+    margin-right: $grid-size-half;
   }
+}
+
+.funding-share-box {
+  width: 40%; // Same as .funding-right
+  padding: 0 $grid-size;
+  right: 0;
+  bottom: $page-footer-height + $grid-size;
 }
 
 // ========================================

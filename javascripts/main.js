@@ -235,7 +235,7 @@ var setupFundingSection = function() {
   var colors = d3.scale.ordinal().range(dataColors);
 
   // Initial svg and pie chart values
-  var pieSectionSelector = '#funding .funding-left';
+  var pieSectionSelector = '.funding-left';
   var $pieSection = $(pieSectionSelector);
 
   var size = {
@@ -410,15 +410,18 @@ var setupFundingSection = function() {
       .attr('fill-opacity', 1);
 
   // Initial svg and bar chart values
-  var barSectionSelector = '#funding .funding-right';
+  var barSectionSelector = '.funding-right';
   var $barSection = $(barSectionSelector);
 
   var size = {
     width: $barSection.width(),
-    titleHeight: 36,
-    barHeight: 36,
-    barBottomPadding: 36
+    barHeight: 36
   };
+  var barComponentHeight = $('.funding-right').height() - $('.funding-share-box').outerHeight();
+  barComponentHeight = (barComponentHeight / 4 - size.barHeight) / 2;
+  barComponentHeight = Math.min(barComponentHeight, size.barHeight);
+  size.titleHeight = barComponentHeight;
+  size.barBottomPadding = barComponentHeight;
 
   var barTotals = data.map(function(obj) {
     var data = obj.funding[0].data[0].data;
