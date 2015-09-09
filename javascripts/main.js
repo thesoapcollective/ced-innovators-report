@@ -43,6 +43,34 @@ var setupSocialLinks = function() {
     $socialTextbox.removeClass('is-active');
     $socialTextbox.text('');
   });
+
+  setupFacebookShare();
+  setupTwitterShare();
+};
+
+var setupFacebookShare = function() {
+  var url = window.location;
+  $('.social-list-item .icons-facebook').attr('href', 'http://www.facebook.com/share.php?u=' + url);
+  $('.share-box-list-item .icons-facebook').attr('href', 'http://www.facebook.com/share.php?u=' + url);
+};
+
+var setupTwitterShare = function() {
+  var url = window.location;
+
+  // Header
+  var tweet = encodeURIComponent("Check out @CEDNC's Innovators Report!");
+  $('.social-list-item .icons-twitter').attr('href', 'https://twitter.com/share?text=' + tweet + '&url=' + url);
+
+  // Share box
+  var tweetLength = 140 - 23 - 12; // Tweet base - url - via/extra space
+  $('.share-box-list-item .icons-twitter').each(function(i) {
+    var $this = $(this);
+    var tweet = $this.closest('.share-box').find('p').text();
+    if (tweet.length > tweetLength) {
+      tweet = tweet.substring(0, tweetLength - 3) + '...';
+    }
+    $this.attr('href', 'https://twitter.com/share?text=' + tweet + '&url=' + url + '&via=CEDNC');
+  });
 };
 
 // ========================================

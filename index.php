@@ -32,8 +32,8 @@
         <h1 class="page-title pos-a f-inputsans f-light f-italic fs-base">Innovators Report</h1>
       </div>
       <ul class="list-reset social-list dis-ib vat fs-small">
-        <li class="social-list-item dis-ib vam"><a class="icons icons-twitter text-overflow dis-b a-hover-opacity js-prevent-default" href="#">Share on Twitter</a></li>
-        <li class="social-list-item dis-ib vam"><a class="icons icons-facebook text-overflow dis-b a-hover-opacity js-prevent-default" href="#">Share on Facebook</a></li>
+        <li class="social-list-item dis-ib vam"><a class="icons icons-twitter text-overflow dis-b a-hover-opacity" href="#" target="_blank">Share on Twitter</a></li>
+        <li class="social-list-item dis-ib vam"><a class="icons icons-facebook text-overflow dis-b a-hover-opacity" href="#" target="_blank">Share on Facebook</a></li>
         <li class="social-list-item dis-ib vam"><a class="icons icons-printer text-overflow dis-b a-hover-opacity js-prevent-default" href="#">Print Screen</a></li>
         <li class="social-list-item dis-ib vam f-adelle f-light"></li>
       </ul>
@@ -113,8 +113,8 @@
             <p class="f-inputsans f-xlight f-italic">Here’s an interesting fact about this data! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam sollicitudin ultrices tristique.</p>
             <ul class="list-reset share-box-list float-r">
               <li class="share-box-list-item dis-ib vam f-adelle">Share:</li>
-              <li class="share-box-list-item dis-ib vam"><a class="icons icons-twitter text-overflow dis-b a-hover-opacity js-prevent-default" href="#">Twitter</a></li>
-              <li class="share-box-list-item dis-ib vam"><a class="icons icons-facebook text-overflow dis-b a-hover-opacity js-prevent-default" href="#">Facebook</a></li>
+              <li class="share-box-list-item dis-ib vam"><a class="icons icons-twitter text-overflow dis-b a-hover-opacity" href="#" target="_blank">Twitter</a></li>
+              <li class="share-box-list-item dis-ib vam"><a class="icons icons-facebook text-overflow dis-b a-hover-opacity" href="#" target="_blank">Facebook</a></li>
             </ul>
           </div>
         </div>
