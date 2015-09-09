@@ -347,20 +347,28 @@ var setupFundingSection = function() {
       .attr('mask', 'url(#pie-mask)');
   arcs.append('path')
     .style('fill', function(d) { return colors(d.data.sector).value; })
-    .style('fill-opacity', '0.25')
-    .on('mouseover', function(d) {
+    .style('fill-opacity', 0.25)
+    .on('mouseover', function(d, i) {
       d3.select(this).transition()
         .duration(250)
-        .style('fill-opacity', '0.5');
+        .style('fill-opacity', 0.5);
       d3.select(this.parentNode)
         .attr('mask', '');
+
+      d3.selectAll('.funding-bar').transition()
+        .duration(250)
+        .style('opacity', function(d, j) { return i === j ? 1 : 0.25; });
     })
-    .on('mouseout', function(d) {
+    .on('mouseout', function(d, i) {
       d3.select(this).transition()
         .duration(250)
-        .style('fill-opacity', '0.25');
+        .style('fill-opacity', 0.25);
       d3.select(this.parentNode)
         .attr('mask', 'url(#pie-mask)');
+
+      d3.selectAll('.funding-bar').transition()
+        .duration(250)
+        .style('opacity', 1);
     })
     .transition()
       .duration(1000)
@@ -387,7 +395,6 @@ var setupFundingSection = function() {
       .attr('fill-opacity', 1);
 
   var equityData = data.map(function(obj) { return obj.funding[0].data[0].data; });
-  console.log(equityData)
   var equityTotal = equityData.reduce(function(num, obj) { return num + obj.reduce(function(num2, obj2) { return num2 + obj2.value}, 0); }, 0);
   g.append('text')
     .text('$' + numeral(equityTotal).format('0,0'))
@@ -447,16 +454,49 @@ var setupFundingSection = function() {
   });
 
   // Bars
-  var bar = chart.selectAll('g')
+  var bars = chart.append('g')
+    .attr('class', 'funding-bars');
+
+  var bar = bars.selectAll('g')
     .data(data).enter()
     .append('g')
-      .attr('transform', function(d, i) { return 'translate(0,' + ((size.barHeight + size.titleHeight + size.barBottomPadding) * i) + ')'; });
+      .attr('transform', function(d, i) { return 'translate(0,' + ((size.barHeight + size.titleHeight + size.barBottomPadding) * i) + ')'; })
+      .attr('class', 'funding-bar')
+      .on('mouseover', function(d, i) {
+        d3.selectAll('.funding-bar').transition()
+          .duration(250)
+          .attr('opacity', function(d, j) { return i === j ? 1 : 0.25; });
+
+        var pieSlice = d3.selectAll('.arc path')[0][i];
+        d3.select(pieSlice).transition()
+          .duration(250)
+          .style('fill-opacity', 0.5);
+        d3.select(pieSlice.parentNode)
+          .attr('mask', '');
+      })
+      .on('mouseout', function(d, i) {
+        d3.selectAll('.funding-bar').transition()
+          .duration(250)
+          .attr('opacity', 1);
+
+        var pieSlice = d3.selectAll('.arc path')[0][i];
+        d3.select(pieSlice).transition()
+          .duration(250)
+          .style('fill-opacity', 0.25);
+        d3.select(pieSlice.parentNode)
+          .attr('mask', 'url(#pie-mask)');
+      });
+
+  bar.append('rect')
+    .attr('width', size.width)
+    .attr('height', size.titleHeight + size.barHeight)
+    .attr('opacity', 0);
 
   bar.append('text')
     .text(function(d) { return d.sector; })
     .attr('x', -30)
     .attr('y', size.titleHeight / 2)
-    .attr('class', 'funding-bar-title f-inputsans f-light f-italic fs-h3')
+    .attr('class', 'funding-bar-title f-inputsans f-light f-italic fs-h3 no-pointer-event')
     .attr('fill', '#fff')
     .attr('fill-opacity', 0)
     .transition()
@@ -488,7 +528,7 @@ var setupFundingSection = function() {
     .attr('x', 10)
     .attr('y', size.titleHeight + size.barHeight / 2)
     .attr('dy', '.35em')
-    .attr('class', 'funding-bar-text f-adelle f-light')
+    .attr('class', 'funding-bar-text f-adelle f-light no-pointer-event')
     .attr('fill', '#fff')
     .attr('fill-opacity', 0)
     .transition()
