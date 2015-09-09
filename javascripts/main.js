@@ -1,18 +1,41 @@
 var $win = null;
 var $socialTextbox = null;
+var $dropdowns = null;
 var currentSectionIndex = 0;
-var isScrolling = false;
 
 $(document).ready(function() {
+  cacheElements();
+  setupJsClickHandler();
+
+  setupSocialLinks();
+  setupNavigation();
+
+  setupFilters();
+  hideCurrentFilterSelection();
+
+  // Funding Section
+  setTimeout(setupFundingSection, 500);
+});
+
+// ========================================
+// HELPERS
+// ========================================
+var cacheElements = function() {
   $win = $(window);
   $socialTextbox = $('.social-list-item:last');
+  $dropdowns = $('.js-dropdown');
+};
 
-  // Cancel clicks
+var setupJsClickHandler = function() {
   $('.js-prevent-default').click(function(event) {
     event.preventDefault();
   });
+};
 
-  // Social links
+// ========================================
+// SOCIAL
+// ========================================
+var setupSocialLinks = function() {
   $('.social-list-item').hover(function() {
     $socialTextbox.text($(this).text());
     $socialTextbox.addClass('is-active');
@@ -20,8 +43,12 @@ $(document).ready(function() {
     $socialTextbox.removeClass('is-active');
     $socialTextbox.text('');
   });
+};
 
-  // Nav and scrolling
+// ========================================
+// NAVIGATION
+// ========================================
+var setupNavigation = function() {
   $('body').panelSnap({
     $menu: $('.nav-list'),
     panelSelector: '.content-section',
@@ -31,35 +58,24 @@ $(document).ready(function() {
     easing: 'swing',
     onActivate: snappedToSection
   });
-
-  // Filters
-  setupFilters();
-  hideCurrentFilter();
-  $('.dropdown-trigger').mouseenter(function() {
-    $(this).parent().addClass('is-active');
-  });
-  $('.js-dropdown').mouseleave(function() {
-    $(this).removeClass('is-active');
-  });
-
-  // Sections
-  setTimeout(setupFundingSection, 500);
-  // setupFundingSection();
-});
+};
 
 var snappedToSection = function($section) {
   var index = $section.index();
   currentSectionIndex = index;
   selectNavListItem();
-}
+};
 
 var selectNavListItem = function() {
   $('.nav-list-item.is-active').removeClass('is-active');
   $('.nav-list-item:eq('+currentSectionIndex+')').addClass('is-active');
-}
+};
 
+// ========================================
+// FILTERS
+// ========================================
 var setupFilters = function() {
-  $('.js-dropdown').each(function(i) {
+  $dropdowns.each(function(i) {
     var $this = $(this);
     var $trigger = $('.dropdown-trigger', $this);
     var $triggerArrow = $('.dropdown-arrow', $this);
@@ -80,10 +96,18 @@ var setupFilters = function() {
       $dropdown.width(dropdownWidth);
     }
   });
+
+  $('.dropdown-trigger').mouseenter(function() {
+    $(this).parent().addClass('is-active');
+  });
+
+  $('.js-dropdown').mouseleave(function() {
+    $(this).removeClass('is-active');
+  });
 };
 
-var hideCurrentFilter = function() {
-  $('.js-dropdown').each(function(i) {
+var hideCurrentFilterSelection = function() {
+  $dropdowns.each(function(i) {
     var $this = $(this);
     var current = $('.dropdown-current', $this).text();
 
@@ -96,6 +120,9 @@ var hideCurrentFilter = function() {
   });
 };
 
+// ========================================
+// FUNDING SECTION
+// ========================================
 var setupFundingSection = function() {
   var data = [
     {sector: 'Tech', value: 114452319},
