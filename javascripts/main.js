@@ -125,23 +125,119 @@ var hideCurrentFilterSelection = function() {
 // ========================================
 var setupFundingSection = function() {
   var data = [
-    {sector: 'Tech', value: 114452319},
-    {sector: 'Life Science', value: 268336928},
-    {sector: 'Advanced Manufacturing & Materials', value: 34400000},
-    {sector: 'Cleantech', value: 9747500}
+    {sector: 'Tech', funding: [
+      {type: 'Equity', data: [
+        {year: 2015, data: [
+          {quarter: 1, value: 52673746},
+          {quarter: 2, value: 61778573},
+        ]},
+        {year: 2014, data: [
+          {quarter: 1, value: 146012319},
+          {quarter: 2, value: 36084050},
+          {quarter: 3, value: 41149158},
+          {quarter: 4, value: 38584010},
+        ]},
+        {year: 2013, data: [
+          {quarter: 1, value: 22870224},
+          {quarter: 2, value: 24491950},
+          {quarter: 3, value: 23744183},
+          {quarter: 4, value: 20591746},
+        ]},
+      ]},
+      {type: 'Grants & Awards', data: [
+        {year: 2014, value: 15940211},
+        {year: 2013, value: 508230},
+      ]}
+    ]},
+
+    {sector: 'Life Science', funding: [
+      {type: 'Equity', data: [
+        {year: 2015, data: [
+          {quarter: 1, value: 132076554},
+          {quarter: 2, value: 136260374},
+        ]},
+        {year: 2014, data: [
+          {quarter: 1, value: 16176684},
+          {quarter: 2, value: 19381452},
+          {quarter: 3, value: 38205554},
+          {quarter: 4, value: 112992665},
+        ]},
+        {year: 2013, data: [
+          {quarter: 1, value: 48898486},
+          {quarter: 2, value: 70867276},
+          {quarter: 3, value: 52087558},
+          {quarter: 4, value: 51858061},
+        ]},
+      ]},
+      {type: 'Grants & Awards', data: [
+        {year: 2014, value: 65910340},
+        {year: 2013, value: 30757245},
+      ]}
+    ]},
+
+    {sector: 'Advanced Manufacturing & Materials', funding: [
+      {type: 'Equity', data: [
+        {year: 2015, data: [
+          {quarter: 1, value: 23900000},
+          {quarter: 2, value: 10500000},
+        ]},
+        {year: 2014, data: [
+          {quarter: 1, value: 20060810},
+          {quarter: 2, value: 3980814},
+          {quarter: 3, value: 5300000},
+          {quarter: 4, value: 44899700},
+        ]},
+        {year: 2013, data: [
+          {quarter: 1, value: 8963428},
+          {quarter: 2, value: 26905988},
+          {quarter: 3, value: 1366000},
+          {quarter: 4, value: 670000},
+        ]},
+      ]},
+      {type: 'Grants & Awards', data: [
+        {year: 2014, value: 6840927},
+        {year: 2013, value: 30757245},
+      ]}
+    ]},
+
+    {sector: 'Cleantech', funding: [
+      {type: 'Equity', data: [
+        {year: 2015, data: [
+          {quarter: 1, value: 8547500},
+          {quarter: 2, value: 1200000},
+        ]},
+        {year: 2014, data: [
+          {quarter: 1, value: 388000},
+          {quarter: 2, value: 7749175},
+          {quarter: 3, value: 177600},
+          {quarter: 4, value: 1500000},
+        ]},
+        {year: 2013, data: [
+          {quarter: 1, value: 2046400},
+          {quarter: 2, value: 0},
+          {quarter: 3, value: 499996},
+          {quarter: 4, value: 10250000},
+        ]},
+      ]},
+      {type: 'Grants & Awards', data: [
+        {year: 2014, value: 1050000},
+      ]}
+    ]},
   ];
 
+  // Colors
   var dataColors = [
     {name: 'blue', value: '#00dbf9'},
     {name: 'green', value: '#4aaf77'},
     {name: 'red', value: '#ff7662'},
     {name: 'white', value: '#fff'}
   ]
-
   var colors = d3.scale.ordinal().range(dataColors);
 
-  var pieSelector = '#funding .funding-left'
-  var $pieSection = $(pieSelector)
+  // Initial svg and pie chart values
+  var pieSectionSelector = '#funding .funding-left';
+  var $pieSection = $(pieSectionSelector);
+
   var size = {
     width: $pieSection.width(),
     height: $pieSection.height()
@@ -149,7 +245,11 @@ var setupFundingSection = function() {
   size.radius = Math.min(size.width, size.height) / 2;
 
   var pie = d3.layout.pie()
-    .value(function(d) { return d.value; })
+    .value(function(d) {
+      var data = d.funding[0].data[0].data;
+      var total = data.reduce(function(num, obj) { return num + obj.value }, 0);
+      return total;
+    })
     .sort(null);
 
   var arc = d3.svg.arc()
@@ -160,29 +260,14 @@ var setupFundingSection = function() {
     .innerRadius(size.radius - 2)
     .outerRadius(size.radius);
 
-  var svg = d3.select(pieSelector)
+  var svg = d3.select(pieSectionSelector)
     .append('svg')
       .attr('width', size.width)
       .attr('height', size.height);
 
-  // Gradients
   var defs = svg.append('defs');
-  dataColors.forEach(function(color) {
-    var gradient = defs.append('linearGradient')
-      .attr('id', color.name + '-gradient')
-      .attr('gradientTransform', 'rotate(45)');
 
-    gradient.append('stop')
-      .attr('offset', '0%')
-      .attr('stop-color', color.value)
-      .attr('stop-opacity', 0.1);
-
-    gradient.append('stop')
-      .attr('offset', '100%')
-      .attr('stop-color', color.value)
-      .attr('stop-opacity', 1);
-  });
-
+  // Mask Gradient
   var maskGadient = defs.append('radialGradient')
     .attr('id', 'radial-mask-gradient')
   maskGadient.append('stop')
@@ -217,7 +302,7 @@ var setupFundingSection = function() {
     .attr('fill', 'url(#radial-mask-gradient)');
 
   var g = svg.append('g')
-    .attr('transform', 'translate(' + size.radius + ',' + size.radius + ')')
+    .attr('transform', 'translate(' + (size.width / 2) + ',' + size.radius + ')')
     .attr('class', 'pie-chart');
 
   // Pattern slices
@@ -225,44 +310,29 @@ var setupFundingSection = function() {
       .data(pie(data)).enter()
       .append('g')
         .attr('class', 'pattern-arc');
-    patternArcs.append('path')
-      .style('fill', 'url(#pie-pattern)')
-      .transition()
-        .duration(1000)
-        .attrTween('d', function(d) {
-          var i = d3.interpolate(d.startAngle, d.endAngle);
-          return function(t) {
-            d.endAngle = i(t);
-            return arc(d);
-          }
-        });
+  patternArcs.append('path')
+    .style('fill', 'url(#pie-pattern)')
+    .transition()
+      .duration(1000)
+      .attrTween('d', function(d) {
+        var i = d3.interpolate(d.startAngle, d.endAngle);
+        return function(t) {
+          d.endAngle = i(t);
+          return arc(d);
+        }
+      });
 
-  // Gradient strokes
+  // Gradient stroke slices
   var outerArcs = g.selectAll('.outer-arc')
     .data(pie(data)).enter()
     .append('g')
       .attr('class', 'outer-arc');
   outerArcs.append('path')
-    .style('fill', function(d) { return colors(d.data.sector).value; })//function(d) { return 'url(#' + colors(d.data.sector).name + '-gradient)'; })
+    .style('fill', function(d) { return colors(d.data.sector).value; })
     .transition()
       .duration(1000)
       .attrTween('d', function(d) {
         var i = d3.interpolate(d.startAngle, d.endAngle);
-        // var gradients = defs.selectAll('linearGradient');
-
-        // for (var j = 0; j < data.length; j++) {
-        //   if (data[j].sector === d.data.sector) {
-        //     var gradient = gradients[0][j];
-        //     var radians = d.endAngle - d.startAngle;
-        //     var degrees = radians * 180 / Math.PI;
-
-        //     console.log(d);
-        //     console.log(radians);
-        //     console.log(degrees);
-        //     d3.select(gradient).attr('gradientTransform', 'rotate(' + degrees + ')');
-        //   }
-        // }
-
         return function(t) {
           d.endAngle = i(t);
           return outerArc(d);
@@ -302,9 +372,127 @@ var setupFundingSection = function() {
         }
       });
 
-  // arcs.append('text')
-  //   .attr('transform', function(d) { return 'translate(' + arc.centroid(d) + ')'; })
-  //   .attr('dy', '.35em')
-  //   .style('text-anchor', 'middle')
-  //   .text(function(d) { return d.data.sector; });
+  // Pie text
+  g.append('text')
+    .text(data[0].funding[0].data[0].year + ' ' + data[0].funding[0].type + ':')
+    .attr('x', 0)
+    .attr('y', -80)
+    .attr('class', 'pie-title f-inputsans f-thin f-italic fs-h2 no-pointer-event')
+    .attr('fill', '#fff')
+    .attr('text-anchor', 'middle')
+    .attr('fill-opacity', 0)
+    .transition()
+      .duration(1000)
+      .attr('y', -40)
+      .attr('fill-opacity', 1);
+
+  var equityData = data.map(function(obj) { return obj.funding[0].data[0].data; });
+  console.log(equityData)
+  var equityTotal = equityData.reduce(function(num, obj) { return num + obj.reduce(function(num2, obj2) { return num2 + obj2.value}, 0); }, 0);
+  g.append('text')
+    .text('$' + numeral(equityTotal).format('0,0'))
+    .attr('x', 0)
+    .attr('y', 0)
+    .attr('class', 'pie-title f-adelle f-bold fs-h1 no-pointer-event')
+    .attr('fill', '#fff')
+    .attr('text-anchor', 'middle')
+    .attr('fill-opacity', 0)
+    .transition()
+      .duration(1000)
+      .attr('y', 40)
+      .attr('fill-opacity', 1);
+
+  // Initial svg and bar chart values
+  var barSectionSelector = '#funding .funding-right';
+  var $barSection = $(barSectionSelector);
+
+  var size = {
+    width: $barSection.width(),
+    titleHeight: 36,
+    barHeight: 36,
+    barBottomPadding: 36
+  };
+
+  var barTotals = data.map(function(obj) {
+    var data = obj.funding[0].data[0].data;
+    var total = data.reduce(function(num, obj) { return num + obj.value; }, 0);
+    return total;
+  });
+
+  var x = d3.scale.linear()
+    .domain([0, d3.max(barTotals)])
+    .range([0, size.width]);
+
+  var chart = d3.select(barSectionSelector)
+    .append('svg')
+      .attr('width', size.width)
+      .attr('height', (size.barHeight + size.titleHeight + size.barBottomPadding) * data.length);
+
+  var chartDefs = chart.append('defs')
+
+  // Gradients
+  dataColors.forEach(function(color) {
+    var gradient = chartDefs.append('linearGradient')
+      .attr('id', color.name + '-gradient');
+
+    gradient.append('stop')
+      .attr('offset', '0%')
+      .attr('stop-color', color.value)
+      .attr('stop-opacity', 0.6);
+
+    gradient.append('stop')
+      .attr('offset', '100%')
+      .attr('stop-color', color.value)
+      .attr('stop-opacity', 0.1);
+  });
+
+  // Bars
+  var bar = chart.selectAll('g')
+    .data(data).enter()
+    .append('g')
+      .attr('transform', function(d, i) { return 'translate(0,' + ((size.barHeight + size.titleHeight + size.barBottomPadding) * i) + ')'; });
+
+  bar.append('text')
+    .text(function(d) { return d.sector; })
+    .attr('x', -30)
+    .attr('y', size.titleHeight / 2)
+    .attr('class', 'funding-bar-title f-inputsans f-light f-italic fs-h3')
+    .attr('fill', '#fff')
+    .attr('fill-opacity', 0)
+    .transition()
+      .duration(1000)
+      .delay(function(d, i) { return i * 150; })
+      .attr('x', 0)
+      .attr('fill-opacity', 1);
+
+  bar.append('rect')
+    .attr('width', 0)
+    .attr('height', size.barHeight)
+    .attr('y', size.titleHeight)
+    .attr('fill', function(d) { return 'url(#' + colors(d.sector).name + '-gradient)'; })
+    .transition()
+      .duration(1000)
+      .delay(function(d, i) { return i * 150; })
+      .attr('width', function(d) {
+        var data = d.funding[0].data[0].data;
+        var total = data.reduce(function(num, obj) { return num + obj.value; }, 0);
+        return x(total);
+      })
+
+  bar.append('text')
+    .text(function(d) {
+      var data = d.funding[0].data[0].data;
+      var total = data.reduce(function(num, obj) { return num + obj.value; }, 0);
+      return '$' + numeral(total).format('0,0');
+    })
+    .attr('x', 10)
+    .attr('y', size.titleHeight + size.barHeight / 2)
+    .attr('dy', '.35em')
+    .attr('class', 'funding-bar-text f-adelle f-light')
+    .attr('fill', '#fff')
+    .attr('fill-opacity', 0)
+    .transition()
+      .duration(1000)
+      .delay(function(d, i) { return i * 150; })
+      .attr('fill-opacity', 1);
 };

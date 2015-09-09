@@ -38,8 +38,6 @@ h1, h2, h3, h4, h5, h6, p {
   margin: 0;
 }
 
-h2 { font-size: to-rem(48px); }
-
 // ========================================
 // HELPERS
 // ========================================
@@ -90,7 +88,7 @@ h2 { font-size: to-rem(48px); }
   height: 100%;
 }
 
-.width-half { width: 50%; }
+.no-pointer-event { pointer-events: none; }
 
 // ========================================
 // FONTS
@@ -98,6 +96,7 @@ h2 { font-size: to-rem(48px); }
 .f-adelle { font-family: 'Adelle', Helvetica, sans-serif; }
 .f-inputsans { font-family: 'InputSansCondensed', Helvetica, sans-serif; }
 
+.f-bold { font-weight: bold; }
 .f-light { font-weight: 300; }
 .f-xlight { font-weight: 200; }
 .f-thin { font-weight: 100; }
@@ -105,7 +104,10 @@ h2 { font-size: to-rem(48px); }
 .f-italic { font-style: italic; }
 
 .fs-base { font-size: $base-font-size; }
-.fs-small { font-size: to-rem(14px); }
+.fs-small { font-size: 14px; }
+.fs-h1 { font-size: 72px; }
+.fs-h2 { font-size: 48px; }
+.fs-h3 { font-size: 24px; }
 
 // ========================================
 // ICONS
@@ -245,12 +247,20 @@ h2 { font-size: to-rem(48px); }
 .funding-left,
 .funding-right {
   padding: 0 $grid-size;
-  top: $content-header-height + $grid-size-double;
   bottom: $page-footer-height + $grid-size;
 }
 
-.funding-left { left: 0; }
-.funding-right { right: 0 }
+.funding-left {
+  width: 60%;
+  top: $content-header-height + ($grid-size-double * 1.5);
+  left: 0;
+}
+
+.funding-right {
+  width: 40%;
+  top: $content-header-height + ($grid-size-double * 2);
+  right: 0
+}
 
 // ========================================
 // DROPDOWN

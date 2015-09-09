@@ -42,7 +42,7 @@
     <article class="page-content fullsize pos-a">
       <section id="funding" class="content-section pos-r fullsize" data-panel="funding">
         <header class="content-header pos-r clearfix">
-          <h2 class="content-title float-r f-inputsans f-thin f-italic">Funding</h2>
+          <h2 class="content-title float-r f-inputsans f-thin f-italic fs-h2">Funding</h2>
           <ul class="list-reset filter-list pos-a">
             <li class="filter-list-item dis-ib vat pos-r js-dropdown">
               <span class="dropdown-title dis-ib vam f-inputsans f-thin">Year</span>
@@ -106,22 +106,22 @@
             </li>
           </ul>
         </header>
-        <div class="funding-left width-half pos-a"></div>
-        <div class="funding-right width-half pos-a"></div>
+        <div class="funding-left pos-a"></div>
+        <div class="funding-right pos-a"></div>
       </section>
 
       <section id="funders" class="content-section pos-r fullsize" data-panel="funders">
-        <h2 class="content-title float-r f-inputsans f-thin f-italic">Funders</h2>
+        <h2 class="content-title float-r f-inputsans f-thin f-italic fs-h2">Funders</h2>
         <div class="clearfix"></div>
       </section>
 
       <section id="deals" class="content-section pos-r fullsize" data-panel="deals">
-        <h2 class="content-title float-r f-inputsans f-thin f-italic">Deals</h2>
+        <h2 class="content-title float-r f-inputsans f-thin f-italic fs-h2">Deals</h2>
         <div class="clearfix"></div>
       </section>
 
       <section id="exits" class="content-section pos-r fullsize" data-panel="exits">
-        <h2 class="content-title float-r f-inputsans f-thin f-italic">Exits</h2>
+        <h2 class="content-title float-r f-inputsans f-thin f-italic fs-h2">Exits</h2>
         <div class="clearfix"></div>
       </section>
     </article>
@@ -135,8 +135,9 @@
       </ul>
     </footer>
   </div>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/1.4.5/numeral.min.js"></script>
   <script src="javascripts/jquery.ba-throttle-debounce.min.js" type="text/javascript"></script>
   <script src="javascripts/jquery.panelSnap.js" type="text/javascript"></script>
   <script src="javascripts/main.js" type="text/javascript"></script>
