@@ -11,7 +11,7 @@ $(document).ready(function() {
   setupNavigation();
 
   setupFilters();
-  hideCurrentFilterSelection();
+  refreshFilterBars();
 
   // Funding Section
   setTimeout(setupFundingSection, 500);
@@ -134,6 +134,17 @@ var setupFilters = function() {
   });
 };
 
+var refreshFilterBars = function() {
+  refreshFundingFilterBar();
+};
+
+var refreshFundingFilterBar = function() {
+  var $yearDropdown = $('.js-funding-year-dropdown');
+  $('.dropdown-current', $yearDropdown).text(fundingFilter.year);
+  $('.dis-n', $yearDropdown).removeClass('dis-n');
+  hideCurrentFilterSelection();
+};
+
 var hideCurrentFilterSelection = function() {
   $dropdowns.each(function(i) {
     var $this = $(this);
@@ -146,6 +157,8 @@ var hideCurrentFilterSelection = function() {
       }
     });
   });
+
+  $('.js-dropdown.is-active').removeClass('is-active');
 };
 
 // ========================================
@@ -269,7 +282,7 @@ var fundingFilter = {
 var setupFundingSection = function() {
   // var data = getFundingPieSliceData();
   var data = getFundingPieData();
-  console.log(data)
+  // console.log(data)
 
   // console.log('++++++')
   // fundingFilter.type = 'Equity'
@@ -442,7 +455,6 @@ var setupFundingSection = function() {
     .transition()
       .duration(1000)
       .attrTween('d', function(d) {
-        console.log(d);
         var i = d3.interpolate(d.startAngle, d.endAngle);
         return function(t) {
           d.endAngle = i(t);
@@ -575,6 +587,7 @@ var setupFundingSection = function() {
       .attr('fill-opacity', 1);
 
   bar.append('rect')
+    .attr('class', 'funding-bar-bg')
     .attr('width', 0)
     .attr('height', size.barHeight)
     .attr('y', size.titleHeight)
@@ -599,12 +612,13 @@ var setupFundingSection = function() {
       .delay(function(d, i) { return i * 150; })
       .attr('fill-opacity', 1);
 
-
   // Filtering
   $('.js-funding-filter-year').click(function(event) {
     var year = $(this).attr('data-year');
     fundingFilter.year = parseInt(year);
     var newData = getFundingPieData();
+
+    refreshFundingFilterBar();
 
     d3.selectAll('.arc path').data(pie(newData))
       .transition()
@@ -639,9 +653,19 @@ var setupFundingSection = function() {
           };
         });
 
-    d3.select('.funding-pie-title').text(getFundingPieTitle())
+    d3.select('.funding-pie-title').text(getFundingPieTitle());
     var equityTotal = newData.reduce(function(num, d) { return num + d.value; }, 0);
-    d3.select('.funding-pie-subtitle').text('$' + numeral(equityTotal).format('0,0'))
+    d3.select('.funding-pie-subtitle').text('$' + numeral(equityTotal).format('0,0'));
+
+    d3.selectAll('.funding-bar-bg').data(newData)
+      .transition()
+        .duration(500)
+        .delay(function(d, i) { return i * 150; })
+        .attr('width', function(d) { return x(d.value); });
+
+    d3.selectAll('.funding-bar-text').data(newData).text(function(d) {
+      return '$' + numeral(d.value).format('0,0');
+    });
   });
 };
 

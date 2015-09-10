@@ -44,7 +44,7 @@
         <header class="content-header pos-r clearfix">
           <h2 class="content-title float-r f-inputsans f-thin f-italic fs-h2">Funding</h2>
           <ul class="list-reset filter-list pos-a">
-            <li class="filter-list-item dis-ib vat pos-r js-dropdown">
+            <li class="filter-list-item dis-ib vat pos-r js-dropdown js-funding-year-dropdown">
               <span class="dropdown-title dis-ib vam f-inputsans f-thin">Year</span>
               <span class="dropdown-slash dropdown-slash-first dis-ib vam"></span>
               <span class="dropdown-slash dis-ib vam"></span>
