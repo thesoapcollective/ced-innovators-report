@@ -14,6 +14,7 @@ $(document).ready(function() {
   refreshFilterBars();
 
   setTimeout(setupFundingSection, 500);
+  setupFundersSection();
   setupExitsSection();
 });
 
@@ -50,7 +51,11 @@ var setupSocialLinks = function() {
 
 var setupFacebookShare = function() {
   var url = window.location;
+
+  // Header
   $('.social-list-item .icons-facebook').attr('href', 'http://www.facebook.com/share.php?u=' + url);
+
+  // Share box
   $('.share-box-list-item .icons-facebook').attr('href', 'http://www.facebook.com/share.php?u=' + url);
 };
 
@@ -1011,6 +1016,161 @@ var filterFundingQuarters = function(quarters) {
 // //   }
 // // };
 
+
+
+
+
+
+
+// ========================================
+// FUNDERS SECTION
+// ========================================
+var mapActive = null;
+var mapSectionSelector = '.funders-container';
+var $mapSection = null;
+var mapSize = null;
+var mapPath = null;
+var mapGroup = null;
+
+var setupFundersSection = function() {
+  mapActive = d3.select(null);
+  $mapSection = $(mapSectionSelector);
+
+  mapSize = {
+    width: $mapSection.width(),
+    height: $mapSection.height()
+  };
+
+  var projection = d3.geo.albersUsa()
+    .scale(1000)
+    .translate([mapSize.width / 2, mapSize.height / 2]);
+
+  mapPath = d3.geo.path().projection(projection);
+
+  var svg = d3.select(mapSectionSelector).append('svg')
+    .attr('width', mapSize.width)
+    .attr('height', mapSize.height);
+
+  svg.append('rect')
+    .attr('class', 'map-background')
+    .attr('width', mapSize.width)
+    .attr('height', mapSize.height)
+    .attr('fill-opacity', 0)
+    .on('click', mapReset);
+
+  var defs = svg.append('defs');
+
+  var pattern = defs.append('pattern')
+    .attr('id', 'map-pattern')
+    .attr('patternUnits', 'userSpaceOnUse')
+    .attr('width', '4')
+    .attr('height', '3')
+  pattern.append('path')
+    .attr('d', 'M0,0 L4,0 M0,1 L4,1')
+    .attr('stroke', '#000')
+    .attr('stroke-width', 1);
+
+  mapGroup = svg.append('g')
+    .attr('fill', 'none')
+    .style('stroke', '#fff')
+    .style('stroke-linecap', 'round')
+    .style('stroke-linejoin', 'round')
+    .style('stroke-width', '1px');
+
+  d3.tsv("https://s3-us-west-2.amazonaws.com/vida-public/geo/us-state-names.tsv", function(error, names) {
+    if (error) { throw error; }
+
+    d3.json('./data/us.json', function(error, us) {
+      if (error) { throw error; }
+
+      var mapData = topojson.feature(us, us.objects.states).features;
+
+      mapData.forEach(function(d) {
+        var stateData = names.find(function(state) {
+          return state.id == d.id;
+        });
+
+        if (stateData) {
+          d.properties.code = stateData.code;
+          d.properties.name = stateData.name;
+        }
+      });
+
+      var stateGroups = mapGroup.selectAll('g')
+        .data(mapData).enter()
+        .append('g')
+          .attr('class', 'state-group');
+
+      stateGroups.append('path')
+        .attr('d', mapPath)
+        .attr('class', 'state-pattern')
+        .style('fill', 'url(#map-pattern)');
+
+      stateGroups.append('path')
+        .attr('d', mapPath)
+        .attr('class', 'map-section')
+        .attr('fill', '#ff0000')
+        .attr('fill-opacity', 0)
+        .on('click', mapClicked);
+
+      // stateGroups.append('text')
+      //   .text(function(d) { return d.properties.code; })
+      //   .attr('x', function(d) {
+      //     var centroid = mapPath.centroid(d);
+      //     return isNaN(centroid[0]) ? -10 : centroid[0];
+      //   })
+      //   .attr('y', function(d) {
+      //     var centroid = mapPath.centroid(d);
+      //     return isNaN(centroid[1]) ? -10 : centroid[1];
+      //   })
+      //   .attr('fill', '#fff')
+      //   .attr('text-anchor', 'middle');
+
+      var mapDatum = topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; });
+
+      mapGroup.append('path')
+        .datum(mapDatum)
+        .attr('class', 'map-mesh')
+        .attr('d', mapPath);
+    });
+  });
+};
+
+function mapClicked(d) {
+  if (mapActive.node() === this) {
+    return mapReset();
+  }
+
+  mapActive.attr('fill', '#ff0000');
+  mapActive.classed('is-active', false);
+  mapActive = d3.select(this).classed('is-active', true);
+
+  var bounds = mapPath.bounds(d),
+      dx = bounds[1][0] - bounds[0][0],
+      dy = bounds[1][1] - bounds[0][1],
+      x = (bounds[0][0] + bounds[1][0]) / 2,
+      y = (bounds[0][1] + bounds[1][1]) / 2,
+      scale = .9 / Math.max(dx / mapSize.width, dy / mapSize.height),
+      translate = [mapSize.width / 2 - scale * x, mapSize.height / 2 - scale * y];
+
+  mapActive.attr('fill', '#0000ff')
+
+  mapGroup.transition()
+    .duration(750)
+    .style('stroke-width', 1 / scale + 'px')
+    .attr('transform', 'translate(' + translate + ')scale(' + scale + ')');
+};
+
+function mapReset() {
+  mapActive.classed('is-active', false);
+  mapActive.attr('fill', '#ff0000');
+  mapActive = d3.select(null);
+
+  mapGroup.transition()
+    .duration(750)
+    .style('stroke-width', '1px')
+    .attr('transform', '');
+};
 
 // ========================================
 // EXITS SECTION

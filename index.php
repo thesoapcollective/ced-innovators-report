@@ -126,12 +126,36 @@
         <header class="content-header pos-r clearfix">
           <h2 class="content-title float-r f-inputsans f-thin f-italic fs-h2">Funders</h2>
         </header>
+
+        <div class="funders-container pos-a"></div>
+
+        <div class="share-box-container centered-share-box pos-a">
+          <div class="share-box clearfix">
+            <p class="f-inputsans f-xlight f-italic">Here’s an interesting fact about this data! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam sollicitudin ultrices tristique.</p>
+            <ul class="list-reset share-box-list float-r">
+              <li class="share-box-list-item dis-ib vam f-adelle">Share:</li>
+              <li class="share-box-list-item dis-ib vam"><a class="icons icons-twitter text-overflow dis-b a-hover-opacity" href="#" target="_blank">Twitter</a></li>
+              <li class="share-box-list-item dis-ib vam"><a class="icons icons-facebook text-overflow dis-b a-hover-opacity" href="#" target="_blank">Facebook</a></li>
+            </ul>
+          </div>
+        </div>
       </section>
 
       <section id="deals" class="content-section pos-r fullsize" data-panel="deals">
         <header class="content-header pos-r clearfix">
           <h2 class="content-title float-r f-inputsans f-thin f-italic fs-h2">Deals</h2>
         </header>
+
+        <div class="share-box-container centered-share-box pos-a">
+          <div class="share-box clearfix">
+            <p class="f-inputsans f-xlight f-italic">Here’s an interesting fact about this data! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam sollicitudin ultrices tristique.</p>
+            <ul class="list-reset share-box-list float-r">
+              <li class="share-box-list-item dis-ib vam f-adelle">Share:</li>
+              <li class="share-box-list-item dis-ib vam"><a class="icons icons-twitter text-overflow dis-b a-hover-opacity" href="#" target="_blank">Twitter</a></li>
+              <li class="share-box-list-item dis-ib vam"><a class="icons icons-facebook text-overflow dis-b a-hover-opacity" href="#" target="_blank">Facebook</a></li>
+            </ul>
+          </div>
+        </div>
       </section>
 
       <section id="exits" class="content-section pos-r fullsize" data-panel="exits">
@@ -445,7 +469,7 @@
           </ul>
         </div>
 
-        <div class="share-box-container exits-share-box pos-a">
+        <div class="share-box-container centered-share-box pos-a">
           <div class="share-box clearfix">
             <p class="f-inputsans f-xlight f-italic">Here’s an interesting fact about this data! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam sollicitudin ultrices tristique.</p>
             <ul class="list-reset share-box-list float-r">
@@ -469,6 +493,7 @@
   </div>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/1.4.5/numeral.min.js"></script>
   <script src="javascripts/jquery.ba-throttle-debounce.min.js" type="text/javascript"></script>
   <script src="javascripts/jquery.panelSnap.js" type="text/javascript"></script>

@@ -316,9 +316,17 @@ h1, h2, h3, h4, h5, h6, p {
   right: 0
 }
 
+.funders-container {
+  padding: 0 $grid-size;
+  top: $content-header-height + ($grid-size-double * 1.5);
+  bottom: $page-footer-height + $estimated-twitter-height + ($grid-size * 1.5);
+  left: $grid-size-double;
+  right: $grid-size-double;
+}
+
 .exits-container {
   top: $content-header-height + $grid-size-double;
-  bottom: $page-footer-height + $grid-size;
+  bottom: $page-footer-height + $estimated-twitter-height + ($grid-size * 1.5);
   left: $grid-size-double;
   right: $grid-size-double;
   overflow: scroll;
@@ -417,10 +425,11 @@ h1, h2, h3, h4, h5, h6, p {
   right: 0;
 }
 
-.exits-share-box {
+.centered-share-box {
   @include translateX(-50%);
   max-width: 900px;
   width: 100%;
+  padding: 0 $grid-size;
   left: 50%;
   bottom: $page-footer-height + $grid-size;
 }
