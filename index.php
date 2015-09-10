@@ -146,6 +146,8 @@
           <h2 class="content-title float-r f-inputsans f-thin f-italic fs-h2">Deals</h2>
         </header>
 
+        <div class="deals-container pos-a"></div>
+
         <div class="share-box-container centered-share-box pos-a">
           <div class="share-box clearfix">
             <p class="f-inputsans f-xlight f-italic">Here’s an interesting fact about this data! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam sollicitudin ultrices tristique.</p>
