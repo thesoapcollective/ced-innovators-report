@@ -1025,6 +1025,105 @@ var filterFundingQuarters = function(quarters) {
 // ========================================
 // FUNDERS SECTION
 // ========================================
+var cedMapData = [
+  {state: 'CA', sectors: [
+    {name: 'Tech', value: 7},
+    {name: 'Life Science', value: 7},
+    {name: 'Advanced Manufacturing & Materials', value: 1},
+    {name: 'Cleantech', value: 1},
+  ]},
+  {state: 'DC', sectors: [
+    {name: 'Tech', value: 1},
+    {name: 'Life Science', value: 0},
+    {name: 'Advanced Manufacturing & Materials', value: 0},
+    {name: 'Cleantech', value: 0},
+  ]},
+  {state: 'FL', sectors: [
+    {name: 'Tech', value: 1},
+    {name: 'Life Science', value: 0},
+    {name: 'Advanced Manufacturing & Materials', value: 0},
+    {name: 'Cleantech', value: 0},
+  ]},
+  {state: 'IL', sectors: [
+    {name: 'Tech', value: 0},
+    {name: 'Life Science', value: 1},
+    {name: 'Advanced Manufacturing & Materials', value: 0},
+    {name: 'Cleantech', value: 0},
+  ]},
+  {state: 'IN', sectors: [
+    {name: 'Tech', value: 0},
+    {name: 'Life Science', value: 1},
+    {name: 'Advanced Manufacturing & Materials', value: 0},
+    {name: 'Cleantech', value: 0},
+  ]},
+  {state: 'MA', sectors: [
+    {name: 'Tech', value: 2},
+    {name: 'Life Science', value: 8},
+    {name: 'Advanced Manufacturing & Materials', value: 0},
+    {name: 'Cleantech', value: 0},
+  ]},
+  {state: 'MD', sectors: [
+    {name: 'Tech', value: 0},
+    {name: 'Life Science', value: 2},
+    {name: 'Advanced Manufacturing & Materials', value: 0},
+    {name: 'Cleantech', value: 0},
+  ]},
+  {state: 'NC', sectors: [
+    {name: 'Tech', value: 11},
+    {name: 'Life Science', value: 20},
+    {name: 'Advanced Manufacturing & Materials', value: 5},
+    {name: 'Cleantech', value: 0},
+  ]},
+  {state: 'NJ', sectors: [
+    {name: 'Tech', value: 0},
+    {name: 'Life Science', value: 2},
+    {name: 'Advanced Manufacturing & Materials', value: 0},
+    {name: 'Cleantech', value: 0},
+  ]},
+  {state: 'NY', sectors: [
+    {name: 'Tech', value: 6},
+    {name: 'Life Science', value: 2},
+    {name: 'Advanced Manufacturing & Materials', value: 0},
+    {name: 'Cleantech', value: 0},
+  ]},
+  {state: 'OH', sectors: [
+    {name: 'Tech', value: 0},
+    {name: 'Life Science', value: 1},
+    {name: 'Advanced Manufacturing & Materials', value: 0},
+    {name: 'Cleantech', value: 0},
+  ]},
+  {state: 'PA', sectors: [
+    {name: 'Tech', value: 0},
+    {name: 'Life Science', value: 1},
+    {name: 'Advanced Manufacturing & Materials', value: 0},
+    {name: 'Cleantech', value: 0},
+  ]},
+  {state: 'TN', sectors: [
+    {name: 'Tech', value: 1},
+    {name: 'Life Science', value: 2},
+    {name: 'Advanced Manufacturing & Materials', value: 0},
+    {name: 'Cleantech', value: 0},
+  ]},
+  {state: 'TX', sectors: [
+    {name: 'Tech', value: 1},
+    {name: 'Life Science', value: 1},
+    {name: 'Advanced Manufacturing & Materials', value: 0},
+    {name: 'Cleantech', value: 0},
+  ]},
+  {state: 'VA', sectors: [
+    {name: 'Tech', value: 4},
+    {name: 'Life Science', value: 1},
+    {name: 'Advanced Manufacturing & Materials', value: 0},
+    {name: 'Cleantech', value: 0},
+  ]},
+  {state: 'WA', sectors: [
+    {name: 'Tech', value: 1},
+    {name: 'Life Science', value: 0},
+    {name: 'Advanced Manufacturing & Materials', value: 0},
+    {name: 'Cleantech', value: 0},
+  ]},
+];
+
 var mapActive = null;
 var mapSectionSelector = '.funders-container';
 var $mapSection = null;
@@ -1109,22 +1208,49 @@ var setupFundersSection = function() {
       stateGroups.append('path')
         .attr('d', mapPath)
         .attr('class', 'map-section')
-        .attr('fill', '#ff0000')
-        .attr('fill-opacity', 0)
+        .attr('fill', function(d) {
+          if (stateHasDeals(d.properties)) {
+            var sector = getStateSectorWithMostDeals(d.properties);
+            return sectorToColor(sector.name).value;
+          }
+          return '#000'
+        })
+        .attr('fill-opacity', function(d) { return stateHasDeals(d.properties) ? 0.25 : 0; })
+        .on('mouseover', function(d, i) {
+          if (stateHasDeals(d.properties)) {
+            d3.select(this)
+              .transition()
+                .duration(250)
+                .attr('fill-opacity', 0.5);
+          }
+        })
+        .on('mouseout', function(d, i) {
+          if (stateHasDeals(d.properties)) {
+            d3.select(this)
+              .transition()
+                .duration(250)
+                .attr('fill-opacity', 0.25);
+          }
+        })
         .on('click', mapClicked);
 
-      // stateGroups.append('text')
-      //   .text(function(d) { return d.properties.code; })
-      //   .attr('x', function(d) {
-      //     var centroid = mapPath.centroid(d);
-      //     return isNaN(centroid[0]) ? -10 : centroid[0];
-      //   })
-      //   .attr('y', function(d) {
-      //     var centroid = mapPath.centroid(d);
-      //     return isNaN(centroid[1]) ? -10 : centroid[1];
-      //   })
-      //   .attr('fill', '#fff')
-      //   .attr('text-anchor', 'middle');
+      stateGroups.append('text')
+        .text(function(d) {
+          if (stateHasDeals(d.properties)) {
+            return getStateTotal(d.properties);
+          }
+        })
+        .attr('x', function(d) {
+          var centroid = mapPath.centroid(d);
+          return isNaN(centroid[0]) ? -10 : centroid[0];
+        })
+        .attr('y', function(d) {
+          var centroid = mapPath.centroid(d);
+          return isNaN(centroid[1]) ? -10 : centroid[1];
+        })
+        .attr('fill', '#fff')
+        .attr('class', 'f-adelle f-bold fs-h3 no-pointer-event')
+        .attr('text-anchor', 'middle');
 
       var mapDatum = topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; });
 
@@ -1136,12 +1262,57 @@ var setupFundersSection = function() {
   });
 };
 
-function mapClicked(d) {
-  if (mapActive.node() === this) {
+var sectorToColor = function(sector) {
+  var color;
+  switch(sector) {
+    case 'Tech':
+      color = cedDataColors.find(function(d) { return d.name === 'blue'; });
+      break;
+    case 'Life Science':
+      color = cedDataColors.find(function(d) { return d.name === 'green'; });
+      break;
+    case 'Advanced Manufacturing & Materials':
+      color = cedDataColors.find(function(d) { return d.name === 'red'; });
+      break;
+    case 'Cleantech':
+      color = cedDataColors.find(function(d) { return d.name === 'white'; });
+      break;
+    default:
+      color = {name: 'default', value: '#000'};
+  }
+  return color;
+};
+
+var stateHasDeals = function(state) {
+  var stateData = cedMapData.find(function(d) { return d.state === state.code; });
+  if (stateData) {
+    return stateData.sectors.reduce(function(num, d) { return num + d.value; }, 0) > 0;
+  }
+  return false;
+};
+
+var getStateSectorWithMostDeals = function(state) {
+  var sector;
+  var stateData = cedMapData.find(function(d) { return d.state === state.code; });
+  stateData.sectors.forEach(function(s) {
+    if (typeof sector === 'undefined' || s.value > sector.value) {
+      sector = s
+    }
+  });
+  return sector;
+};
+
+var getStateTotal = function(state) {
+  var stateData = cedMapData.find(function(d) { return d.state === state.code; });
+  return stateData.sectors.reduce(function(num, sector) { return num + sector.value; }, 0);
+};
+
+var mapClicked = function(d) {
+  if (mapActive.node() === this || !stateHasDeals(d.properties)) {
     return mapReset();
   }
 
-  mapActive.attr('fill', '#ff0000');
+  // mapActive.attr('fill', '#ff0000');
   mapActive.classed('is-active', false);
   mapActive = d3.select(this).classed('is-active', true);
 
@@ -1150,10 +1321,10 @@ function mapClicked(d) {
       dy = bounds[1][1] - bounds[0][1],
       x = (bounds[0][0] + bounds[1][0]) / 2,
       y = (bounds[0][1] + bounds[1][1]) / 2,
-      scale = .9 / Math.max(dx / mapSize.width, dy / mapSize.height),
+      scale = .8 / Math.max(dx / mapSize.width, dy / mapSize.height),
       translate = [mapSize.width / 2 - scale * x, mapSize.height / 2 - scale * y];
 
-  mapActive.attr('fill', '#0000ff')
+  // mapActive.attr('fill', '#0000ff')
 
   mapGroup.transition()
     .duration(750)
@@ -1161,9 +1332,9 @@ function mapClicked(d) {
     .attr('transform', 'translate(' + translate + ')scale(' + scale + ')');
 };
 
-function mapReset() {
+var mapReset = function() {
   mapActive.classed('is-active', false);
-  mapActive.attr('fill', '#ff0000');
+  // mapActive.attr('fill', '#ff0000');
   mapActive = d3.select(null);
 
   mapGroup.transition()
