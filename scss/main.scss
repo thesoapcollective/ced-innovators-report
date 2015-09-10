@@ -110,6 +110,7 @@ h1, h2, h3, h4, h5, h6, p {
 .fs-h1 { font-size: 72px; }
 .fs-h2 { font-size: 48px; }
 .fs-h3 { font-size: 24px; }
+.fs-h4 { font-size: 36px; } // Oops on ordering
 
 // ========================================
 // ICONS
@@ -291,6 +292,12 @@ h1, h2, h3, h4, h5, h6, p {
 
 .content-title {}
 
+.content-subtitle {
+  width: 100%;
+  padding: 0 $grid-size;
+  bottom: 0;
+}
+
 .funding-left,
 .funding-right {
   padding: 0 $grid-size;
@@ -310,7 +317,7 @@ h1, h2, h3, h4, h5, h6, p {
 }
 
 .exits-container {
-  top: $content-header-height;
+  top: $content-header-height + $grid-size-double;
   bottom: $page-footer-height + $grid-size;
   left: $grid-size-double;
   right: $grid-size-double;

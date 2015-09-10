@@ -137,6 +137,7 @@
       <section id="exits" class="content-section pos-r fullsize" data-panel="exits">
         <header class="content-header pos-r clearfix">
           <h2 class="content-title float-r f-inputsans f-thin f-italic fs-h2">Exits</h2>
+          <div class="content-subtitle pos-a text-ac f-inputsans f-thin f-italic fs-h4"><strong class="f-adelle">1</strong> IPO &amp; <strong class="f-adelle">11</strong> Mergers/Aquisitions</div>
         </header>
 
         <div class="exits-container pos-a">
