@@ -53,12 +53,12 @@
                 <span class="dropdown-arrow float-r dis-ib vam icons icons-down-arrow"></span>
               </a>
               <ul class="list-reset dropdown-list pos-a f-adelle">
-                <li class="dropdown-list-item"><a class="dis-b js-prevent-default" href="#">2015</a></li>
-                <li class="dropdown-list-item"><a class="dis-b js-prevent-default" href="#">2014</a></li>
-                <li class="dropdown-list-item"><a class="dis-b js-prevent-default" href="#">2013</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-funding-filter-year" href="#" data-year="2015">2015</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-funding-filter-year" href="#" data-year="2014">2014</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-funding-filter-year" href="#" data-year="2013">2013</a></li>
               </ul>
             </li>
-            <li class="filter-list-item dis-ib vat pos-r js-dropdown">
+            <!-- <li class="filter-list-item dis-ib vat pos-r js-dropdown">
               <span class="dropdown-title dis-ib vam f-inputsans f-thin">Quarter</span>
               <span class="dropdown-slash dropdown-slash-first dis-ib vam"></span>
               <span class="dropdown-slash dis-ib vam"></span>
@@ -103,7 +103,7 @@
                 <li class="dropdown-list-item"><a class="dis-b js-prevent-default" href="#">Equity</a></li>
                 <li class="dropdown-list-item"><a class="dis-b js-prevent-default" href="#">Grants/Awards</a></li>
               </ul>
-            </li>
+            </li> -->
           </ul>
         </header>
         <div class="funding-left pos-a"></div>
