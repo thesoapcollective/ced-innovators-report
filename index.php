@@ -89,8 +89,8 @@
                 <li class="dropdown-list-item"><a class="dis-b js-prevent-default" href="#">Adv M&amp;M</a></li>
                 <li class="dropdown-list-item"><a class="dis-b js-prevent-default" href="#">Cleantech</a></li>
               </ul>
-            </li>
-            <li class="filter-list-item dis-ib vat pos-r js-dropdown">
+            </li> -->
+            <li class="filter-list-item dis-ib vat pos-r js-dropdown js-funding-type-dropdown">
               <span class="dropdown-title dis-ib vam f-inputsans f-thin">Type</span>
               <span class="dropdown-slash dropdown-slash-first dis-ib vam"></span>
               <span class="dropdown-slash dis-ib vam"></span>
@@ -99,11 +99,11 @@
                 <span class="dropdown-arrow float-r dis-ib vam icons icons-down-arrow"></span>
               </a>
               <ul class="list-reset dropdown-list pos-a f-adelle">
-                <li class="dropdown-list-item"><a class="dis-b js-prevent-default" href="#">All</a></li>
-                <li class="dropdown-list-item"><a class="dis-b js-prevent-default" href="#">Equity</a></li>
-                <li class="dropdown-list-item"><a class="dis-b js-prevent-default" href="#">Grants/Awards</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-funding-filter-type" href="#" data-type="All">All</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-funding-filter-type" href="#" data-type="Equity">Equity</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-funding-filter-type" href="#" data-type="Grants & Awards">Grants/Awards</a></li>
               </ul>
-            </li> -->
+            </li>
           </ul>
         </header>
         <div class="funding-left pos-a"></div>

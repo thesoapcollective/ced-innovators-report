@@ -113,8 +113,8 @@ var setupFilters = function() {
     $dropdown.attr('style', '');
 
     var triggerArrowWidth = $triggerArrow.outerWidth(true);
-    var triggerWidth = $trigger.outerWidth();
-    var dropdownWidth = $dropdown.outerWidth() + triggerArrowWidth;
+    var triggerWidth = $trigger.outerWidth(true) + 5;
+    var dropdownWidth = $dropdown.outerWidth(true) + triggerArrowWidth + 5;
 
     if (triggerWidth >= dropdownWidth) {
       $trigger.width(triggerWidth);
@@ -140,8 +140,15 @@ var refreshFilterBars = function() {
 
 var refreshFundingFilterBar = function() {
   var $yearDropdown = $('.js-funding-year-dropdown');
-  $('.dropdown-current', $yearDropdown).text(fundingFilter.year);
+  var yearTitle = $('.js-funding-filter-year[data-year="' + fundingFilter.year + '"]').text();
+  $('.dropdown-current', $yearDropdown).text(yearTitle);
   $('.dis-n', $yearDropdown).removeClass('dis-n');
+
+  var $typeDropdown = $('.js-funding-type-dropdown');
+  var typeTitle = $('.js-funding-filter-type[data-type="' + fundingFilter.type + '"]').text();
+  $('.dropdown-current', $typeDropdown).text(typeTitle);
+  $('.dis-n', $typeDropdown).removeClass('dis-n');
+
   hideCurrentFilterSelection();
 };
 
@@ -619,10 +626,36 @@ var setupFundingSection = function() {
     var newData = getFundingPieData();
 
     refreshFundingFilterBar();
+    updateFundingSection(newData);
+  });
 
-    d3.selectAll('.arc path').data(pie(newData))
+  $('.js-funding-filter-type').click(function(event) {
+    var type = $(this).attr('data-type');
+    fundingFilter.type = type;
+    var newData = getFundingPieData();
+
+    refreshFundingFilterBar();
+    updateFundingSection(newData);
+  });
+
+  var updateFundingSection = function(newData) {
+    var total = newData.reduce(function(num, d) { return num + d.value; }, 0);
+    var isEmpty = total === 0;
+
+    if (isEmpty) {
+      pieData = newData.map(function(d) {
+        return {
+          sector: d.sector,
+          value: 1
+        };
+      });
+    } else {
+      pieData = newData;
+    }
+
+    d3.selectAll('.arc path').data(pie(pieData))
       .transition()
-        .duration(500)
+        .duration(1000)
         .attrTween('d', function(d) {
           var i = d3.interpolate(this._current, d);
           this._current = i(0);
@@ -631,9 +664,9 @@ var setupFundingSection = function() {
           };
         });
 
-    d3.selectAll('.outer-arc path').data(pie(newData))
+    d3.selectAll('.outer-arc path').data(pie(pieData))
       .transition()
-        .duration(500)
+        .duration(1000)
         .attrTween('d', function(d) {
           var i = d3.interpolate(this._current, d);
           this._current = i(0);
@@ -642,9 +675,9 @@ var setupFundingSection = function() {
           };
         });
 
-    d3.selectAll('.pattern-arc path').data(pie(newData))
+    d3.selectAll('.pattern-arc path').data(pie(pieData))
       .transition()
-        .duration(500)
+        .duration(1000)
         .attrTween('d', function(d) {
           var i = d3.interpolate(this._current, d);
           this._current = i(0);
@@ -653,30 +686,60 @@ var setupFundingSection = function() {
           };
         });
 
-    d3.select('.funding-pie-title').text(getFundingPieTitle());
-    var equityTotal = newData.reduce(function(num, d) { return num + d.value; }, 0);
-    d3.select('.funding-pie-subtitle').text('$' + numeral(equityTotal).format('0,0'));
+    d3.select('.funding-pie-title')
+      .transition()
+        .duration(500)
+        .attr('fill-opacity', 0)
+      .transition()
+        .duration(500)
+        .delay(1000)
+        .text(getFundingPieTitle())
+        .attr('fill-opacity', 1);
+    d3.select('.funding-pie-subtitle')
+      .transition()
+        .duration(500)
+        .attr('fill-opacity', 0)
+      .transition()
+        .duration(500)
+        .delay(1000)
+        .text('$' + numeral(total).format('0,0'))
+        .attr('fill-opacity', 1);
 
     d3.selectAll('.funding-bar-bg').data(newData)
       .transition()
-        .duration(500)
+        .duration(1000)
         .delay(function(d, i) { return i * 150; })
         .attr('width', function(d) { return x(d.value); });
 
-    d3.selectAll('.funding-bar-text').data(newData).text(function(d) {
-      return '$' + numeral(d.value).format('0,0');
-    });
-  });
+    d3.selectAll('.funding-bar-text').data(newData)
+      .transition()
+        .duration(500)
+        .attr('fill-opacity', 0)
+      .transition()
+        .duration(500)
+        .delay(1000)
+        .text(function(d) {
+          return '$' + numeral(d.value).format('0,0');
+        })
+        .attr('fill-opacity', 1);
+  };
 };
 
 var getFundingPieTitle = function() {
   var str = fundingFilter.year;
-  str += " Equity + Grants & Awards:"
+  if (fundingFilter.type === 'All') {
+    str += ' Equity + Grants & Awards:'
+  } else {
+    str += ' ' + fundingFilter.type + ':'
+  }
   return str;
 };
 
 var getFundingPieData = function() {
-  return filterFundingByYear();
+  if (fundingFilter.type === 'All') {
+    return filterFundingByYear();
+  }
+  return filterFundingByTypeAndYear();
 };
 
 var filterFundingByYear = function() {
@@ -697,7 +760,26 @@ var filterFundingByYear = function() {
     }, 0);
     return filteredData;
   });
-}
+};
+
+var filterFundingByTypeAndYear = function() {
+  return cedData.map(function(data) {
+    var filteredData = {sector: data.sector};
+    var type = data.funding.find(function(d) { return d.type === fundingFilter.type });
+    filteredData.value = type.data.reduce(function(num2, year) {
+      if (year.year === fundingFilter.year) {
+        if (year.data) {
+          return year.data.reduce(function(num3, quarter) {
+            return num3 + quarter.value;
+          }, 0);
+        }
+        return num2 + year.value;
+      }
+      return num2 + 0;
+    }, 0);
+    return filteredData;
+  });
+};
 
 
 
