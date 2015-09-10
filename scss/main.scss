@@ -64,6 +64,7 @@ h1, h2, h3, h4, h5, h6, p {
   white-space: nowrap;
 }
 .text-ac { text-align: center; }
+.text-al { text-align: left }
 .text-shadow { text-shadow: 0 2px 0 rgba($black, 0.65) }
 .text-shadow-large { text-shadow: 0 4px 0 rgba($black, 0.65) }
 
@@ -308,6 +309,81 @@ h1, h2, h3, h4, h5, h6, p {
   right: 0
 }
 
+.exits-container {
+  top: $content-header-height;
+  bottom: $page-footer-height + $grid-size;
+  left: $grid-size-double;
+  right: $grid-size-double;
+  overflow: scroll;
+}
+
+.exits-list {}
+
+.exits-list-item {
+  width: 15%;
+  padding-top: 15%;
+  margin: $grid-size-half;
+  transition: $opacity-transition;
+}
+
+.exits-logo-container {
+  top: 0;
+  left: 0;
+  background: $white;
+  border: 2px solid $gray;
+  border-radius: 100%;
+  box-shadow: 0 4px 2px rgba(#000, 0.15);
+}
+
+.exits-logo {
+  @include translate(-50%,-50%);
+  width: 90%;
+  height: 90%;
+  top: 50%;
+  left: 50%;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
+}
+
+.exits-type {
+  width: 38px;
+  height: 38px;
+  color: $green;
+  background: $white;
+  border: 2px solid $green;
+  border-radius: 100%;
+  line-height: 36px;
+  top: 10px;
+  right: 10px;
+  box-shadow: 0 4px 0 rgba(#000, 0.15);
+}
+
+.exits-info {
+  width: 300px;
+  top: 0;
+  opacity: 0;
+  transition: $opacity-transition;
+}
+
+.exits-list-item.show-right {
+  .exits-info { left: 105%; }
+}
+
+.exits-list-item.show-left {
+  .exits-info { right: 105%; }
+}
+
+.exits-list-item.animate-info {
+  .exits-info { opacity: 1; }
+}
+
+.exits-list.item-is-active {
+  .exits-list-item:not(.is-active) {
+    opacity: 0.1;
+  }
+}
+
 // ========================================
 // SHARE BOX
 // ========================================
@@ -330,7 +406,15 @@ h1, h2, h3, h4, h5, h6, p {
 .funding-share-box {
   width: 40%; // Same as .funding-right
   padding: 0 $grid-size;
+  bottom: $page-footer-height + $grid-size;
   right: 0;
+}
+
+.exits-share-box {
+  @include translateX(-50%);
+  max-width: 900px;
+  width: 100%;
+  left: 50%;
   bottom: $page-footer-height + $grid-size;
 }
 
@@ -340,8 +424,8 @@ h1, h2, h3, h4, h5, h6, p {
 .page-footer {
   width: 100%;
   height: $page-footer-height;
-  left: 0;
   bottom: 0;
+  left: 0;
   z-index: 2;
 }
 

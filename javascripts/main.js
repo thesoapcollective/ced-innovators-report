@@ -13,8 +13,8 @@ $(document).ready(function() {
   setupFilters();
   refreshFilterBars();
 
-  // Funding Section
   setTimeout(setupFundingSection, 500);
+  setupExitsSection();
 });
 
 // ========================================
@@ -1010,3 +1010,32 @@ var filterFundingQuarters = function(quarters) {
 // //     return filteredData.value;
 // //   }
 // // };
+
+
+// ========================================
+// EXITS SECTION
+// ========================================
+var setupExitsSection = function() {
+  $('.exits-list-item').mouseenter(function() {
+    var $this = $(this);
+    $this.addClass('is-active');
+    $this.parent().addClass('item-is-active');
+
+    var $info = $('.exits-info', $this);
+    var infoWidth = $info.outerWidth();
+    var rightPosition = $this.offset().left + $this.outerWidth() + infoWidth;
+
+    $this.removeClass('show-left show-right');
+    if (rightPosition >= $win.outerWidth()) {
+      $this.addClass('show-left animate-info');
+    } else {
+      $this.addClass('show-right animate-info');
+    }
+  });
+
+  $('.exits-list-item').mouseleave(function() {
+    var $this = $(this);
+    $this.removeClass('is-active animate-info');
+    $this.parent().removeClass('item-is-active');
+  });
+};
