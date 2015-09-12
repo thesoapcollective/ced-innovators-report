@@ -330,7 +330,7 @@ h1, h2, h3, h4, h5, h6, p {
   bottom: $page-footer-height + $estimated-twitter-height + ($grid-size * 1.5);
   left: $grid-size-double;
   right: $grid-size-double;
-  overflow: scroll;
+  // overflow: scroll;
 }
 
 .exits-list {}
@@ -353,8 +353,8 @@ h1, h2, h3, h4, h5, h6, p {
 
 .exits-logo {
   @include translate(-50%,-50%);
-  width: 90%;
-  height: 90%;
+  width: 70%;
+  height: 70%;
   top: 50%;
   left: 50%;
   background-repeat: no-repeat;

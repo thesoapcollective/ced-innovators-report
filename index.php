@@ -163,312 +163,13 @@
       <section id="exits" class="content-section pos-r fullsize" data-panel="exits">
         <header class="content-header pos-r clearfix">
           <h2 class="content-title float-r f-inputsans f-thin f-italic fs-h2">Exits</h2>
-          <div class="content-subtitle pos-a text-ac f-inputsans f-thin f-italic fs-h4"><strong class="f-adelle">1</strong> IPO &amp; <strong class="f-adelle">11</strong> Mergers/Aquisitions</div>
+          <div class="content-subtitle pos-a text-ac f-inputsans f-thin f-italic fs-h4">
+            <strong class="exits-ipo-count f-adelle">1</strong> <span class="exits-ipo-title">IPO</span> &amp; <strong class="exits-ma-count f-adelle">11</strong> <span class="exits-ma-title">Mergers/Aquisitions</span>
+          </div>
         </header>
 
         <div class="exits-container pos-a">
-          <ul class="list-reset exits-list text-ac">
-            <li class="exits-list-item dis-ib vat pos-r">
-              <div class="exits-logo-container pos-a fullsize">
-                <div class="exits-logo pos-a" style="background-image:url('./images/logos/automatedinsights.png')"></div>
-                <div class="exits-type pos-a fs-small f-inputsans text-ac">M&amp;A</div>
-              </div>
-              <div class="exits-info text-shadow pos-a text-al no-pointer-event">
-                <p class="exits-company-name fs-h3 f-adelle">Automated Insights, Inc.</p>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">Exit:</span>
-                  <span class="f-adelle">M&amp;A</span>
-                </div>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">M&amp;A/Ticker:</span>
-                  <span class="f-adelle">Vista Equity Partners and portfolio company STATS</span>
-                </div>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">Size:</span>
-                  <span class="f-adelle">N/A</span>
-                </div>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">Sector:</span>
-                  <span class="f-adelle">Tech</span>
-                </div>
-              </div>
-            </li>
-            <li class="exits-list-item dis-ib vat pos-r">
-              <div class="exits-logo-container pos-a fullsize">
-                <div class="exits-logo pos-a" style="background-image:url('./images/logos/automatedinsights.png')"></div>
-                <div class="exits-type pos-a fs-small f-inputsans text-ac">M&amp;A</div>
-              </div>
-              <div class="exits-info text-shadow pos-a text-al no-pointer-event">
-                <p class="exits-company-name fs-h3 f-adelle">Bioptigen, Inc.</p>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">Exit:</span>
-                  <span class="f-adelle">M&amp;A</span>
-                </div>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">M&amp;A/Ticker:</span>
-                  <span class="f-adelle">Leica Microsystems</span>
-                </div>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">Size:</span>
-                  <span class="f-adelle">N/A</span>
-                </div>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">Sector:</span>
-                  <span class="f-adelle">Life Science</span>
-                </div>
-              </div>
-            </li>
-            <li class="exits-list-item dis-ib vat pos-r">
-              <div class="exits-logo-container pos-a fullsize">
-                <div class="exits-logo pos-a" style="background-image:url('./images/logos/automatedinsights.png')"></div>
-                <div class="exits-type pos-a fs-small f-inputsans text-ac">M&amp;A</div>
-              </div>
-              <div class="exits-info text-shadow pos-a text-al no-pointer-event">
-                <p class="exits-company-name fs-h3 f-adelle">BlueStripe Software, Inc.</p>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">Exit:</span>
-                  <span class="f-adelle">M&amp;A</span>
-                </div>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">M&amp;A/Ticker:</span>
-                  <span class="f-adelle">Microsoft</span>
-                </div>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">Size:</span>
-                  <span class="f-adelle">N/A</span>
-                </div>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">Sector:</span>
-                  <span class="f-adelle">Tech</span>
-                </div>
-              </div>
-            </li>
-            <li class="exits-list-item dis-ib vat pos-r">
-              <div class="exits-logo-container pos-a fullsize">
-                <div class="exits-logo pos-a" style="background-image:url('./images/logos/automatedinsights.png')"></div>
-                <div class="exits-type pos-a fs-small f-inputsans text-ac">M&amp;A</div>
-              </div>
-              <div class="exits-info text-shadow pos-a text-al no-pointer-event">
-                <p class="exits-company-name fs-h3 f-adelle">Bronto Software</p>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">Exit:</span>
-                  <span class="f-adelle">M&amp;A</span>
-                </div>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">M&amp;A/Ticker:</span>
-                  <span class="f-adelle">NetSuite, Inc.</span>
-                </div>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">Size:</span>
-                  <span class="f-adelle">$200,000,000</span>
-                </div>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">Sector:</span>
-                  <span class="f-adelle">Tech</span>
-                </div>
-              </div>
-            </li>
-            <li class="exits-list-item dis-ib vat pos-r">
-              <div class="exits-logo-container pos-a fullsize">
-                <div class="exits-logo pos-a" style="background-image:url('./images/logos/automatedinsights.png')"></div>
-                <div class="exits-type pos-a fs-small f-inputsans text-ac">M&amp;A</div>
-              </div>
-              <div class="exits-info text-shadow pos-a text-al no-pointer-event">
-                <p class="exits-company-name fs-h3 f-adelle">Covance</p>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">Exit:</span>
-                  <span class="f-adelle">M&amp;A</span>
-                </div>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">M&amp;A/Ticker:</span>
-                  <span class="f-adelle">LabCorp</span>
-                </div>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">Size:</span>
-                  <span class="f-adelle">$6,200,000,000</span>
-                </div>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">Sector:</span>
-                  <span class="f-adelle">Life Science</span>
-                </div>
-              </div>
-            </li>
-            <li class="exits-list-item dis-ib vat pos-r">
-              <div class="exits-logo-container pos-a fullsize">
-                <div class="exits-logo pos-a" style="background-image:url('./images/logos/automatedinsights.png')"></div>
-                <div class="exits-type pos-a fs-small f-inputsans text-ac">M&amp;A</div>
-              </div>
-              <div class="exits-info text-shadow pos-a text-al no-pointer-event">
-                <p class="exits-company-name fs-h3 f-adelle">Implus Corporation</p>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">Exit:</span>
-                  <span class="f-adelle">M&amp;A</span>
-                </div>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">M&amp;A/Ticker:</span>
-                  <span class="f-adelle">Berkshire Partners</span>
-                </div>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">Size:</span>
-                  <span class="f-adelle">N/A</span>
-                </div>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">Sector:</span>
-                  <span class="f-adelle">Advanced Manufacturing & Materials</span>
-                </div>
-              </div>
-            </li>
-            <li class="exits-list-item dis-ib vat pos-r">
-              <div class="exits-logo-container pos-a fullsize">
-                <div class="exits-logo pos-a" style="background-image:url('./images/logos/automatedinsights.png')"></div>
-                <div class="exits-type pos-a fs-small f-inputsans text-ac">M&amp;A</div>
-              </div>
-              <div class="exits-info text-shadow pos-a text-al no-pointer-event">
-                <p class="exits-company-name fs-h3 f-adelle">KBI BioPharma, Inc.</p>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">Exit:</span>
-                  <span class="f-adelle">M&amp;A</span>
-                </div>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">M&amp;A/Ticker:</span>
-                  <span class="f-adelle">JSR Group that also includes CMIC Holdings and Innovation Network Corporation of Japan</span>
-                </div>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">Size:</span>
-                  <span class="f-adelle">N/A</span>
-                </div>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">Sector:</span>
-                  <span class="f-adelle">Life Science</span>
-                </div>
-              </div>
-            </li>
-            <li class="exits-list-item dis-ib vat pos-r">
-              <div class="exits-logo-container pos-a fullsize">
-                <div class="exits-logo pos-a" style="background-image:url('./images/logos/automatedinsights.png')"></div>
-                <div class="exits-type pos-a fs-small f-inputsans text-ac">M&amp;A</div>
-              </div>
-              <div class="exits-info text-shadow pos-a text-al no-pointer-event">
-                <p class="exits-company-name fs-h3 f-adelle">Salix Pharmaceuticals</p>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">Exit:</span>
-                  <span class="f-adelle">M&amp;A</span>
-                </div>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">M&amp;A/Ticker:</span>
-                  <span class="f-adelle">Valeant Pharmaceuticals International, Inc.</span>
-                </div>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">Size:</span>
-                  <span class="f-adelle">$11,000,000,000</span>
-                </div>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">Sector:</span>
-                  <span class="f-adelle">Life Science</span>
-                </div>
-              </div>
-            </li>
-            <li class="exits-list-item dis-ib vat pos-r">
-              <div class="exits-logo-container pos-a fullsize">
-                <div class="exits-logo pos-a" style="background-image:url('./images/logos/automatedinsights.png')"></div>
-                <div class="exits-type pos-a fs-small f-inputsans text-ac">M&amp;A</div>
-              </div>
-              <div class="exits-info text-shadow pos-a text-al no-pointer-event">
-                <p class="exits-company-name fs-h3 f-adelle">Two Toasters</p>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">Exit:</span>
-                  <span class="f-adelle">M&amp;A</span>
-                </div>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">M&amp;A/Ticker:</span>
-                  <span class="f-adelle">Ticketmaster</span>
-                </div>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">Size:</span>
-                  <span class="f-adelle">N/A</span>
-                </div>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">Sector:</span>
-                  <span class="f-adelle">Tech</span>
-                </div>
-              </div>
-            </li>
-            <li class="exits-list-item dis-ib vat pos-r">
-              <div class="exits-logo-container pos-a fullsize">
-                <div class="exits-logo pos-a" style="background-image:url('./images/logos/automatedinsights.png')"></div>
-                <div class="exits-type pos-a fs-small f-inputsans text-ac">IPO</div>
-              </div>
-              <div class="exits-info text-shadow pos-a text-al no-pointer-event">
-                <p class="exits-company-name fs-h3 f-adelle">MaxPoint Interactive</p>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">Exit:</span>
-                  <span class="f-adelle">IPO</span>
-                </div>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">M&amp;A/Ticker:</span>
-                  <span class="f-adelle">MXPT</span>
-                </div>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">Size:</span>
-                  <span class="f-adelle">N/A</span>
-                </div>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">Sector:</span>
-                  <span class="f-adelle">Tech</span>
-                </div>
-              </div>
-            </li>
-            <li class="exits-list-item dis-ib vat pos-r">
-              <div class="exits-logo-container pos-a fullsize">
-                <div class="exits-logo pos-a" style="background-image:url('./images/logos/automatedinsights.png')"></div>
-                <div class="exits-type pos-a fs-small f-inputsans text-ac">M&amp;A</div>
-              </div>
-              <div class="exits-info text-shadow pos-a text-al no-pointer-event">
-                <p class="exits-company-name fs-h3 f-adelle">DARA BioSciences, Inc.</p>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">Exit:</span>
-                  <span class="f-adelle">M&amp;A</span>
-                </div>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">M&amp;A/Ticker:</span>
-                  <span class="f-adelle">Midatech Pharma PLC</span>
-                </div>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">Size:</span>
-                  <span class="f-adelle">N/A</span>
-                </div>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">Sector:</span>
-                  <span class="f-adelle">Life Science</span>
-                </div>
-              </div>
-            </li>
-            <li class="exits-list-item dis-ib vat pos-r">
-              <div class="exits-logo-container pos-a fullsize">
-                <div class="exits-logo pos-a" style="background-image:url('./images/logos/automatedinsights.png')"></div>
-                <div class="exits-type pos-a fs-small f-inputsans text-ac">M&amp;A</div>
-              </div>
-              <div class="exits-info text-shadow pos-a text-al no-pointer-event">
-                <p class="exits-company-name fs-h3 f-adelle">Regado Biosciences Inc.</p>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">Exit:</span>
-                  <span class="f-adelle">M&amp;A</span>
-                </div>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">M&amp;A/Ticker:</span>
-                  <span class="f-adelle">Tobria Therapeutics</span>
-                </div>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">Size:</span>
-                  <span class="f-adelle">$22,000,000</span>
-                </div>
-                <div class="exits-info-item ">
-                  <span class="f-inputsans f-thin f-italic">Sector:</span>
-                  <span class="f-adelle">Life Science</span>
-                </div>
-              </div>
-            </li>
-          </ul>
+          <ul class="list-reset exits-list text-ac"></ul>
         </div>
 
         <div class="share-box-container centered-share-box pos-a">
@@ -493,7 +194,37 @@
       </ul>
     </footer>
   </div>
+
+  <script id="exits-item-template" type="text/x-handlebars-template">
+    <li class="exits-list-item dis-ib vat pos-r">
+      <div class="exits-logo-container pos-a fullsize">
+        <div class="exits-logo pos-a" style="background-image:url('{{logo}}')"></div>
+        <div class="exits-type pos-a fs-small f-inputsans text-ac">{{short_type}}</div>
+      </div>
+      <div class="exits-info text-shadow pos-a text-al no-pointer-event">
+        <p class="exits-company-name fs-h3 f-adelle">{{company_name}}</p>
+        <div class="exits-info-item">
+          <span class="f-inputsans f-thin f-italic">Exit:</span>
+          <span class="f-adelle">{{type}}</span>
+        </div>
+        <div class="exits-info-item">
+          <span class="f-inputsans f-thin f-italic">{{ticker_label}}:</span>
+          <span class="f-adelle">{{ticker}}</span>
+        </div>
+        <div class="exits-info-item">
+          <span class="f-inputsans f-thin f-italic">Size:</span>
+          <span class="f-adelle">{{size}}</span>
+        </div>
+        <div class="exits-info-item">
+          <span class="f-inputsans f-thin f-italic">Sector:</span>
+          <span class="f-adelle">{{sector}}</span>
+        </div>
+      </div>
+    </li>
+  </script>
+
   <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.2/handlebars.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/1.4.5/numeral.min.js"></script>

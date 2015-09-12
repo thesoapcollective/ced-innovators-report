@@ -34,6 +34,10 @@ var setupJsClickHandler = function() {
   });
 };
 
+var convertToDollars = function(int) {
+  return '$' + numeral(int).format('0,0');
+};
+
 // ========================================
 // SOCIAL
 // ========================================
@@ -491,7 +495,7 @@ var setupFundingSection = function() {
 
   var equityTotal = data.reduce(function(num, d) { return num + d.value; }, 0);
   g.append('text')
-    .text('$' + numeral(equityTotal).format('0,0'))
+    .text(convertToDollars(equityTotal))
     .attr('x', 0)
     .attr('y', 0)
     .attr('class', 'funding-pie-subtitle pie-title f-adelle f-bold fs-h1 text-shadow-large no-pointer-event')
@@ -611,9 +615,7 @@ var setupFundingSection = function() {
       .attr('width', function(d) { return x(d.value); })
 
   bar.append('text')
-    .text(function(d) {
-      return '$' + numeral(d.value).format('0,0');
-    })
+    .text(function(d) { return convertToDollars(d.value); })
     .attr('x', 10)
     .attr('y', size.titleHeight + size.barHeight / 2)
     .attr('dy', '.35em')
@@ -708,7 +710,7 @@ var setupFundingSection = function() {
       .transition()
         .duration(500)
         .delay(1000)
-        .text('$' + numeral(total).format('0,0'))
+        .text(convertToDollars(total))
         .attr('fill-opacity', 1);
 
     d3.selectAll('.funding-bar-bg').data(newData)
@@ -724,9 +726,7 @@ var setupFundingSection = function() {
       .transition()
         .duration(500)
         .delay(1000)
-        .text(function(d) {
-          return '$' + numeral(d.value).format('0,0');
-        })
+        .text(function(d) { return convertToDollars(d.value); })
         .attr('fill-opacity', 1);
   };
 };
@@ -1622,27 +1622,109 @@ var setupDealsSection = function() {
 // ========================================
 // EXITS SECTION
 // ========================================
+var exitsHoverTimer = null;
+
 var setupExitsSection = function() {
-  $('.exits-list-item').mouseenter(function() {
-    var $this = $(this);
-    $this.addClass('is-active');
-    $this.parent().addClass('item-is-active');
+  var source = $('#exits-item-template').html();
+  var template = Handlebars.compile(source);
 
-    var $info = $('.exits-info', $this);
-    var infoWidth = $info.outerWidth();
-    var rightPosition = $this.offset().left + $this.outerWidth() + infoWidth;
+  d3.csv('./data/exits.csv', function(d) {
+    return {
+      logo: './images/logos/' + d['Logo'],
+      company_name: d['Company'],
+      short_type: getExitShortType(d['Exit Type']),
+      type: d['Exit Type'],
+      ticker_label: getExitTickerLabel(d['Exit Type']),
+      ticker: d['Acquirer/Merger/Ticker'],
+      size: getExitSize(d['Exit Size']),
+      sector: d['Sector'],
+    };
+  }, function(error, data) {
+    data.forEach(function(d) {
+      var html = template(d);
+      $('.exits-list').append(html);
+    });
 
-    $this.removeClass('show-left show-right');
-    if (rightPosition >= $win.outerWidth()) {
-      $this.addClass('show-left animate-info');
-    } else {
-      $this.addClass('show-right animate-info');
+    $('.exits-ipo-count').text(getExitsIpoCount(data));
+    $('.exits-ipo-title').text(getExitsIpoTitle(data));
+    $('.exits-ma-count').text(getExitsMaCount(data));
+    $('.exits-ma-title').text(getExitsMaTitle(data));
+
+    $('.exits-list-item').mouseenter(function() {
+      clearTimeout(exitsHoverTimer);
+      $('.exits-list-item.is-active').removeClass('is-active animate-info');
+
+      var $this = $(this);
+      $this.addClass('is-active');
+      $this.parent().addClass('item-is-active');
+
+      var $info = $('.exits-info', $this);
+      var infoWidth = $info.outerWidth();
+      var rightPosition = $this.offset().left + $this.outerWidth() + infoWidth;
+
+      $this.removeClass('show-left show-right');
+      if (rightPosition >= $win.outerWidth()) {
+        $this.addClass('show-left animate-info');
+      } else {
+        $this.addClass('show-right animate-info');
+      }
+    });
+
+    $('.exits-list-item').mouseleave(function() {
+      var $this = $(this);
+      exitsHoverTimer = setTimeout(function() {
+        $this.removeClass('is-active animate-info');
+        $this.parent().removeClass('item-is-active');
+      }, 200);
+    });
+  });
+};
+
+var getExitShortType = function(type) {
+  if (type === 'Acquisition' || type === 'Merger') {
+    return 'M&A';
+  }
+  return type;
+};
+
+var getExitTickerLabel = function(type) {
+  if (type === 'Acquisition') {
+    return 'Aquirer';
+  } else if (type === 'Merger') {
+    return 'Merger';
+  }
+  return 'Ticker';
+};
+
+var getExitSize = function(size) {
+  return size === '' ? 'N/A' : convertToDollars(+size);
+};
+
+var getExitsIpoCount = function(data) {
+  var count = 0;
+  data.forEach(function(d) {
+    if (d['type'] === 'IPO') {
+      count++;
     }
   });
+  return count;
+};
 
-  $('.exits-list-item').mouseleave(function() {
-    var $this = $(this);
-    $this.removeClass('is-active animate-info');
-    $this.parent().removeClass('item-is-active');
+var getExitsIpoTitle = function(data) {
+  return getExitsIpoCount(data) === 0 ? 'IPO' : "IPO's";
+};
+
+var getExitsMaCount = function(data) {
+  var count = 0;
+  data.forEach(function(d) {
+    if (d['type'] === 'Acquisition' ||
+        d['type'] === 'Merger') {
+      count++;
+    }
   });
+  return count;
+};
+
+var getExitsMaTitle = function(data) {
+  return getExitsMaCount(data) === 0 ? 'Merger/Aquisition' : 'Mergers/Aquisitions';
 };
