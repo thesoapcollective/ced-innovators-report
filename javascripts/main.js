@@ -1082,7 +1082,9 @@ var filterFundingQuarters = function(quarters) {
 // FUNDERS SECTION
 // ========================================
 var cedMapData = null;
+var mapData = null;
 var activeMapRegion = null;
+var activeMapState = null;
 var mapSectionSelector = '.funders-container';
 var $mapSection = null;
 var mapSize = null;
@@ -1091,11 +1093,13 @@ var mapGroup = null;
 
 var setupFundersSection = function() {
   activeMapRegion = d3.select(null);
+  activeMapState = d3.select(null);
   $mapSection = $(mapSectionSelector);
 
   mapSize = {
     width: $mapSection.width(),
-    height: $mapSection.height()
+    height: $mapSection.height(),
+    strokeWidth: 2,
   };
 
   var projection = d3.geo.albersUsa();
@@ -1110,7 +1114,7 @@ var setupFundersSection = function() {
     .attr('width', mapSize.width)
     .attr('height', mapSize.height)
     .attr('fill-opacity', 0)
-    .on('click', mapReset);
+    .on('click', mapZoomOut);
 
   var defs = svg.append('defs');
   var pattern = createLinePattern(defs).attr('id', 'map-pattern');
@@ -1118,9 +1122,10 @@ var setupFundersSection = function() {
   mapGroup = svg.append('g')
     .attr('fill', 'none')
     .style('stroke', '#fff')
+    .style('stroke-opacity', 0.5)
     .style('stroke-linecap', 'round')
     .style('stroke-linejoin', 'round')
-    .style('stroke-width', 1);
+    .style('stroke-width', mapSize.strokeWidth);
 
   d3.csv('./data/deals.csv', function(d) {
     return {
@@ -1146,7 +1151,7 @@ var setupFundersSection = function() {
     cedMapData = data;
     d3.tsv('./data/us-state-names.tsv', function(error, stateNames) {
       d3.json('./data/us.json', function(error, us) {
-        var mapData = topojson.feature(us, us.objects.states).features;
+        mapData = topojson.feature(us, us.objects.states).features;
         mapData.forEach(function(d) {
           var stateData = stateNames.find(function(state) { return +state.id === d.id; });
           if (stateData) {
@@ -1166,8 +1171,14 @@ var setupFundersSection = function() {
         stateGroups.append('path')
           .attr('d', mapPath)
           .attr('class', 'state-section')
+          .attr('data-region', function(d) { return getStateRegion(d.properties); })
+          .attr('data-state', function(d) { return d.properties.code; })
           .attr('fill', function(d) {
-            if (stateHasDeals(d.properties)) {
+            var region = getStateRegion(d.properties);
+            if (region) {
+              var sector = getRegionSectorWithMostDeals(region);
+              return getSectorColor(sector.name).value;
+            } else if (stateHasDeals(d.properties)) {
               var sector = getStateSectorWithMostDeals(d.properties);
               return getSectorColor(sector.name).value;
             }
@@ -1176,18 +1187,34 @@ var setupFundersSection = function() {
           .attr('fill-opacity', function(d) { return stateHasDeals(d.properties) ? 0.25 : 0; })
           .on('mouseover', function(d, i) {
             if (stateHasDeals(d.properties)) {
-              d3.select(this)
-                .transition()
-                  .duration(250)
-                  .attr('fill-opacity', 0.5);
+              var region = getStateRegion(d.properties);
+              if (region) {
+                d3.selectAll('.state-section[data-region="' + region + '"]')
+                  .transition()
+                    .duration(250)
+                    .attr('fill-opacity', 0.5);
+              } else {
+                d3.select(this)
+                  .transition()
+                    .duration(250)
+                    .attr('fill-opacity', 0.5);
+              }
             }
           })
           .on('mouseout', function(d, i) {
             if (stateHasDeals(d.properties)) {
-              d3.select(this)
-                .transition()
-                  .duration(250)
-                  .attr('fill-opacity', 0.25);
+              var region = getStateRegion(d.properties);
+              if (region) {
+                d3.selectAll('.state-section[data-region="' + region + '"]')
+                  .transition()
+                    .duration(250)
+                    .attr('fill-opacity', 0.25);
+              } else {
+                d3.select(this)
+                  .transition()
+                    .duration(250)
+                    .attr('fill-opacity', 0.25);
+              }
             }
           })
           .on('click', mapClicked);
@@ -1207,6 +1234,8 @@ var setupFundersSection = function() {
             return isNaN(centroid[1]) ? -10 : centroid[1];
           })
           .attr('fill', '#fff')
+          .attr('fill-opacity', 0)
+          .attr('stroke-width', 0)
           .attr('class', 'state-text f-adelle f-bold fs-h3 no-pointer-event')
           .attr('text-anchor', 'middle');
 
@@ -1243,14 +1272,6 @@ var getStateDataByCode = function(code) {
   return cedMapData.find(function(d) { return d.state === code; });
 };
 
-var stateHasDeals = function(state) {
-  var stateData = getStateDataByCode(state.code);
-  if (stateData) {
-    return stateData.sectors.reduce(function(num, sector) { return num + sector.value; }, 0) > 0;
-  }
-  return false;
-};
-
 var getStateSectorWithMostDeals = function(state) {
   var sector;
   var stateData = getStateDataByCode(state.code);
@@ -1272,35 +1293,138 @@ var getStateTotal = function(state) {
   return 0;
 };
 
+var getStatesByRegion = function(region) {
+  return cedMapData.filter(function(state) { return state.region === region; });
+};
+
+var getStateRegion = function(state) {
+  var stateData = getStateDataByCode(state.code);
+  if (stateData) {
+    return stateData.region;
+  }
+};
+
+var getRegionSectorWithMostDeals = function(region) {
+  var aggregatedSectors = [];
+  var states = getStatesByRegion(region);
+  states.forEach(function(state) {
+    state.sectors.forEach(function(s) {
+      var sector = aggregatedSectors.find(function(d) { return d.name === s.name; });
+      if (typeof sector === 'undefined') {
+        sector = {name: s.name, value: 0};
+        aggregatedSectors.push(sector);
+      }
+      sector.value += s.value;
+    });
+  });
+  var sector;
+  aggregatedSectors.forEach(function(s) {
+    if (typeof sector === 'undefined' || s.value > sector.value) {
+      sector = s;
+    }
+  });
+  return sector;
+};
+
+var stateHasDeals = function(state) {
+  var stateData = getStateDataByCode(state.code);
+  if (stateData) {
+    return stateData.sectors.reduce(function(num, sector) { return num + sector.value; }, 0) > 0;
+  }
+  return false;
+};
+
 var mapClicked = function(d) {
-  if (activeMapRegion.node() === this || !stateHasDeals(d.properties)) {
-    return mapReset();
+  if (activeMapState.node() === this || !stateHasDeals(d.properties)) {
+    return mapZoomOut(this, d);
   }
 
-  activeMapRegion.classed('is-active', false);
-  activeMapRegion = d3.select(this).classed('is-active', true);
+  var clickedElement = d3.select(this);
+  var region = clickedElement.attr('data-region');
 
-  var bounds = mapPath.bounds(d),
-      dx = bounds[1][0] - bounds[0][0],
-      dy = bounds[1][1] - bounds[0][1],
-      x = (bounds[0][0] + bounds[1][0]) / 2,
-      y = (bounds[0][1] + bounds[1][1]) / 2,
-      scale = .75 / Math.max(dx / mapSize.width, dy / mapSize.height),
-      translate = [mapSize.width / 2 - scale * x, mapSize.height / 2 - scale * y];
+  if (region !== '' && (activeMapRegion.node() === null || !isCurrentRegion(region))) {
+    mapZoomToRegion(this, d, region);
+  } else {
+    if (!isCurrentRegion(region)) {
+      activeMapRegion = d3.select(null);
+    }
+    mapZoomToState(this, d);
+  }
+};
+
+var isCurrentRegion = function(region) {
+  if (activeMapRegion.node() !== null) {
+    return activeMapRegion.attr('data-region') === region;
+  }
+  return false;
+}
+
+var mapZoomToRegion = function(node, d, region) {
+  activeMapState = d3.select(null);
+  activeMapRegion = d3.select(node);
+  var states = getStatesByRegion(region);
+  if (states.length === 1) {
+    activeMapRegion = d3.select(null);
+    mapZoomToState(node, d);
+  }
+  var bounds = states.map(function(s) {
+    var state = mapData.find(function(md) { return md.properties.code === s.state; });
+    return mapPath.bounds(state);
+  });
+  var tops = bounds.map(function(b) { return b[0][1]; });
+  var bottoms = bounds.map(function(b) { return b[1][1]; });
+  var lefts = bounds.map(function(b) { return b[0][0]; });
+  var rights = bounds.map(function(b) { return b[1][0]; });
+  var topBound = Math.min.apply(null, tops);
+  var bottomBound = Math.max.apply(null, bottoms);
+  var leftBound = Math.min.apply(null, lefts);
+  var rightBound = Math.max.apply(null, rights);
+  var dx = rightBound - leftBound;
+  var dy = bottomBound - topBound;
+  var x = (leftBound + rightBound) / 2;
+  var y = (topBound + bottomBound) / 2;
+  var scale = .75 / Math.max(dx / mapSize.width, dy / mapSize.height);
+  var translate = [mapSize.width / 2 - scale * x, mapSize.height / 2 - scale * y];
 
   mapGroup.transition()
     .duration(750)
-    .style('stroke-width', 1 / scale + 'px')
+    .style('stroke-width', mapSize.strokeWidth / scale)
     .attr('transform', 'translate(' + translate + ')scale(' + scale + ')');
 };
 
-var mapReset = function() {
-  activeMapRegion.classed('is-active', false);
-  activeMapRegion = d3.select(null);
+var mapZoomToState = function(node, d) {
+  activeMapState = d3.select(node);
+  var bounds = mapPath.bounds(d);
+  var dx = bounds[1][0] - bounds[0][0];
+  var dy = bounds[1][1] - bounds[0][1];
+  var x = (bounds[0][0] + bounds[1][0]) / 2;
+  var y = (bounds[0][1] + bounds[1][1]) / 2;
+  var scale = .75 / Math.max(dx / mapSize.width, dy / mapSize.height);
+  var translate = [mapSize.width / 2 - scale * x, mapSize.height / 2 - scale * y];
 
   mapGroup.transition()
     .duration(750)
-    .style('stroke-width', '1px')
+    .style('stroke-width', mapSize.strokeWidth / scale)
+    .attr('transform', 'translate(' + translate + ')scale(' + scale + ')');
+};
+
+var mapZoomOut = function(node, d) {
+  if (activeMapRegion.node() !== null && activeMapState.node() !== null) {
+    activeMapState = d3.select(null);
+    var region = activeMapRegion.attr('data-region');
+    mapZoomToRegion(node, d, region);
+  } else {
+    mapReset();
+  }
+};
+
+var mapReset = function() {
+  activeMapRegion = d3.select(null);
+  activeMapState = d3.select(null);
+
+  mapGroup.transition()
+    .duration(750)
+    .style('stroke-width', mapSize.strokeWidth)
     .attr('transform', '');
 };
 
