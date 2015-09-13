@@ -168,6 +168,7 @@ var cedDataColors = [
   {name: 'red', value: '#ff7662'},
   {name: 'white', value: '#fff'}
 ];
+var cedPatternStrokeSize = 3;
 
 var cacheElements = function() {
   $win = $(window);
@@ -234,9 +235,9 @@ var createLinePattern = function(defs) {
     .attr('width', '4')
     .attr('height', '3')
   pattern.append('path')
-    .attr('d', 'M0,0 L4,0 M0,1 L4,1')
+    .attr('d', 'M0,0 L4,0')
     .attr('stroke', '#000')
-    .attr('stroke-width', 1);
+    .attr('stroke-width', cedPatternStrokeSize);
   return pattern;
 };
 
@@ -1390,6 +1391,9 @@ var mapZoomToRegion = function(node, d, region) {
     .duration(750)
     .style('stroke-width', mapSize.strokeWidth / scale)
     .attr('transform', 'translate(' + translate + ')scale(' + scale + ')');
+  d3.select('#map-pattern path').transition()
+    .duration(750)
+    .attr('stroke-width', 2.5);
 };
 
 var mapZoomToState = function(node, d) {
@@ -1406,6 +1410,9 @@ var mapZoomToState = function(node, d) {
     .duration(750)
     .style('stroke-width', mapSize.strokeWidth / scale)
     .attr('transform', 'translate(' + translate + ')scale(' + scale + ')');
+  d3.select('#map-pattern path').transition()
+    .duration(750)
+    .attr('stroke-width', 2);
 };
 
 var mapZoomOut = function(node, d) {
@@ -1426,6 +1433,9 @@ var mapReset = function() {
     .duration(750)
     .style('stroke-width', mapSize.strokeWidth)
     .attr('transform', '');
+  d3.select('#map-pattern path').transition()
+    .duration(750)
+    .attr('stroke-width', cedPatternStrokeSize);
 };
 
 // ========================================
