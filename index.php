@@ -125,6 +125,24 @@
       <section id="funders" class="content-section pos-r fullsize" data-panel="funders">
         <header class="content-header pos-r clearfix">
           <h2 class="content-title float-r f-inputsans f-thin f-italic fs-h2">Funders</h2>
+          <ul class="list-reset filter-list pos-a">
+            <li class="filter-list-item dis-ib vat pos-r js-dropdown js-funders-sector-dropdown">
+              <span class="dropdown-title dis-ib vam f-inputsans f-thin">Sector</span>
+              <span class="dropdown-slash dropdown-slash-first dis-ib vam"></span>
+              <span class="dropdown-slash dis-ib vam"></span>
+              <a class="dropdown-trigger dis-ib vam js-prevent-default" href="#">
+                <span class="dropdown-current dis-ib vam f-adelle">All</span>
+                <span class="dropdown-arrow float-r dis-ib vam icons icons-down-arrow"></span>
+              </a>
+              <ul class="list-reset dropdown-list pos-a f-adelle">
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-funders-filter-sector" href="#" data-sector="All">All</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-funders-filter-sector" href="#" data-sector="Tech">Tech</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-funders-filter-sector" href="#" data-sector="Life Science">Life Sci</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-funders-filter-sector" href="#" data-sector="Advanced Manufacturing & Materials">Adv M&amp;M</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-funders-filter-sector" href="#" data-sector="Cleantech">Cleantech</a></li>
+              </ul>
+            </li>
+          </ul>
         </header>
 
         <div class="funders-container pos-a"></div>

@@ -127,6 +127,7 @@ var setupFilters = function() {
 
 var refreshFilterBars = function() {
   refreshFundingFilterBar();
+  refreshFundersFilterBar();
 };
 
 var refreshFundingFilterBar = function() {
@@ -139,6 +140,15 @@ var refreshFundingFilterBar = function() {
   var typeTitle = $('.js-funding-filter-type[data-type="' + fundingFilter.type + '"]').text();
   $('.dropdown-current', $typeDropdown).text(typeTitle);
   $('.dis-n', $typeDropdown).removeClass('dis-n');
+
+  hideCurrentFilterSelection();
+};
+
+var refreshFundersFilterBar = function() {
+  var $sectorDropdown = $('.js-funders-sector-dropdown');
+  var sectorTitle = $('.js-funders-filter-sector[data-sector="' + fundersFilter.sector + '"]').text();
+  $('.dropdown-current', $sectorDropdown).text(sectorTitle);
+  $('.dis-n', $sectorDropdown).removeClass('dis-n');
 
   hideCurrentFilterSelection();
 };
@@ -1091,6 +1101,11 @@ var $mapSection = null;
 var mapSize = null;
 var mapPath = null;
 var mapGroup = null;
+var mapProjection = null;
+
+var fundersFilter = {
+  sector: 'All'
+};
 
 var setupFundersSection = function() {
   activeMapRegion = d3.select(null);
@@ -1103,9 +1118,9 @@ var setupFundersSection = function() {
     strokeWidth: 2,
   };
 
-  var projection = d3.geo.albersUsa();
-  mapSize.scale = projection.scale();
-  mapPath = d3.geo.path().projection(projection);
+  mapProjection = d3.geo.albersUsa();
+  mapSize.scale = mapProjection.scale();
+  mapPath = d3.geo.path().projection(mapProjection);
 
   var svg = d3.select(mapSectionSelector).append('svg')
     .attr('width', mapSize.width)
@@ -1193,12 +1208,12 @@ var setupFundersSection = function() {
                 d3.selectAll('.state-section[data-region="' + region + '"]')
                   .transition()
                     .duration(250)
-                    .attr('fill-opacity', 0.5);
+                    .attr('fill-opacity', function(d) { return stateHasDeals(d.properties) ? 0.5 : 0; });
               } else {
                 d3.select(this)
                   .transition()
                     .duration(250)
-                    .attr('fill-opacity', 0.5);
+                    .attr('fill-opacity', function(d) { return stateHasDeals(d.properties) ? 0.5 : 0; });
               }
             }
           })
@@ -1209,12 +1224,12 @@ var setupFundersSection = function() {
                 d3.selectAll('.state-section[data-region="' + region + '"]')
                   .transition()
                     .duration(250)
-                    .attr('fill-opacity', 0.25);
+                    .attr('fill-opacity', function(d) { return stateHasDeals(d.properties) ? 0.25 : 0; });
               } else {
                 d3.select(this)
                   .transition()
                     .duration(250)
-                    .attr('fill-opacity', 0.25);
+                    .attr('fill-opacity', function(d) { return stateHasDeals(d.properties) ? 0.25 : 0; });
               }
             }
           })
@@ -1234,11 +1249,90 @@ var setupFundersSection = function() {
             var centroid = mapPath.centroid(d);
             return isNaN(centroid[1]) ? -10 : centroid[1];
           })
+          .attr('data-region', function(d) { return getStateRegion(d.properties); })
+          .attr('data-state', function(d) { return d.properties.code; })
           .attr('fill', '#fff')
-          .attr('fill-opacity', 0)
+          .attr('fill-opacity', 1)
           .attr('stroke-width', 0)
-          .attr('class', 'state-text f-adelle f-bold fs-h3 no-pointer-event')
+          .attr('class', 'state-text f-adelle f-bold fs-base text-shadow no-pointer-event')
           .attr('text-anchor', 'middle');
+
+        // var regions = getUsRegions();
+        // regions.forEach(function(region) {
+        //   var states = getStatesByRegion(region);
+        //   var centroids = [];
+        //   mapGroup.append('text')
+        //     .text(function() { return getRegionTotal(region); })
+        //     .attr('x', function(d) {
+        //       var bounds = states.map(function(s) {
+        //         var state = mapData.find(function(md) { return md.properties.code === s.state; });
+        //         return mapPath.bounds(state);
+        //       });
+        //       var tops = bounds.map(function(b) { return b[0][1]; });
+        //       var bottoms = bounds.map(function(b) { return b[1][1]; });
+        //       var lefts = bounds.map(function(b) { return b[0][0]; });
+        //       var rights = bounds.map(function(b) { return b[1][0]; });
+        //       var topBound = Math.min.apply(null, tops);
+        //       var bottomBound = Math.max.apply(null, bottoms);
+        //       var leftBound = Math.min.apply(null, lefts);
+        //       var rightBound = Math.max.apply(null, rights);
+
+        //       console.log('lefts', lefts)
+        //       console.log('rights', rights)
+
+        //       return lefts.reduce(function(num, left) { return num + left; }, 0) / lefts.length;
+        //       return (leftBound + rightBound) / 2;
+
+
+        //       states.forEach(function(state) {
+        //         var mapState = mapData.find(function(d) { return d.properties.code === state.state; });
+        //         centroids.push(mapPath.centroid(mapState));
+        //       });
+        //       var x = centroids.reduce(function(num, centroid) {
+        //         var total = num;
+        //         if (!isNaN(centroid[0])) {
+        //           total += centroid[0];
+        //           centroidsCount++;
+        //         }
+        //         return total;
+        //       }, 0);
+        //       return x / centroids.length;
+        //     })
+        //     .attr('y', function(d) {
+        //       var bounds = states.map(function(s) {
+        //         var state = mapData.find(function(md) { return md.properties.code === s.state; });
+        //         return mapPath.bounds(state);
+        //       });
+        //       var tops = bounds.map(function(b) { return b[0][1]; });
+        //       var bottoms = bounds.map(function(b) { return b[1][1]; });
+        //       var lefts = bounds.map(function(b) { return b[0][0]; });
+        //       var rights = bounds.map(function(b) { return b[1][0]; });
+        //       var topBound = Math.min.apply(null, tops);
+        //       var bottomBound = Math.max.apply(null, bottoms);
+        //       var leftBound = Math.min.apply(null, lefts);
+        //       var rightBound = Math.max.apply(null, rights);
+
+
+        //       // return (topBound + bottomBound) / 2;
+
+
+        //       var y = centroids.reduce(function(num, centroid) {
+        //         var total = num;
+        //         if (!isNaN(centroid[1])) {
+        //           total += centroid[1];
+        //         }
+        //         return total;
+        //       }, 0);
+        //       return 50;//y / centroids.length;
+        //     })
+        //     // .attr('data-region', function(d) { return getStateRegion(d.properties); })
+        //     // .attr('data-state', function(d) { return d.properties.code; })
+        //     .attr('fill', '#fff')
+        //     .attr('fill-opacity', 1)
+        //     .attr('stroke-width', 0)
+        //     .attr('class', 'region-text f-adelle f-bold fs-base text-shadow no-pointer-event')
+        //     .attr('text-anchor', 'middle');
+        // });
 
         // var mapDatum = topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; });
         // var mapMesh = mapGroup.append('path')
@@ -1246,27 +1340,102 @@ var setupFundersSection = function() {
         //   .attr('class', 'map-mesh')
         //   .attr('d', mapPath);
 
-        var projectionSize = mapGroup.node().getBBox();
-        var hscale = mapSize.width * mapSize.scale / projectionSize.width;
-        var vscale = mapSize.height * mapSize.scale / projectionSize.height;
-        var newScale = hscale < vscale ? hscale : vscale;
+        redrawMap();
 
-        projection.scale(newScale).translate([mapSize.width / 2, mapSize.height / 2]);
+        // Filtering
+        $('.js-funders-filter-sector').click(function(event) {
+          var sector = $(this).attr('data-sector');
+          fundersFilter.sector = sector;
 
-        mapPath = d3.geo.path().projection(projection);
-        d3.selectAll('.state-pattern').attr('d', mapPath)
-        d3.selectAll('.state-section').attr('d', mapPath)
-        d3.selectAll('.state-text').attr('x', function(d) {
-          var centroid = mapPath.centroid(d);
-          return isNaN(centroid[0]) ? -10 : centroid[0];
-        })
-        .attr('y', function(d) {
-          var centroid = mapPath.centroid(d);
-          return isNaN(centroid[1]) ? -10 : centroid[1];
-        })
+          refreshFundersFilterBar();
+          updateFundersSection();
+        });
       });
     });
   });
+};
+
+var updateFundersSection = function() {
+  mapReset();
+
+  var stateGroups = mapGroup.selectAll('.state-group');
+
+  stateGroups.selectAll('.state-section').transition()
+    .duration(500)
+    .attr('fill', function(d) {
+      var region = getStateRegion(d.properties);
+      if (region) {
+        if (fundersFilter.sector === 'All') {
+          var sector = getRegionSectorWithMostDeals(region);
+          return getSectorColor(sector.name).value;
+        }
+        return getSectorColor(fundersFilter.sector).value;
+      } else if (stateHasDeals(d.properties)) {
+        if (fundersFilter.sector === 'All') {
+          var sector = getStateSectorWithMostDeals(d.properties);
+          return getSectorColor(sector.name).value;
+        }
+        return getSectorColor(fundersFilter.sector).value;
+      }
+      return '#000'
+    })
+    .attr('fill-opacity', function(d) { return stateHasDeals(d.properties) ? 0.25 : 0; })
+
+  stateGroups.selectAll('.state-text')
+    .transition()
+      .duration(250)
+      .attr('fill-opacity', 0)
+    .transition()
+      .duration(250)
+      .text(function(d) {
+        if (stateHasDeals(d.properties)) {
+          if (fundersFilter.sector === 'All') {
+            return getStateTotal(d.properties);
+          }
+          return getStateSectorTotal(d.properties, fundersFilter.sector);
+        }
+      })
+      .attr('fill-opacity', 1);
+};
+
+var redrawMap = function() {
+  var projectionSize = mapGroup.node().getBBox();
+  var hscale = mapSize.width * mapSize.scale / projectionSize.width;
+  var vscale = mapSize.height * mapSize.scale / projectionSize.height;
+  var newScale = hscale < vscale ? hscale : vscale;
+
+  mapProjection.scale(newScale).translate([mapSize.width / 2, mapSize.height / 2]);
+
+  mapPath = d3.geo.path().projection(mapProjection);
+  d3.selectAll('.state-pattern').attr('d', mapPath)
+  d3.selectAll('.state-section').attr('d', mapPath)
+  d3.selectAll('.state-text').attr('x', function(d) {
+    var centroid = mapPath.centroid(d);
+    return isNaN(centroid[0]) ? -10 : centroid[0];
+  })
+  .attr('y', function(d) {
+    var centroid = mapPath.centroid(d);
+    return isNaN(centroid[1]) ? -10 : centroid[1];
+  });
+};
+
+var getUsRegions = function() {
+  var regions = [];
+  cedMapData.forEach(function(d) {
+    if (regions.indexOf(d.region) === -1 &&
+      d.region != 'International' &&
+      d.region != '') {
+      regions.push(d.region);
+    }
+  });
+  return regions;
+};
+
+var getRegionTotal = function(region) {
+  var states = getStatesByRegion(region);
+  states = states.map(function(state) { return state.state; });
+  var mappedStates = mapData.filter(function(d) { return states.indexOf(d.properties.code) >= 0; });
+  return mappedStates.reduce(function(num, state) { return num + getStateTotal(state.properties); }, 0);
 };
 
 var getStateDataByCode = function(code) {
@@ -1294,8 +1463,24 @@ var getStateTotal = function(state) {
   return 0;
 };
 
+var getStateSectorTotal = function(state, sector) {
+  var stateData = getStateDataByCode(state.code);
+  if (stateData) {
+    var sector = stateData.sectors.find(function(s) { return s.name === fundersFilter.sector; });
+    if (sector) {
+      return sector.value;
+    }
+  }
+  return 0;
+};
+
 var getStatesByRegion = function(region) {
-  return cedMapData.filter(function(state) { return state.region === region; });
+  var states = cedMapData.filter(function(state) { return state.region === region; });
+  states = states.filter(function(s) {
+    var mapState = mapData.find(function(md) { return md.properties.code === s.state; });
+    return mapState && stateHasDeals(mapState.properties);
+  });
+  return states;
 };
 
 var getStateRegion = function(state) {
@@ -1328,11 +1513,13 @@ var getRegionSectorWithMostDeals = function(region) {
 };
 
 var stateHasDeals = function(state) {
-  var stateData = getStateDataByCode(state.code);
-  if (stateData) {
-    return stateData.sectors.reduce(function(num, sector) { return num + sector.value; }, 0) > 0;
+  var total = 0;
+  if (fundersFilter.sector === 'All') {
+    total = getStateTotal(state);
+  } else {
+    total = getStateSectorTotal(state, fundersFilter.sector);
   }
-  return false;
+  return total > 0;
 };
 
 var mapClicked = function(d) {
@@ -1344,9 +1531,15 @@ var mapClicked = function(d) {
   var region = clickedElement.attr('data-region');
 
   if (region !== '' && (activeMapRegion.node() === null || !isCurrentRegion(region))) {
+    d3.selectAll('.state-text').transition()
+      .duration(750)
+      .attr('fill-opacity', 0);
     mapZoomToRegion(this, d, region);
   } else {
     if (!isCurrentRegion(region)) {
+      d3.selectAll('.state-text').transition()
+        .duration(750)
+        .attr('fill-opacity', 0);
       activeMapRegion = d3.select(null);
     }
     mapZoomToState(this, d);
@@ -1391,9 +1584,14 @@ var mapZoomToRegion = function(node, d, region) {
     .duration(750)
     .style('stroke-width', mapSize.strokeWidth / scale)
     .attr('transform', 'translate(' + translate + ')scale(' + scale + ')');
+
   d3.select('#map-pattern path').transition()
     .duration(750)
     .attr('stroke-width', 2.5);
+
+  d3.selectAll('.state-text[data-region="' + region + '"]').transition()
+    .duration(750)
+    .attr('fill-opacity', 1);
 };
 
 var mapZoomToState = function(node, d) {
@@ -1410,9 +1608,14 @@ var mapZoomToState = function(node, d) {
     .duration(750)
     .style('stroke-width', mapSize.strokeWidth / scale)
     .attr('transform', 'translate(' + translate + ')scale(' + scale + ')');
+
   d3.select('#map-pattern path').transition()
     .duration(750)
     .attr('stroke-width', 2);
+
+  d3.select('.state-text[data-state="' + d.properties.code + '"]').transition()
+    .duration(750)
+    .attr('fill-opacity', 1);
 };
 
 var mapZoomOut = function(node, d) {
@@ -1433,9 +1636,14 @@ var mapReset = function() {
     .duration(750)
     .style('stroke-width', mapSize.strokeWidth)
     .attr('transform', '');
+
   d3.select('#map-pattern path').transition()
     .duration(750)
     .attr('stroke-width', cedPatternStrokeSize);
+
+  d3.selectAll('.state-text').transition()
+    .duration(750)
+    .attr('fill-opacity', 1);
 };
 
 // ========================================
