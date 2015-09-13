@@ -128,6 +128,21 @@ h1, h2, h3, h4, h5, h6, p {
 .icons-down-arrow { background-position: -72px center; }
 
 // ========================================
+// COLORS
+// ========================================
+.color-red { color: $red; }
+.color-green { color: $green; }
+.color-blue { color: $blue; }
+.color-white { color: $white; }
+.color-light-gray { color: $light-gray; }
+
+.border-color-red { border-color: $red; }
+.border-color-green { border-color: $green; }
+.border-color-blue { border-color: $blue; }
+.border-color-white { border-color: $white; }
+.border-color-light-gray { border-color: $light-gray; }
+
+// ========================================
 // HEADER
 // ========================================
 .page-header {
@@ -365,9 +380,9 @@ h1, h2, h3, h4, h5, h6, p {
 .exits-type {
   width: 38px;
   height: 38px;
-  color: $green;
   background: $white;
-  border: 2px solid $green;
+  border-width: 2px;
+  border-style: solid;
   border-radius: 100%;
   line-height: 36px;
   top: 10px;

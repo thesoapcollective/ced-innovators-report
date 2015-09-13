@@ -20,25 +20,6 @@ $(document).ready(function() {
 });
 
 // ========================================
-// HELPERS
-// ========================================
-var cacheElements = function() {
-  $win = $(window);
-  $socialTextbox = $('.social-list-item:last');
-  $dropdowns = $('.js-dropdown');
-};
-
-var setupJsClickHandler = function() {
-  $('.js-prevent-default').click(function(event) {
-    event.preventDefault();
-  });
-};
-
-var convertToDollars = function(int) {
-  return '$' + numeral(int).format('0,0');
-};
-
-// ========================================
 // SOCIAL
 // ========================================
 var setupSocialLinks = function() {
@@ -176,6 +157,53 @@ var hideCurrentFilterSelection = function() {
   });
 
   $('.js-dropdown.is-active').removeClass('is-active');
+};
+
+// ========================================
+// HELPERS
+// ========================================
+var cacheElements = function() {
+  $win = $(window);
+  $socialTextbox = $('.social-list-item:last');
+  $dropdowns = $('.js-dropdown');
+};
+
+var setupJsClickHandler = function() {
+  $('.js-prevent-default').click(function(event) {
+    event.preventDefault();
+  });
+};
+
+var convertToDollars = function(int) {
+  return '$' + numeral(int).format('0,0');
+};
+
+var getSectorColorClass = function(sector) {
+  switch (sector) {
+    case 'Tech':
+      return 'color-blue';
+    case 'Life Science':
+      return 'color-green';
+    case 'Advanced Manufacturing & Materials':
+      return 'color-red';
+    case 'Cleantech':
+    default:
+      return 'color-light-gray';
+  };
+};
+
+var getSectorBorderColorClass = function(sector) {
+  switch (sector) {
+    case 'Tech':
+      return 'border-color-blue';
+    case 'Life Science':
+      return 'border-color-green';
+    case 'Advanced Manufacturing & Materials':
+      return 'border-color-red';
+    case 'Cleantech':
+    default:
+      return 'border-color-light-gray';
+  };
 };
 
 // ========================================
@@ -1643,8 +1671,13 @@ var setupExitsSection = function() {
     var $exitsList = $('.exits-list');
 
     data.forEach(function(d) {
-      var html = template(d);
-      $exitsList.append(html);
+      var $html = $(template(d));
+      var colorClass = getSectorColorClass(d.sector);
+      var borderColorClass = getSectorBorderColorClass(d.sector);
+      $('.exits-type', $html)
+        .addClass(colorClass)
+        .addClass(borderColorClass);
+      $exitsList.append($html);
     });
 
     $('.exits-ipo-count').text(getExitsIpoCount(data));
