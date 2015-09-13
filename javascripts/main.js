@@ -1640,9 +1640,11 @@ var setupExitsSection = function() {
       sector: d['Sector'],
     };
   }, function(error, data) {
+    var $exitsList = $('.exits-list');
+
     data.forEach(function(d) {
       var html = template(d);
-      $('.exits-list').append(html);
+      $exitsList.append(html);
     });
 
     $('.exits-ipo-count').text(getExitsIpoCount(data));
