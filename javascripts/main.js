@@ -162,6 +162,13 @@ var hideCurrentFilterSelection = function() {
 // ========================================
 // HELPERS
 // ========================================
+var cedDataColors = [
+  {name: 'blue', value: '#00dbf9'},
+  {name: 'green', value: '#4aaf77'},
+  {name: 'red', value: '#ff7662'},
+  {name: 'white', value: '#fff'}
+];
+
 var cacheElements = function() {
   $win = $(window);
   $socialTextbox = $('.social-list-item:last');
@@ -204,6 +211,33 @@ var getSectorBorderColorClass = function(sector) {
     default:
       return 'border-color-light-gray';
   };
+};
+
+var getSectorColor = function(sector) {
+  switch(sector) {
+    case 'Tech':
+      return cedDataColors.find(function(d) { return d.name === 'blue'; });
+    case 'Life Science':
+      return cedDataColors.find(function(d) { return d.name === 'green'; });
+    case 'Advanced Manufacturing & Materials':
+      return cedDataColors.find(function(d) { return d.name === 'red'; });
+    case 'Cleantech':
+      return cedDataColors.find(function(d) { return d.name === 'white'; });
+    default:
+      return {name: 'default', value: '#000'};
+  }
+};
+
+var createLinePattern = function(defs) {
+  var pattern = defs.append('pattern')
+    .attr('patternUnits', 'userSpaceOnUse')
+    .attr('width', '4')
+    .attr('height', '3')
+  pattern.append('path')
+    .attr('d', 'M0,0 L4,0 M0,1 L4,1')
+    .attr('stroke', '#000')
+    .attr('stroke-width', 1);
+  return pattern;
 };
 
 // ========================================
@@ -308,13 +342,6 @@ var cedData = [
       {year: 2014, value: 1050000},
     ]}
   ]},
-];
-
-var cedDataColors = [
-  {name: 'blue', value: '#00dbf9'},
-  {name: 'green', value: '#4aaf77'},
-  {name: 'red', value: '#ff7662'},
-  {name: 'white', value: '#fff'}
 ];
 
 var fundingFilter = {
@@ -1054,106 +1081,8 @@ var filterFundingQuarters = function(quarters) {
 // ========================================
 // FUNDERS SECTION
 // ========================================
-var cedMapData = [
-  {state: 'CA', sectors: [
-    {name: 'Tech', value: 7},
-    {name: 'Life Science', value: 7},
-    {name: 'Advanced Manufacturing & Materials', value: 1},
-    {name: 'Cleantech', value: 1},
-  ]},
-  {state: 'DC', sectors: [
-    {name: 'Tech', value: 1},
-    {name: 'Life Science', value: 0},
-    {name: 'Advanced Manufacturing & Materials', value: 0},
-    {name: 'Cleantech', value: 0},
-  ]},
-  {state: 'FL', sectors: [
-    {name: 'Tech', value: 1},
-    {name: 'Life Science', value: 0},
-    {name: 'Advanced Manufacturing & Materials', value: 0},
-    {name: 'Cleantech', value: 0},
-  ]},
-  {state: 'IL', sectors: [
-    {name: 'Tech', value: 0},
-    {name: 'Life Science', value: 1},
-    {name: 'Advanced Manufacturing & Materials', value: 0},
-    {name: 'Cleantech', value: 0},
-  ]},
-  {state: 'IN', sectors: [
-    {name: 'Tech', value: 0},
-    {name: 'Life Science', value: 1},
-    {name: 'Advanced Manufacturing & Materials', value: 0},
-    {name: 'Cleantech', value: 0},
-  ]},
-  {state: 'MA', sectors: [
-    {name: 'Tech', value: 2},
-    {name: 'Life Science', value: 8},
-    {name: 'Advanced Manufacturing & Materials', value: 0},
-    {name: 'Cleantech', value: 0},
-  ]},
-  {state: 'MD', sectors: [
-    {name: 'Tech', value: 0},
-    {name: 'Life Science', value: 2},
-    {name: 'Advanced Manufacturing & Materials', value: 0},
-    {name: 'Cleantech', value: 0},
-  ]},
-  {state: 'NC', sectors: [
-    {name: 'Tech', value: 11},
-    {name: 'Life Science', value: 20},
-    {name: 'Advanced Manufacturing & Materials', value: 5},
-    {name: 'Cleantech', value: 0},
-  ]},
-  {state: 'NJ', sectors: [
-    {name: 'Tech', value: 0},
-    {name: 'Life Science', value: 2},
-    {name: 'Advanced Manufacturing & Materials', value: 0},
-    {name: 'Cleantech', value: 0},
-  ]},
-  {state: 'NY', sectors: [
-    {name: 'Tech', value: 6},
-    {name: 'Life Science', value: 2},
-    {name: 'Advanced Manufacturing & Materials', value: 0},
-    {name: 'Cleantech', value: 0},
-  ]},
-  {state: 'OH', sectors: [
-    {name: 'Tech', value: 0},
-    {name: 'Life Science', value: 1},
-    {name: 'Advanced Manufacturing & Materials', value: 0},
-    {name: 'Cleantech', value: 0},
-  ]},
-  {state: 'PA', sectors: [
-    {name: 'Tech', value: 0},
-    {name: 'Life Science', value: 1},
-    {name: 'Advanced Manufacturing & Materials', value: 0},
-    {name: 'Cleantech', value: 0},
-  ]},
-  {state: 'TN', sectors: [
-    {name: 'Tech', value: 1},
-    {name: 'Life Science', value: 2},
-    {name: 'Advanced Manufacturing & Materials', value: 0},
-    {name: 'Cleantech', value: 0},
-  ]},
-  {state: 'TX', sectors: [
-    {name: 'Tech', value: 1},
-    {name: 'Life Science', value: 1},
-    {name: 'Advanced Manufacturing & Materials', value: 0},
-    {name: 'Cleantech', value: 0},
-  ]},
-  {state: 'VA', sectors: [
-    {name: 'Tech', value: 4},
-    {name: 'Life Science', value: 1},
-    {name: 'Advanced Manufacturing & Materials', value: 0},
-    {name: 'Cleantech', value: 0},
-  ]},
-  {state: 'WA', sectors: [
-    {name: 'Tech', value: 1},
-    {name: 'Life Science', value: 0},
-    {name: 'Advanced Manufacturing & Materials', value: 0},
-    {name: 'Cleantech', value: 0},
-  ]},
-];
-
-var mapActive = null;
+var cedMapData = null;
+var activeMapRegion = null;
 var mapSectionSelector = '.funders-container';
 var $mapSection = null;
 var mapSize = null;
@@ -1161,7 +1090,7 @@ var mapPath = null;
 var mapGroup = null;
 
 var setupFundersSection = function() {
-  mapActive = d3.select(null);
+  activeMapRegion = d3.select(null);
   $mapSection = $(mapSectionSelector);
 
   mapSize = {
@@ -1169,16 +1098,13 @@ var setupFundersSection = function() {
     height: $mapSection.height()
   };
 
-  var projection = d3.geo.albersUsa()
-    .scale(1000)
-    .translate([mapSize.width / 2, mapSize.height / 2]);
-
+  var projection = d3.geo.albersUsa();
+  mapSize.scale = projection.scale();
   mapPath = d3.geo.path().projection(projection);
 
   var svg = d3.select(mapSectionSelector).append('svg')
     .attr('width', mapSize.width)
     .attr('height', mapSize.height);
-
   svg.append('rect')
     .attr('class', 'map-background')
     .attr('width', mapSize.width)
@@ -1187,89 +1113,120 @@ var setupFundersSection = function() {
     .on('click', mapReset);
 
   var defs = svg.append('defs');
-
-  var pattern = defs.append('pattern')
-    .attr('id', 'map-pattern')
-    .attr('patternUnits', 'userSpaceOnUse')
-    .attr('width', '4')
-    .attr('height', '3')
-  pattern.append('path')
-    .attr('d', 'M0,0 L4,0 M0,1 L4,1')
-    .attr('stroke', '#000')
-    .attr('stroke-width', 1);
+  var pattern = createLinePattern(defs).attr('id', 'map-pattern');
 
   mapGroup = svg.append('g')
     .attr('fill', 'none')
     .style('stroke', '#fff')
     .style('stroke-linecap', 'round')
     .style('stroke-linejoin', 'round')
-    .style('stroke-width', '1px');
+    .style('stroke-width', 1);
 
-  d3.tsv("https://s3-us-west-2.amazonaws.com/vida-public/geo/us-state-names.tsv", function(error, names) {
-    if (error) { throw error; }
-
-    d3.json('./data/us.json', function(error, us) {
-      if (error) { throw error; }
-
-      var mapData = topojson.feature(us, us.objects.states).features;
-
-      mapData.forEach(function(d) {
-        var stateData = names.find(function(state) {
-          return state.id == d.id;
+  d3.csv('./data/deals.csv', function(d) {
+    return {
+      state: d['State'],
+      region: d['Region'],
+      sectors: [
+        {name: 'Tech', value: +d['Tech']},
+        {name: 'Life Science', value: +d['Life Science']},
+        {name: 'Advanced Manufacturing & Materials', value: +d['Advanced M&M']},
+        {name: 'Cleantech', value: +d['Cleantech']},
+      ],
+      types: [
+        {name: 'VC', value: +d['VC']},
+        {name: 'Corporate', value: +d['Corporate']},
+        {name: 'Angel Group', value: +d['Angel Group']},
+        {name: 'Growth', value: +d['Growth']},
+        {name: 'Strategic', value: +d['Strategic']},
+        {name: 'Grant', value: +d['Grant']},
+        {name: 'Award', value: +d['Award']},
+      ],
+    };
+  }, function(error, data) {
+    cedMapData = data;
+    d3.tsv('./data/us-state-names.tsv', function(error, stateNames) {
+      d3.json('./data/us.json', function(error, us) {
+        var mapData = topojson.feature(us, us.objects.states).features;
+        mapData.forEach(function(d) {
+          var stateData = stateNames.find(function(state) { return +state.id === d.id; });
+          if (stateData) {
+            d.properties.code = stateData.code;
+            d.properties.name = stateData.name;
+          }
         });
 
-        if (stateData) {
-          d.properties.code = stateData.code;
-          d.properties.name = stateData.name;
-        }
-      });
+        var stateGroups = mapGroup.selectAll('g')
+          .data(mapData).enter()
+          .append('g')
+            .attr('class', 'state-group');
+        stateGroups.append('path')
+          .attr('d', mapPath)
+          .attr('class', 'state-pattern')
+          .style('fill', 'url(#map-pattern)');
+        stateGroups.append('path')
+          .attr('d', mapPath)
+          .attr('class', 'state-section')
+          .attr('fill', function(d) {
+            if (stateHasDeals(d.properties)) {
+              var sector = getStateSectorWithMostDeals(d.properties);
+              return getSectorColor(sector.name).value;
+            }
+            return '#000'
+          })
+          .attr('fill-opacity', function(d) { return stateHasDeals(d.properties) ? 0.25 : 0; })
+          .on('mouseover', function(d, i) {
+            if (stateHasDeals(d.properties)) {
+              d3.select(this)
+                .transition()
+                  .duration(250)
+                  .attr('fill-opacity', 0.5);
+            }
+          })
+          .on('mouseout', function(d, i) {
+            if (stateHasDeals(d.properties)) {
+              d3.select(this)
+                .transition()
+                  .duration(250)
+                  .attr('fill-opacity', 0.25);
+            }
+          })
+          .on('click', mapClicked);
 
-      var stateGroups = mapGroup.selectAll('g')
-        .data(mapData).enter()
-        .append('g')
-          .attr('class', 'state-group');
+        stateGroups.append('text')
+          .text(function(d) {
+            if (stateHasDeals(d.properties)) {
+              return getStateTotal(d.properties);
+            }
+          })
+          .attr('x', function(d) {
+            var centroid = mapPath.centroid(d);
+            return isNaN(centroid[0]) ? -10 : centroid[0];
+          })
+          .attr('y', function(d) {
+            var centroid = mapPath.centroid(d);
+            return isNaN(centroid[1]) ? -10 : centroid[1];
+          })
+          .attr('fill', '#fff')
+          .attr('class', 'state-text f-adelle f-bold fs-h3 no-pointer-event')
+          .attr('text-anchor', 'middle');
 
-      stateGroups.append('path')
-        .attr('d', mapPath)
-        .attr('class', 'state-pattern')
-        .style('fill', 'url(#map-pattern)');
+        // var mapDatum = topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; });
+        // var mapMesh = mapGroup.append('path')
+        //   .datum(mapDatum)
+        //   .attr('class', 'map-mesh')
+        //   .attr('d', mapPath);
 
-      stateGroups.append('path')
-        .attr('d', mapPath)
-        .attr('class', 'map-section')
-        .attr('fill', function(d) {
-          if (stateHasDeals(d.properties)) {
-            var sector = getStateSectorWithMostDeals(d.properties);
-            return sectorToColor(sector.name).value;
-          }
-          return '#000'
-        })
-        .attr('fill-opacity', function(d) { return stateHasDeals(d.properties) ? 0.25 : 0; })
-        .on('mouseover', function(d, i) {
-          if (stateHasDeals(d.properties)) {
-            d3.select(this)
-              .transition()
-                .duration(250)
-                .attr('fill-opacity', 0.5);
-          }
-        })
-        .on('mouseout', function(d, i) {
-          if (stateHasDeals(d.properties)) {
-            d3.select(this)
-              .transition()
-                .duration(250)
-                .attr('fill-opacity', 0.25);
-          }
-        })
-        .on('click', mapClicked);
+        var projectionSize = mapGroup.node().getBBox();
+        var hscale = mapSize.width * mapSize.scale / projectionSize.width;
+        var vscale = mapSize.height * mapSize.scale / projectionSize.height;
+        var newScale = hscale < vscale ? hscale : vscale;
 
-      stateGroups.append('text')
-        .text(function(d) {
-          if (stateHasDeals(d.properties)) {
-            return getStateTotal(d.properties);
-          }
-        })
-        .attr('x', function(d) {
+        projection.scale(newScale).translate([mapSize.width / 2, mapSize.height / 2]);
+
+        mapPath = d3.geo.path().projection(projection);
+        d3.selectAll('.state-pattern').attr('d', mapPath)
+        d3.selectAll('.state-section').attr('d', mapPath)
+        d3.selectAll('.state-text').attr('x', function(d) {
           var centroid = mapPath.centroid(d);
           return isNaN(centroid[0]) ? -10 : centroid[0];
         })
@@ -1277,83 +1234,59 @@ var setupFundersSection = function() {
           var centroid = mapPath.centroid(d);
           return isNaN(centroid[1]) ? -10 : centroid[1];
         })
-        .attr('fill', '#fff')
-        .attr('class', 'f-adelle f-bold fs-h3 no-pointer-event')
-        .attr('text-anchor', 'middle');
-
-      var mapDatum = topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; });
-
-      mapGroup.append('path')
-        .datum(mapDatum)
-        .attr('class', 'map-mesh')
-        .attr('d', mapPath);
+      });
     });
   });
 };
 
-var sectorToColor = function(sector) {
-  var color;
-  switch(sector) {
-    case 'Tech':
-      color = cedDataColors.find(function(d) { return d.name === 'blue'; });
-      break;
-    case 'Life Science':
-      color = cedDataColors.find(function(d) { return d.name === 'green'; });
-      break;
-    case 'Advanced Manufacturing & Materials':
-      color = cedDataColors.find(function(d) { return d.name === 'red'; });
-      break;
-    case 'Cleantech':
-      color = cedDataColors.find(function(d) { return d.name === 'white'; });
-      break;
-    default:
-      color = {name: 'default', value: '#000'};
-  }
-  return color;
+var getStateDataByCode = function(code) {
+  return cedMapData.find(function(d) { return d.state === code; });
 };
 
 var stateHasDeals = function(state) {
-  var stateData = cedMapData.find(function(d) { return d.state === state.code; });
+  var stateData = getStateDataByCode(state.code);
   if (stateData) {
-    return stateData.sectors.reduce(function(num, d) { return num + d.value; }, 0) > 0;
+    return stateData.sectors.reduce(function(num, sector) { return num + sector.value; }, 0) > 0;
   }
   return false;
 };
 
 var getStateSectorWithMostDeals = function(state) {
   var sector;
-  var stateData = cedMapData.find(function(d) { return d.state === state.code; });
-  stateData.sectors.forEach(function(s) {
-    if (typeof sector === 'undefined' || s.value > sector.value) {
-      sector = s
-    }
-  });
+  var stateData = getStateDataByCode(state.code);
+  if (stateData) {
+    stateData.sectors.forEach(function(s) {
+      if (typeof sector === 'undefined' || s.value > sector.value) {
+        sector = s;
+      }
+    });
+  }
   return sector;
 };
 
 var getStateTotal = function(state) {
-  var stateData = cedMapData.find(function(d) { return d.state === state.code; });
-  return stateData.sectors.reduce(function(num, sector) { return num + sector.value; }, 0);
+  var stateData = getStateDataByCode(state.code);
+  if (stateData) {
+    return stateData.sectors.reduce(function(num, sector) { return num + sector.value; }, 0);
+  }
+  return 0;
 };
 
 var mapClicked = function(d) {
-  if (mapActive.node() === this || !stateHasDeals(d.properties)) {
+  if (activeMapRegion.node() === this || !stateHasDeals(d.properties)) {
     return mapReset();
   }
 
-  // mapActive.attr('fill', '#ff0000');
-  mapActive.classed('is-active', false);
-  mapActive = d3.select(this).classed('is-active', true);
+  activeMapRegion.classed('is-active', false);
+  activeMapRegion = d3.select(this).classed('is-active', true);
 
   var bounds = mapPath.bounds(d),
       dx = bounds[1][0] - bounds[0][0],
       dy = bounds[1][1] - bounds[0][1],
       x = (bounds[0][0] + bounds[1][0]) / 2,
       y = (bounds[0][1] + bounds[1][1]) / 2,
-      scale = .8 / Math.max(dx / mapSize.width, dy / mapSize.height),
+      scale = .75 / Math.max(dx / mapSize.width, dy / mapSize.height),
       translate = [mapSize.width / 2 - scale * x, mapSize.height / 2 - scale * y];
-
-  // mapActive.attr('fill', '#0000ff')
 
   mapGroup.transition()
     .duration(750)
@@ -1362,9 +1295,8 @@ var mapClicked = function(d) {
 };
 
 var mapReset = function() {
-  mapActive.classed('is-active', false);
-  // mapActive.attr('fill', '#ff0000');
-  mapActive = d3.select(null);
+  activeMapRegion.classed('is-active', false);
+  activeMapRegion = d3.select(null);
 
   mapGroup.transition()
     .duration(750)
@@ -1463,10 +1395,10 @@ var setupDealsSection = function() {
     .attr('cx', 100)
     .attr('cy', 110)
     .attr('r', 100)
-    .attr('stroke', sectorToColor('Tech').value)
+    .attr('stroke', getSectorColor('Tech').value)
     .attr('stroke-width', 2)
     .attr('stroke-opacity', 0.25)
-    .attr('fill', sectorToColor('Tech').value)
+    .attr('fill', getSectorColor('Tech').value)
     .attr('fill-opacity', 0.25);
   circle1Group.append('text')
     .text('Tech Deals:')
@@ -1512,10 +1444,10 @@ var setupDealsSection = function() {
     .attr('cx', 275)
     .attr('cy', size.height - 75)
     .attr('r', 75)
-    .attr('stroke', sectorToColor('Life Science').value)
+    .attr('stroke', getSectorColor('Life Science').value)
     .attr('stroke-width', 2)
     .attr('stroke-opacity', 0.25)
-    .attr('fill', sectorToColor('Life Science').value)
+    .attr('fill', getSectorColor('Life Science').value)
     .attr('fill-opacity', 0.25);
   circle2Group.append('text')
     .text('Life Science Deals:')
@@ -1561,10 +1493,10 @@ var setupDealsSection = function() {
     .attr('cx', size.width / 2 + 300)
     .attr('cy', 95)
     .attr('r', 90)
-    .attr('stroke', sectorToColor('Advanced Manufacturing & Materials').value)
+    .attr('stroke', getSectorColor('Advanced Manufacturing & Materials').value)
     .attr('stroke-width', 2)
     .attr('stroke-opacity', 0.25)
-    .attr('fill', sectorToColor('Advanced Manufacturing & Materials').value)
+    .attr('fill', getSectorColor('Advanced Manufacturing & Materials').value)
     .attr('fill-opacity', 0.25);
   circle3Group.append('text')
     .text('Advanced Manufacturing & Materials Deals:')
@@ -1610,10 +1542,10 @@ var setupDealsSection = function() {
     .attr('cx', size.width - 300)
     .attr('cy', size.height - 150)
     .attr('r', 75)
-    .attr('stroke', sectorToColor('Cleantech').value)
+    .attr('stroke', getSectorColor('Cleantech').value)
     .attr('stroke-width', 2)
     .attr('stroke-opacity', 0.25)
-    .attr('fill', sectorToColor('Cleantech').value)
+    .attr('fill', getSectorColor('Cleantech').value)
     .attr('fill-opacity', 0.25);
   circle4Group.append('text')
     .text('Cleantech Deals:')
