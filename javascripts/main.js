@@ -1466,9 +1466,9 @@ var getStateTotal = function(state) {
 var getStateSectorTotal = function(state, sector) {
   var stateData = getStateDataByCode(state.code);
   if (stateData) {
-    var sector = stateData.sectors.find(function(s) { return s.name === fundersFilter.sector; });
-    if (sector) {
-      return sector.value;
+    var filteredSector = stateData.sectors.find(function(s) { return s.name === sector; });
+    if (filteredSector) {
+      return filteredSector.value;
     }
   }
   return 0;
@@ -1554,12 +1554,14 @@ var isCurrentRegion = function(region) {
 }
 
 var mapZoomToRegion = function(node, d, region) {
+  $('.js-funders-state-info').addClass('no-pointer-event').removeClass('is-active');
   activeMapState = d3.select(null);
   activeMapRegion = d3.select(node);
   var states = getStatesByRegion(region);
   if (states.length === 1) {
     activeMapRegion = d3.select(null);
     mapZoomToState(node, d);
+    return;
   }
   var bounds = states.map(function(s) {
     var state = mapData.find(function(md) { return md.properties.code === s.state; });
@@ -1589,9 +1591,12 @@ var mapZoomToRegion = function(node, d, region) {
     .duration(750)
     .attr('stroke-width', 2.5);
 
-  d3.selectAll('.state-text[data-region="' + region + '"]').transition()
+  d3.selectAll('.state-text').transition()
     .duration(750)
-    .attr('fill-opacity', 1);
+    .attr('fill-opacity', function() {
+      return $(this).attr('data-region') === region ? 1 : 0;
+    })
+    .style('font-size', '14px');
 };
 
 var mapZoomToState = function(node, d) {
@@ -1602,7 +1607,7 @@ var mapZoomToState = function(node, d) {
   var x = (bounds[0][0] + bounds[1][0]) / 2;
   var y = (bounds[0][1] + bounds[1][1]) / 2;
   var scale = .75 / Math.max(dx / mapSize.width, dy / mapSize.height);
-  var translate = [mapSize.width / 2 - scale * x, mapSize.height / 2 - scale * y];
+  var translate = [mapSize.width / 2 - scale * x - mapSize.width / 4, mapSize.height / 2 - scale * y];
 
   mapGroup.transition()
     .duration(750)
@@ -1615,7 +1620,16 @@ var mapZoomToState = function(node, d) {
 
   d3.select('.state-text[data-state="' + d.properties.code + '"]').transition()
     .duration(750)
-    .attr('fill-opacity', 1);
+    .attr('fill-opacity', 1)
+    .style('font-size', function() { return scale > 5 ? '10px' : '14px'});
+
+  $('.js-funders-state-info').addClass('is-active').removeClass('no-pointer-event');
+  $('.js-funders-state-info-title').text(d.properties.name);
+  $('.js-funders-state-info-investors').text('n/a');
+  $('.js-funders-state-info-tech').text(getStateSectorTotal(d.properties, 'Tech'));
+  $('.js-funders-state-info-lifescience').text(getStateSectorTotal(d.properties, 'Life Science'));
+  $('.js-funders-state-info-amm').text(getStateSectorTotal(d.properties, 'Advanced Manufacturing & Materials'));
+  $('.js-funders-state-info-cleantech').text(getStateSectorTotal(d.properties, 'Cleantech'));
 };
 
 var mapZoomOut = function(node, d) {
@@ -1643,7 +1657,10 @@ var mapReset = function() {
 
   d3.selectAll('.state-text').transition()
     .duration(750)
+    .style('font-size', '18px')
     .attr('fill-opacity', 1);
+
+  $('.js-funders-state-info').addClass('no-pointer-event').removeClass('is-active');
 };
 
 // ========================================

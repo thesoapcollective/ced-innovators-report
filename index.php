@@ -145,7 +145,31 @@
           </ul>
         </header>
 
-        <div class="funders-container pos-a"></div>
+        <div class="funders-container pos-a">
+          <div class="funders-state-info pos-a no-pointer-event js-funders-state-info">
+            <p class="info-title fs-h3 f-adelle js-funders-state-info-title">Test</p>
+            <div class="info-item">
+              <span class="f-inputsans f-thin f-italic">Investors:</span>
+              <span class="f-adelle js-funders-state-info-investors">99</span>
+            </div>
+            <div class="info-item">
+              <span class="f-inputsans f-thin f-italic">Tech:</span>
+              <span class="f-adelle js-funders-state-info-tech">9</span>
+            </div>
+            <div class="info-item">
+              <span class="f-inputsans f-thin f-italic">Life Science:</span>
+              <span class="f-adelle js-funders-state-info-lifescience">9</span>
+            </div>
+            <div class="info-item">
+              <span class="f-inputsans f-thin f-italic">Advanced M&M:</span>
+              <span class="f-adelle js-funders-state-info-amm">9</span>
+            </div>
+            <div class="info-item">
+              <span class="f-inputsans f-thin f-italic">Cleantech:</span>
+              <span class="f-adelle js-funders-state-info-cleantech">9</span>
+            </div>
+          </div>
+        </div>
 
         <div class="share-box-container centered-share-box pos-a">
           <div class="share-box clearfix">
@@ -220,20 +244,20 @@
         <div class="exits-type pos-a fs-small f-inputsans text-ac">{{short_type}}</div>
       </div>
       <div class="exits-info text-shadow pos-a text-al no-pointer-event">
-        <p class="exits-company-name fs-h3 f-adelle">{{company_name}}</p>
-        <div class="exits-info-item">
+        <p class="info-title fs-h3 f-adelle">{{company_name}}</p>
+        <div class="info-item">
           <span class="f-inputsans f-thin f-italic">Exit:</span>
           <span class="f-adelle">{{type}}</span>
         </div>
-        <div class="exits-info-item">
+        <div class="info-item">
           <span class="f-inputsans f-thin f-italic">{{ticker_label}}:</span>
           <span class="f-adelle">{{ticker}}</span>
         </div>
-        <div class="exits-info-item">
+        <div class="info-item">
           <span class="f-inputsans f-thin f-italic">Size:</span>
           <span class="f-adelle">{{size}}</span>
         </div>
-        <div class="exits-info-item">
+        <div class="info-item">
           <span class="f-inputsans f-thin f-italic">Sector:</span>
           <span class="f-adelle">{{sector}}</span>
         </div>
