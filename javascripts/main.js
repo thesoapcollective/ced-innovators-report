@@ -1093,6 +1093,7 @@ var filterFundingQuarters = function(quarters) {
 // FUNDERS SECTION
 // ========================================
 var cedMapData = null;
+var cedMapInvestorData = null;
 var mapData = null;
 var activeMapRegion = null;
 var activeMapState = null;
@@ -1165,190 +1166,205 @@ var setupFundersSection = function() {
     };
   }, function(error, data) {
     cedMapData = data;
-    d3.tsv('./data/us-state-names.tsv', function(error, stateNames) {
-      d3.json('./data/us.json', function(error, us) {
-        mapData = topojson.feature(us, us.objects.states).features;
-        mapData.forEach(function(d) {
-          var stateData = stateNames.find(function(state) { return +state.id === d.id; });
-          if (stateData) {
-            d.properties.code = stateData.code;
-            d.properties.name = stateData.name;
-          }
-        });
-
-        var stateGroups = mapGroup.selectAll('g')
-          .data(mapData).enter()
-          .append('g')
-            .attr('class', 'state-group');
-        stateGroups.append('path')
-          .attr('d', mapPath)
-          .attr('class', 'state-pattern')
-          .style('fill', 'url(#map-pattern)');
-        stateGroups.append('path')
-          .attr('d', mapPath)
-          .attr('class', 'state-section')
-          .attr('data-region', function(d) { return getStateRegion(d.properties); })
-          .attr('data-state', function(d) { return d.properties.code; })
-          .attr('fill', function(d) {
-            var region = getStateRegion(d.properties);
-            if (region) {
-              var sector = getRegionSectorWithMostDeals(region);
-              return getSectorColor(sector.name).value;
-            } else if (stateHasDeals(d.properties)) {
-              var sector = getStateSectorWithMostDeals(d.properties);
-              return getSectorColor(sector.name).value;
+    d3.csv('./data/deals_investors.csv', function(d) {
+      return {
+        name: d['Funder'],
+        state: d['Billing State/Province'],
+        type: d['Type'],
+        sectors: [
+          {name: 'Tech', value: +d['Tech']},
+          {name: 'Life Science', value: +d['Life Science']},
+          {name: 'Advanced Manufacturing & Materials', value: +d['AM&M']},
+          {name: 'Cleantech', value: +d['Cleantech']},
+        ],
+      };
+    }, function(error, investorsData) {
+      cedMapInvestorData = investorsData;
+      d3.tsv('./data/us-state-names.tsv', function(error, stateNames) {
+        d3.json('./data/us.json', function(error, us) {
+          mapData = topojson.feature(us, us.objects.states).features;
+          mapData.forEach(function(d) {
+            var stateData = stateNames.find(function(state) { return +state.id === d.id; });
+            if (stateData) {
+              d.properties.code = stateData.code;
+              d.properties.name = stateData.name;
             }
-            return '#000'
-          })
-          .attr('fill-opacity', function(d) { return stateHasDeals(d.properties) ? 0.25 : 0; })
-          .on('mouseover', function(d, i) {
-            if (stateHasDeals(d.properties)) {
+          });
+
+          var stateGroups = mapGroup.selectAll('g')
+            .data(mapData).enter()
+            .append('g')
+              .attr('class', 'state-group');
+          stateGroups.append('path')
+            .attr('d', mapPath)
+            .attr('class', 'state-pattern')
+            .style('fill', 'url(#map-pattern)');
+          stateGroups.append('path')
+            .attr('d', mapPath)
+            .attr('class', 'state-section')
+            .attr('data-region', function(d) { return getStateRegion(d.properties); })
+            .attr('data-state', function(d) { return d.properties.code; })
+            .attr('fill', function(d) {
               var region = getStateRegion(d.properties);
               if (region) {
-                d3.selectAll('.state-section[data-region="' + region + '"]')
-                  .transition()
-                    .duration(250)
-                    .attr('fill-opacity', function(d) { return stateHasDeals(d.properties) ? 0.5 : 0; });
-              } else {
-                d3.select(this)
-                  .transition()
-                    .duration(250)
-                    .attr('fill-opacity', function(d) { return stateHasDeals(d.properties) ? 0.5 : 0; });
+                var sector = getRegionSectorWithMostDeals(region);
+                return getSectorColor(sector.name).value;
+              } else if (stateHasDeals(d.properties)) {
+                var sector = getStateSectorWithMostDeals(d.properties);
+                return getSectorColor(sector.name).value;
               }
-            }
-          })
-          .on('mouseout', function(d, i) {
-            if (stateHasDeals(d.properties)) {
-              var region = getStateRegion(d.properties);
-              if (region) {
-                d3.selectAll('.state-section[data-region="' + region + '"]')
-                  .transition()
-                    .duration(250)
-                    .attr('fill-opacity', function(d) { return stateHasDeals(d.properties) ? 0.25 : 0; });
-              } else {
-                d3.select(this)
-                  .transition()
-                    .duration(250)
-                    .attr('fill-opacity', function(d) { return stateHasDeals(d.properties) ? 0.25 : 0; });
+              return '#000'
+            })
+            .attr('fill-opacity', function(d) { return stateHasDeals(d.properties) ? 0.25 : 0; })
+            .on('mouseover', function(d, i) {
+              if (stateHasDeals(d.properties)) {
+                var region = getStateRegion(d.properties);
+                if (region) {
+                  d3.selectAll('.state-section[data-region="' + region + '"]')
+                    .transition()
+                      .duration(250)
+                      .attr('fill-opacity', function(d) { return stateHasDeals(d.properties) ? 0.5 : 0; });
+                } else {
+                  d3.select(this)
+                    .transition()
+                      .duration(250)
+                      .attr('fill-opacity', function(d) { return stateHasDeals(d.properties) ? 0.5 : 0; });
+                }
               }
-            }
-          })
-          .on('click', mapClicked);
+            })
+            .on('mouseout', function(d, i) {
+              if (stateHasDeals(d.properties)) {
+                var region = getStateRegion(d.properties);
+                if (region) {
+                  d3.selectAll('.state-section[data-region="' + region + '"]')
+                    .transition()
+                      .duration(250)
+                      .attr('fill-opacity', function(d) { return stateHasDeals(d.properties) ? 0.25 : 0; });
+                } else {
+                  d3.select(this)
+                    .transition()
+                      .duration(250)
+                      .attr('fill-opacity', function(d) { return stateHasDeals(d.properties) ? 0.25 : 0; });
+                }
+              }
+            })
+            .on('click', mapClicked);
 
-        stateGroups.append('text')
-          .text(function(d) {
-            if (stateHasDeals(d.properties)) {
-              return getStateTotal(d.properties);
-            }
-          })
-          .attr('x', function(d) {
-            var centroid = mapPath.centroid(d);
-            return isNaN(centroid[0]) ? -10 : centroid[0];
-          })
-          .attr('y', function(d) {
-            var centroid = mapPath.centroid(d);
-            return isNaN(centroid[1]) ? -10 : centroid[1];
-          })
-          .attr('data-region', function(d) { return getStateRegion(d.properties); })
-          .attr('data-state', function(d) { return d.properties.code; })
-          .attr('fill', '#fff')
-          .attr('fill-opacity', 1)
-          .attr('stroke-width', 0)
-          .attr('class', 'state-text f-adelle f-bold fs-base text-shadow no-pointer-event')
-          .attr('text-anchor', 'middle');
+          stateGroups.append('text')
+            .text(function(d) {
+              if (stateHasDeals(d.properties)) {
+                return getStateTotal(d.properties);
+              }
+            })
+            .attr('x', function(d) {
+              var centroid = mapPath.centroid(d);
+              return isNaN(centroid[0]) ? -10 : centroid[0];
+            })
+            .attr('y', function(d) {
+              var centroid = mapPath.centroid(d);
+              return isNaN(centroid[1]) ? -10 : centroid[1];
+            })
+            .attr('data-region', function(d) { return getStateRegion(d.properties); })
+            .attr('data-state', function(d) { return d.properties.code; })
+            .attr('fill', '#fff')
+            .attr('fill-opacity', 1)
+            .attr('stroke-width', 0)
+            .attr('class', 'state-text f-adelle f-bold fs-base text-shadow no-pointer-event')
+            .attr('text-anchor', 'middle');
 
-        // var regions = getUsRegions();
-        // regions.forEach(function(region) {
-        //   var states = getStatesByRegion(region);
-        //   var centroids = [];
-        //   mapGroup.append('text')
-        //     .text(function() { return getRegionTotal(region); })
-        //     .attr('x', function(d) {
-        //       var bounds = states.map(function(s) {
-        //         var state = mapData.find(function(md) { return md.properties.code === s.state; });
-        //         return mapPath.bounds(state);
-        //       });
-        //       var tops = bounds.map(function(b) { return b[0][1]; });
-        //       var bottoms = bounds.map(function(b) { return b[1][1]; });
-        //       var lefts = bounds.map(function(b) { return b[0][0]; });
-        //       var rights = bounds.map(function(b) { return b[1][0]; });
-        //       var topBound = Math.min.apply(null, tops);
-        //       var bottomBound = Math.max.apply(null, bottoms);
-        //       var leftBound = Math.min.apply(null, lefts);
-        //       var rightBound = Math.max.apply(null, rights);
+          // var regions = getUsRegions();
+          // regions.forEach(function(region) {
+          //   var states = getStatesByRegion(region);
+          //   var centroids = [];
+          //   mapGroup.append('text')
+          //     .text(function() { return getRegionTotal(region); })
+          //     .attr('x', function(d) {
+          //       var bounds = states.map(function(s) {
+          //         var state = mapData.find(function(md) { return md.properties.code === s.state; });
+          //         return mapPath.bounds(state);
+          //       });
+          //       var tops = bounds.map(function(b) { return b[0][1]; });
+          //       var bottoms = bounds.map(function(b) { return b[1][1]; });
+          //       var lefts = bounds.map(function(b) { return b[0][0]; });
+          //       var rights = bounds.map(function(b) { return b[1][0]; });
+          //       var topBound = Math.min.apply(null, tops);
+          //       var bottomBound = Math.max.apply(null, bottoms);
+          //       var leftBound = Math.min.apply(null, lefts);
+          //       var rightBound = Math.max.apply(null, rights);
 
-        //       console.log('lefts', lefts)
-        //       console.log('rights', rights)
+          //       console.log('lefts', lefts)
+          //       console.log('rights', rights)
 
-        //       return lefts.reduce(function(num, left) { return num + left; }, 0) / lefts.length;
-        //       return (leftBound + rightBound) / 2;
-
-
-        //       states.forEach(function(state) {
-        //         var mapState = mapData.find(function(d) { return d.properties.code === state.state; });
-        //         centroids.push(mapPath.centroid(mapState));
-        //       });
-        //       var x = centroids.reduce(function(num, centroid) {
-        //         var total = num;
-        //         if (!isNaN(centroid[0])) {
-        //           total += centroid[0];
-        //           centroidsCount++;
-        //         }
-        //         return total;
-        //       }, 0);
-        //       return x / centroids.length;
-        //     })
-        //     .attr('y', function(d) {
-        //       var bounds = states.map(function(s) {
-        //         var state = mapData.find(function(md) { return md.properties.code === s.state; });
-        //         return mapPath.bounds(state);
-        //       });
-        //       var tops = bounds.map(function(b) { return b[0][1]; });
-        //       var bottoms = bounds.map(function(b) { return b[1][1]; });
-        //       var lefts = bounds.map(function(b) { return b[0][0]; });
-        //       var rights = bounds.map(function(b) { return b[1][0]; });
-        //       var topBound = Math.min.apply(null, tops);
-        //       var bottomBound = Math.max.apply(null, bottoms);
-        //       var leftBound = Math.min.apply(null, lefts);
-        //       var rightBound = Math.max.apply(null, rights);
+          //       return lefts.reduce(function(num, left) { return num + left; }, 0) / lefts.length;
+          //       return (leftBound + rightBound) / 2;
 
 
-        //       // return (topBound + bottomBound) / 2;
+          //       states.forEach(function(state) {
+          //         var mapState = mapData.find(function(d) { return d.properties.code === state.state; });
+          //         centroids.push(mapPath.centroid(mapState));
+          //       });
+          //       var x = centroids.reduce(function(num, centroid) {
+          //         var total = num;
+          //         if (!isNaN(centroid[0])) {
+          //           total += centroid[0];
+          //           centroidsCount++;
+          //         }
+          //         return total;
+          //       }, 0);
+          //       return x / centroids.length;
+          //     })
+          //     .attr('y', function(d) {
+          //       var bounds = states.map(function(s) {
+          //         var state = mapData.find(function(md) { return md.properties.code === s.state; });
+          //         return mapPath.bounds(state);
+          //       });
+          //       var tops = bounds.map(function(b) { return b[0][1]; });
+          //       var bottoms = bounds.map(function(b) { return b[1][1]; });
+          //       var lefts = bounds.map(function(b) { return b[0][0]; });
+          //       var rights = bounds.map(function(b) { return b[1][0]; });
+          //       var topBound = Math.min.apply(null, tops);
+          //       var bottomBound = Math.max.apply(null, bottoms);
+          //       var leftBound = Math.min.apply(null, lefts);
+          //       var rightBound = Math.max.apply(null, rights);
 
 
-        //       var y = centroids.reduce(function(num, centroid) {
-        //         var total = num;
-        //         if (!isNaN(centroid[1])) {
-        //           total += centroid[1];
-        //         }
-        //         return total;
-        //       }, 0);
-        //       return 50;//y / centroids.length;
-        //     })
-        //     // .attr('data-region', function(d) { return getStateRegion(d.properties); })
-        //     // .attr('data-state', function(d) { return d.properties.code; })
-        //     .attr('fill', '#fff')
-        //     .attr('fill-opacity', 1)
-        //     .attr('stroke-width', 0)
-        //     .attr('class', 'region-text f-adelle f-bold fs-base text-shadow no-pointer-event')
-        //     .attr('text-anchor', 'middle');
-        // });
+          //       // return (topBound + bottomBound) / 2;
 
-        // var mapDatum = topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; });
-        // var mapMesh = mapGroup.append('path')
-        //   .datum(mapDatum)
-        //   .attr('class', 'map-mesh')
-        //   .attr('d', mapPath);
 
-        redrawMap();
+          //       var y = centroids.reduce(function(num, centroid) {
+          //         var total = num;
+          //         if (!isNaN(centroid[1])) {
+          //           total += centroid[1];
+          //         }
+          //         return total;
+          //       }, 0);
+          //       return 50;//y / centroids.length;
+          //     })
+          //     // .attr('data-region', function(d) { return getStateRegion(d.properties); })
+          //     // .attr('data-state', function(d) { return d.properties.code; })
+          //     .attr('fill', '#fff')
+          //     .attr('fill-opacity', 1)
+          //     .attr('stroke-width', 0)
+          //     .attr('class', 'region-text f-adelle f-bold fs-base text-shadow no-pointer-event')
+          //     .attr('text-anchor', 'middle');
+          // });
 
-        // Filtering
-        $('.js-funders-filter-sector').click(function(event) {
-          var sector = $(this).attr('data-sector');
-          fundersFilter.sector = sector;
+          // var mapDatum = topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; });
+          // var mapMesh = mapGroup.append('path')
+          //   .datum(mapDatum)
+          //   .attr('class', 'map-mesh')
+          //   .attr('d', mapPath);
 
-          refreshFundersFilterBar();
-          updateFundersSection();
+          redrawMap();
+
+          // Filtering
+          $('.js-funders-filter-sector').click(function(event) {
+            var sector = $(this).attr('data-sector');
+            fundersFilter.sector = sector;
+
+            refreshFundersFilterBar();
+            updateFundersSection();
+          });
         });
       });
     });
@@ -1522,6 +1538,11 @@ var stateHasDeals = function(state) {
   return total > 0;
 };
 
+var getInvestorTotal = function(state) {
+  var investors = cedMapInvestorData.filter(function(d) { return d.state === state.code; });
+  return investors.length;
+};
+
 var mapClicked = function(d) {
   if (activeMapState.node() === this || !stateHasDeals(d.properties)) {
     return mapZoomOut(this, d);
@@ -1625,7 +1646,7 @@ var mapZoomToState = function(node, d) {
 
   $('.js-funders-state-info').addClass('is-active').removeClass('no-pointer-event');
   $('.js-funders-state-info-title').text(d.properties.name);
-  $('.js-funders-state-info-investors').text('n/a');
+  $('.js-funders-state-info-investors').text(getInvestorTotal(d.properties));
   $('.js-funders-state-info-tech').text(getStateSectorTotal(d.properties, 'Tech'));
   $('.js-funders-state-info-lifescience').text(getStateSectorTotal(d.properties, 'Life Science'));
   $('.js-funders-state-info-amm').text(getStateSectorTotal(d.properties, 'Advanced Manufacturing & Materials'));
