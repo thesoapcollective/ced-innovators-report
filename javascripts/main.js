@@ -342,9 +342,9 @@ var setupFundingSection = function() {
       var currentPieData = getCurrentPieData();
       var currentBarData = getCurrentBarData();
 
-      console.log('cedFundingData', cedFundingData);
-      console.log('currentPieData', currentPieData);
-      console.log('currentBarData', currentBarData);
+      // console.log('cedFundingData', cedFundingData);
+      // console.log('currentPieData', currentPieData);
+      // console.log('currentBarData', currentBarData);
 
       var pieSectionSelector = '.funding-left';
       var $pieSection = $(pieSectionSelector);

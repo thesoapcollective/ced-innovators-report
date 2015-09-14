@@ -102,7 +102,7 @@ h1, h2, h3, h4, h5, h6, p {
 // ========================================
 // FONTS
 // ========================================
-.f-adelle { font-family: 'Adelle', Helvetica, sans-serif; }
+.f-adelle { font-family: 'Adelle', Helvetica, sans-serif; letter-spacing: 5px; }
 .f-inputsans { font-family: 'InputSansCondensed', Helvetica, sans-serif; }
 
 .f-bold { font-weight: bold; }
@@ -488,6 +488,10 @@ h1, h2, h3, h4, h5, h6, p {
   padding: $grid-size;
   border-radius: 18px;
   border: 1px dotted $white;
+
+  p:first-child {
+    margin-bottom: $grid-size-half;
+  }
 }
 
 .share-box-list {}
