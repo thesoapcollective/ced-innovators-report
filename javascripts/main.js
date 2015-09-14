@@ -53,14 +53,14 @@ var setupTwitterShare = function() {
   $('.social-list-item .icons-twitter').attr('href', 'https://twitter.com/share?text=' + tweet + '&url=' + url);
 
   // Share box
-  var tweetLength = 140 - 23 - 12; // Tweet base - url - via/extra space
+  var tweetLength = 140 - 18 - 23 - 12; // Tweet base - hastag - url - via/extra space
   $('.share-box-list-item .icons-twitter').each(function(i) {
     var $this = $(this);
     var tweet = $this.closest('.share-box').find('p').text();
     if (tweet.length > tweetLength) {
       tweet = tweet.substring(0, tweetLength - 3) + '...';
     }
-    $this.attr('href', 'https://twitter.com/share?text=' + tweet + '&url=' + url + '&via=CEDNC');
+    $this.attr('href', 'https://twitter.com/share?text=' + encodeURIComponent(tweet) + '&url=' + 'http://ianhirschfeld.com' + '&hashtags=InnovatorsReport&via=CEDNC');
   });
 };
 
