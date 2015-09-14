@@ -73,8 +73,8 @@
                 <li class="dropdown-list-item"><a class="dis-b js-prevent-default" href="#">Q3</a></li>
                 <li class="dropdown-list-item"><a class="dis-b js-prevent-default" href="#">Q4</a></li>
               </ul>
-            </li>
-            <li class="filter-list-item dis-ib vat pos-r js-dropdown">
+            </li> -->
+            <li class="filter-list-item dis-ib vat pos-r js-dropdown js-funding-sector-dropdown">
               <span class="dropdown-title dis-ib vam f-inputsans f-thin">Sector</span>
               <span class="dropdown-slash dropdown-slash-first dis-ib vam"></span>
               <span class="dropdown-slash dis-ib vam"></span>
@@ -83,13 +83,13 @@
                 <span class="dropdown-arrow float-r dis-ib vam icons icons-down-arrow"></span>
               </a>
               <ul class="list-reset dropdown-list pos-a f-adelle">
-                <li class="dropdown-list-item"><a class="dis-b js-prevent-default" href="#">All</a></li>
-                <li class="dropdown-list-item"><a class="dis-b js-prevent-default" href="#">Tech</a></li>
-                <li class="dropdown-list-item"><a class="dis-b js-prevent-default" href="#">Life Sci</a></li>
-                <li class="dropdown-list-item"><a class="dis-b js-prevent-default" href="#">Adv M&amp;M</a></li>
-                <li class="dropdown-list-item"><a class="dis-b js-prevent-default" href="#">Cleantech</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-funding-filter-sector" href="#" data-sector="All">All</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-funding-filter-sector" href="#" data-sector="Tech">Tech</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-funding-filter-sector" href="#" data-sector="Life Science">Life Sci</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-funding-filter-sector" href="#" data-sector="Advanced Manufacturing & Materials">Adv M&amp;M</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-funding-filter-sector" href="#" data-sector="Cleantech">Cleantech</a></li>
               </ul>
-            </li> -->
+            </li>
             <li class="filter-list-item dis-ib vat pos-r js-dropdown js-funding-type-dropdown">
               <span class="dropdown-title dis-ib vam f-inputsans f-thin">Type</span>
               <span class="dropdown-slash dropdown-slash-first dis-ib vam"></span>
@@ -107,8 +107,8 @@
           </ul>
         </header>
 
-        <div class="funding-left pos-a"></div>
-        <div class="funding-right pos-a"></div>
+        <div class="funding-left pos-a filter-content"></div>
+        <div class="funding-right pos-a filter-content"></div>
 
         <div class="share-box-container funding-share-box pos-a">
           <div class="share-box clearfix">

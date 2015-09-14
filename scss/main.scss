@@ -265,6 +265,16 @@ h1, h2, h3, h4, h5, h6, p {
   }
 }
 
+.filter-content {
+  transition: $opacity-transition;
+}
+
+.content-section.filter-is-active {
+  .filter-content {
+    opacity: 0.25;
+  }
+}
+
 // ========================================
 // CONTENT
 // ========================================

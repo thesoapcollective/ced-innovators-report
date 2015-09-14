@@ -117,11 +117,15 @@ var setupFilters = function() {
   });
 
   $('.dropdown-trigger').mouseenter(function() {
-    $(this).parent().addClass('is-active');
+    var $this = $(this);
+    $this.closest('.content-section').addClass('filter-is-active');
+    $this.parent().addClass('is-active');
   });
 
   $('.js-dropdown').mouseleave(function() {
-    $(this).removeClass('is-active');
+    var $this = $(this);
+    $this.closest('.content-section').removeClass('filter-is-active');
+    $this.removeClass('is-active');
   });
 };
 
@@ -135,6 +139,11 @@ var refreshFundingFilterBar = function() {
   var yearTitle = $('.js-funding-filter-year[data-year="' + fundingFilter.year + '"]').text();
   $('.dropdown-current', $yearDropdown).text(yearTitle);
   $('.dis-n', $yearDropdown).removeClass('dis-n');
+
+  var $sectorDropdown = $('.js-funding-sector-dropdown');
+  var sectorTitle = $('.js-funding-filter-sector[data-sector="' + fundingFilter.sector + '"]').text();
+  $('.dropdown-current', $sectorDropdown).text(sectorTitle);
+  $('.dis-n', $sectorDropdown).removeClass('dis-n');
 
   var $typeDropdown = $('.js-funding-type-dropdown');
   var typeTitle = $('.js-funding-filter-type[data-type="' + fundingFilter.type + '"]').text();
@@ -166,6 +175,7 @@ var hideCurrentFilterSelection = function() {
     });
   });
 
+  $('.content-section.filter-is-active').removeClass('filter-is-active');
   $('.js-dropdown.is-active').removeClass('is-active');
 };
 
@@ -399,7 +409,7 @@ var setupFundingSection = function() {
             }
           });
 
-      // Gradient stroke slices
+      // Stroke slices
       var outerArcs = g.selectAll('.outer-arc')
         .data(fundingPie(currentPieData)).enter()
         .append('g')
@@ -421,7 +431,7 @@ var setupFundingSection = function() {
       var arcs = g.selectAll('.arc')
         .data(fundingPie(currentPieData))
       arcs.enter().append('g')
-        .attr('class', 'arc is-animating')
+        .attr('class', 'arc')
         .attr('mask', 'url(#pie-mask)');
       arcs.append('path')
         .attr('class', 'is-animating')
@@ -429,7 +439,7 @@ var setupFundingSection = function() {
         .style('fill-opacity', 0.25)
         .each(function(d) { this._current = d; })
         .on('mouseover', function(d, i) {
-          if (!d3.select(this).classed('is-animating')) {
+          if (!d3.select(this).classed('is-animating') && !d3.select(this).classed('no-hover')) {
             d3.select(this).transition()
               .duration(250)
               .style('fill-opacity', 0.5);
@@ -442,7 +452,7 @@ var setupFundingSection = function() {
           }
         })
         .on('mouseout', function(d, i) {
-          if (!d3.select(this).classed('is-animating')) {
+          if (!d3.select(this).classed('is-animating') && !d3.select(this).classed('no-hover')) {
             d3.select(this).transition()
               .duration(250)
               .style('fill-opacity', 0.25);
@@ -543,7 +553,7 @@ var setupFundingSection = function() {
         .data(currentBarData).enter()
         .append('g')
           .attr('transform', function(d, i) {
-            return 'translate(0,' + ((size.barHeight + size.titleHeight + size.barBottomPadding) * i) + ')';
+            return 'translate(0,' + ((size.barHeight + size.titleHeight + size.barBottomPadding) * i + 10) + ')';
           })
           .attr('class', 'funding-bar is-animating')
           .on('mouseover', function(d, i) {
@@ -553,11 +563,13 @@ var setupFundingSection = function() {
                 .attr('opacity', function(d, j) { return i === j ? 1 : 0.25; });
 
               var pieSlice = d3.selectAll('.arc path')[0][i];
-              d3.select(pieSlice).transition()
-                .duration(250)
-                .style('fill-opacity', 0.5);
-              d3.select(pieSlice.parentNode)
-                .attr('mask', '');
+              if (!d3.select(pieSlice).classed('no-hover')) {
+                d3.select(pieSlice).transition()
+                  .duration(250)
+                  .style('fill-opacity', 0.5);
+                d3.select(pieSlice.parentNode)
+                  .attr('mask', '');
+              }
             }
           })
           .on('mouseout', function(d, i) {
@@ -567,11 +579,13 @@ var setupFundingSection = function() {
                 .attr('opacity', 1);
 
               var pieSlice = d3.selectAll('.arc path')[0][i];
-              d3.select(pieSlice).transition()
-                .duration(250)
-                .style('fill-opacity', 0.25);
-              d3.select(pieSlice.parentNode)
-                .attr('mask', 'url(#pie-mask)');
+              if (!d3.select(pieSlice).classed('no-hover')) {
+                d3.select(pieSlice).transition()
+                  .duration(250)
+                  .style('fill-opacity', 0.25);
+                d3.select(pieSlice.parentNode)
+                  .attr('mask', 'url(#pie-mask)');
+              }
             }
           });
 
@@ -628,6 +642,13 @@ var setupFundingSection = function() {
         updateFundingPieData();
       });
 
+      $('.js-funding-filter-sector').click(function(event) {
+        var sector = $(this).attr('data-sector');
+        fundingFilter.sector = sector;
+        refreshFundingFilterBar();
+        updateFundingPieData();
+      });
+
       $('.js-funding-filter-type').click(function(event) {
         var type = $(this).attr('data-type');
         fundingFilter.type = type;
@@ -642,47 +663,69 @@ var updateFundingPieData = function() {
   var currentPieData = getCurrentPieData();
   var currentBarData = getCurrentBarData();
 
+  console.log('cedFundingData', cedFundingData);
+  console.log('currentPieData', currentPieData);
+  console.log('currentBarData', currentBarData);
+
   var isEmpty = getFundingPieTotal(currentPieData) === 0;
   if (isEmpty) {
     alert('There is no data for that filter, please select a different one.')
     return;
   }
 
-  d3.selectAll('.arc path').data(fundingPie(currentPieData))
-    .attr('class', 'is-animating')
-    .transition()
-      .duration(1000)
-      .attrTween('d', function(d) {
-        var i = d3.interpolate(this._current, d);
-        this._current = i(0);
-        return function(t) {
-          return fundingArc(i(t));
-        };
-      }).each('end', function() {
-        d3.select(this).classed('is-animating', false);
-      });
+  if (fundingFilter.sector !== 'All') {
+    d3.selectAll('.arc path')
+      .classed('no-hover', true)
+      .transition()
+        .duration(1000)
+        .style('fill', function(d) { return getSectorColor(fundingFilter.sector).value; });
 
-  d3.selectAll('.outer-arc path').data(fundingPie(currentPieData))
-    .transition()
-      .duration(1000)
-      .attrTween('d', function(d) {
-        var i = d3.interpolate(this._current, d);
-        this._current = i(0);
-        return function(t) {
-          return fundingOuterArc(i(t));
-        };
-      });
+    d3.selectAll('.outer-arc path')
+      .transition()
+        .duration(1000)
+        .style('fill', function(d) { return getSectorColor(fundingFilter.sector).value; });
+  } else {
+    var colors = d3.scale.ordinal().range(cedDataColors);
 
-  d3.selectAll('.pattern-arc path').data(fundingPie(currentPieData))
-    .transition()
-      .duration(1000)
-      .attrTween('d', function(d) {
-        var i = d3.interpolate(this._current, d);
-        this._current = i(0);
-        return function(t) {
-          return fundingArc(i(t));
-        };
-      });
+    d3.selectAll('.arc path').data(fundingPie(currentPieData))
+      .classed('is-animating', true)
+      .classed('no-hover', false)
+      .transition()
+        .duration(1000)
+        .style('fill', function(d) { return colors(d.data.name).value; })
+        .attrTween('d', function(d) {
+          var i = d3.interpolate(this._current, d);
+          this._current = i(0);
+          return function(t) {
+            return fundingArc(i(t));
+          };
+        }).each('end', function() {
+          d3.select(this).classed('is-animating', false);
+        });
+
+    d3.selectAll('.outer-arc path').data(fundingPie(currentPieData))
+      .transition()
+        .duration(1000)
+        .style('fill', function(d) { return colors(d.data.name).value; })
+        .attrTween('d', function(d) {
+          var i = d3.interpolate(this._current, d);
+          this._current = i(0);
+          return function(t) {
+            return fundingOuterArc(i(t));
+          };
+        });
+
+    d3.selectAll('.pattern-arc path').data(fundingPie(currentPieData))
+      .transition()
+        .duration(1000)
+        .attrTween('d', function(d) {
+          var i = d3.interpolate(this._current, d);
+          this._current = i(0);
+          return function(t) {
+            return fundingArc(i(t));
+          };
+        });
+  }
 
   d3.select('.funding-pie-title')
     .transition()
@@ -727,6 +770,7 @@ var updateFundingPieData = function() {
 
 var getCurrentPieData = function() {
   var filteredData = $.extend(true, [], cedFundingData);
+  filteredData = filterFundingDataBySector(filteredData, fundingFilter.sector);
   filteredData = filterFundingDataByType(filteredData, fundingFilter.type);
   filteredData = filterFundingDataByYear(filteredData, fundingFilter.year);
   return filteredData;
@@ -745,6 +789,11 @@ var getFundingPieValue = function(d) {
       return num2 + year.value;
     }, 0);
   }, 0);
+};
+
+var filterFundingDataBySector = function(data, sector) {
+  if (sector === 'All') { return data; }
+  return data.filter(function(s) { return s.name === sector; });
 };
 
 var filterFundingDataByType = function(data, type) {
@@ -789,343 +838,21 @@ var getFundingBarTotals = function(data) {
   });
 };
 
-
-
-
-
-
-// var getFundingEquityTotal = function() {
-//   var total = cedFundingData.reduce(function(num, sector) {
-//     return num + getFundingEquityYearsTotal(sector.years);
-//   }, 0);
-//   return total;
-// };
-
-// var getFundingEquityYearsTotal = function(years) {
-//   return years.reduce(function(num, year) {
-//     return num + getFundingEquityQuartersTotal(year.quarters);
-//   }, 0);
-// }
-
-// var getFundingEquityQuartersTotal = function(quarters) {
-//   return quarters.reduce(function(num, quarter) {
-//     return num + quarter.value;
-//   }, 0);
-// }
-
-// var getFundingGrantTotal = function() {
-//   var total = cedFundingData.reduce(function(num, sector) {
-//     return num + getFundingGrantYearsTotal(sector.years);
-//   }, 0);
-//   return total;
-// };
-
-// var getFundingGrantYearsTotal = function(years) {
-//   return years.reduce(function(num, year) {
-//     return num + year.value;
-//   }, 0);
-// }
-
-
-
-
-
-
-
-
-
-
 var getFundingPieTitle = function() {
   var str = fundingFilter.year;
+
+  if (fundingFilter.sector !== 'All') {
+    str += ' ' + fundingFilter.sector;
+  }
+
   if (fundingFilter.type === 'All') {
     str += ' Equity + Grants & Awards:'
   } else {
     str += ' ' + fundingFilter.type + ':'
   }
+
   return str;
 };
-
-// var getFundingPieData = function() {
-//   if (fundingFilter.type === 'All') {
-//     return filterFundingByYear();
-//   }
-//   return filterFundingByTypeAndYear();
-// };
-
-// var filterFundingByYear = function() {
-//   return cedData.map(function(data) {
-//     var filteredData = {sector: data.sector};
-//     filteredData.value = data.funding.reduce(function(num1, type) {
-//       return num1 + type.data.reduce(function(num2, year) {
-//         if (year.year === fundingFilter.year) {
-//           if (year.data) {
-//             return year.data.reduce(function(num3, quarter) {
-//               return num3 + quarter.value;
-//             }, 0);
-//           }
-//           return num2 + year.value;
-//         }
-//         return num2 + 0;
-//       }, 0);
-//     }, 0);
-//     return filteredData;
-//   });
-// };
-
-// var filterFundingByTypeAndYear = function() {
-//   return cedData.map(function(data) {
-//     var filteredData = {sector: data.sector};
-//     var type = data.funding.find(function(d) { return d.type === fundingFilter.type });
-//     filteredData.value = type.data.reduce(function(num2, year) {
-//       if (year.year === fundingFilter.year) {
-//         if (year.data) {
-//           return year.data.reduce(function(num3, quarter) {
-//             return num3 + quarter.value;
-//           }, 0);
-//         }
-//         return num2 + year.value;
-//       }
-//       return num2 + 0;
-//     }, 0);
-//     return filteredData;
-//   });
-// };
-
-
-
-
-
-// var getFundingPieSliceData = function() {
-//   var data = cedData;
-//   data = filterFundingBySector(data);
-
-
-//   // data = filterFundingBySectorType(data);
-//   // data = filterFundingBySectorTypeYear(data);
-//   // if (data) {
-//   //   data = filterFundingBySectorTypeYearQuarter(data);
-//   // }
-
-//   // console.log(data)
-
-//   return data;
-//   // var data;
-
-//   // // Sector
-//   // if (fundingFilter.sector === 'All') {
-//   //   data = cedData.map(function(obj) { return obj.funding; });
-//   // } else {
-//   //   var sector = cedData.find(function(obj) { return obj.sector === fundingFilter.sector; });
-//   //   data = [sector.funding];
-//   // }
-
-//   // // Type
-//   // data = data.map(function(obj) {
-//   //   if (fundingFilter.type === 'All') {
-//   //     return obj.map(function(o) { return o.data; });
-//   //   } else {
-//   //     var type = obj.find(function(o) { return o.type === fundingFilter.type; });
-//   //     return type.data;
-//   //   }
-//   // });
-
-//   // // Year
-//   // data = data.map(function(obj) {
-//   //   var years = obj.map(function(o) {
-//   //     console.log(o)
-//   //     return o.filter(function(d) { return d.year === fundingFilter.year });
-//   //   });
-//   //   return years.filter(function(o) { return o.length; });
-//   // });
-//   // data = data.map(function(obj) { return obj[0]; });
-
-//   // // Quarter
-//   // data = data.map(function(obj) {
-//   //   if (fundingFilter.quarter === 'All') {
-//   //     return obj.map(function(o) { return o.data; });
-//   //   } else {
-//   //     var quarter = obj.find(function(o) { return o.quarter === fundingFilter.quarter; });
-//   //     return quarter;
-//   //   }
-//   // });
-
-//   // console.log(data);
-
-//   // return data;
-// };
-
-// var filterFundingBySector = function(data) {
-//   if (fundingFilter.sector === 'All') {
-//     return filterFundingSectorsByType(data);
-//   }
-//   var sector = data.find(function(d) { return d.sector === fundingFilter.sector; });
-//   return filterFundingSectorByType(sector);
-// };
-
-// var filterFundingSectorsByType = function(sectors) {
-//   return sectors.map(function(sector) { return filterFundingSectorByType(sector)});
-// };
-
-// var filterFundingSectorByType = function(sector) {
-//   if (fundingFilter.type === 'All') {
-//     return filterFundingTypesByYear(sector.funding);
-//   }
-//   var type = sector.funding.find(function(s) { return s.type === fundingFilter.type; });
-//   return filterFundingTypeByYear(type);
-// };
-
-// var filterFundingTypesByYear = function(types) {
-//   return types.map(function(type) { return filterFundingTypeByYear(type)});
-// }
-
-// var filterFundingTypeByYear = function(type) {
-//   var year = type.data.find(function(t) { return t.year === fundingFilter.year; });
-//   if (year) {
-//     return filterFundingYearByQuarter(year);
-//   }
-//   return 0;
-// }
-
-// var filterFundingYearByQuarter = function(year) {
-//   if (year.data) {
-//     if (fundingFilter.quarter === 'All') {
-//       return filterFundingQuarters(year.data);
-//     }
-//     var quarter = year.data.find(function(y) { return y.quarter === fundingFilter.quarter; });
-//     return quarter.value;
-//   }
-//   return year.value;
-// }
-
-// var filterFundingQuarters = function(quarters) {
-//   return quarters.reduce(function(num, quarter) { return num + quarter.value}, 0);
-// }
-
-
-
-
-
-
-
-
-
-
-
-// var filterFundingBySector = function(data) {
-//   var filteredData = data;
-
-//   if (fundingFilter.sector === 'All') {
-//     filteredData = filteredData.map(function(d) { return d.funding; });
-//   } else {
-//     var sector = filteredData.find(function(d) { return d.sector === fundingFilter.sector; });
-//     filteredData = sector.funding;
-//   }
-
-//   return filteredData;
-// };
-
-
-// var filterFundingBySectorType = function(data) {
-//   var filteredData = data;
-
-//   if (fundingFilter.sector === 'All') {
-//     filteredData = filteredData.map(function(d) { return filterFundingByType(d); });
-//   } else {
-//     filteredData = filterFundingByType(filteredData);
-//   }
-
-//   return filteredData;
-// };
-
-// var filterFundingByType = function(data) {
-//   var filteredData = data;
-
-//   if (fundingFilter.type === 'All') {
-//     filteredData = filteredData.map(function(d) { return d.data });
-//   } else {
-//     var type = filteredData.find(function(d) { return d.type === fundingFilter.type; });
-//     filteredData = type.data;
-//   }
-
-//   return filteredData;
-// };
-
-// var filterFundingBySectorTypeYear = function(data) {
-//   var filteredData = data;
-
-//   if (fundingFilter.sector === 'All') {
-//     filteredData = filteredData.map(function(d) { return filterFundingByTypeYear(d); });
-//   } else {
-//     filteredData = filterFundingByTypeYear(filteredData);
-//   }
-
-//   return filteredData;
-// };
-
-// var filterFundingByTypeYear = function(data) {
-//   if (fundingFilter.type === 'All') {
-//     var filteredData = data.map(function(d) { return filterFundingByYear(d); });
-//     return filteredData.filter(function(d) { return typeof d !== 'undefined'; });
-//   }
-//   return filterFundingByYear(data);
-// };
-
-// var filterFundingByYear = function(data) {
-//   var filteredData = data.find(function(d) { return d.year === fundingFilter.year; });
-
-//   if (filteredData) {
-//     if (typeof filteredData.data !== 'undefined') {
-//       return filteredData.data;
-//     }
-//     return filteredData.value;
-//   }
-// };
-
-// var filterFundingBySectorTypeYearQuarter = function(data) {
-//   var filteredData = data;
-
-//   if (fundingFilter.sector === 'All') {
-//     filteredData = filteredData.map(function(d) { return filterFundingByTypeYearQuarter(d); });
-//   } else {
-//     filteredData = filterFundingByTypeYearQuarter(filteredData);
-//   }
-
-//   return filteredData;
-// };
-
-
-// var filterFundingByTypeYearQuarter = function(data) {
-//   var filteredData = data;
-
-//   if (fundingFilter.type === 'All') {
-//     filteredData = filteredData.map(function(d) { return filterFundingByYearQuarter(d); });
-//   } else {
-//     filteredData = filterFundingByYearQuarter(filteredData);
-//   }
-
-//   return filteredData;
-// };
-
-// var filterFundingByYearQuarter = function(data) {
-//   if (fundingFilter.quarter === 'All') {
-//     console.log(data)
-//     return data.reduce(function(num, d) { return num + d.value; }, 0);
-//   }
-//   return data.value;
-// };
-
-// // var filterFundingByQuarter = function(data) {
-// //   var filteredData = data.find(function(d) { return d.quater === fundingFilter.quarter; });
-// //   if (filteredData) {
-// //     return filteredData.value;
-// //   }
-// // };
-
-
-
-
-
-
 
 // ========================================
 // FUNDERS SECTION
