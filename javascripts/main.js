@@ -321,6 +321,7 @@ var setupFundingSection = function() {
       });
 
       var currentPieData = getCurrentPieData();
+      var currentBarData = getCurrentBarData();
 
       console.log('currentPieData', currentPieData);
       console.log('cedFundingData', cedFundingData);
@@ -505,7 +506,7 @@ var setupFundingSection = function() {
       size.titleHeight = barComponentHeight;
       size.barBottomPadding = barComponentHeight;
 
-      var barTotals = getFundingBarTotals(currentPieData);
+      var barTotals = getFundingBarTotals(currentBarData);
       fundingX = d3.scale.linear()
         .domain([0, d3.max(barTotals)])
         .range([0, size.width]);
@@ -513,7 +514,7 @@ var setupFundingSection = function() {
       var chart = d3.select(barSectionSelector)
         .append('svg')
           .attr('width', size.width)
-          .attr('height', (size.barHeight + size.titleHeight + size.barBottomPadding) * currentPieData.length);
+          .attr('height', (size.barHeight + size.titleHeight + size.barBottomPadding) * currentBarData.length);
 
       var chartDefs = chart.append('defs');
 
@@ -538,7 +539,7 @@ var setupFundingSection = function() {
         .attr('class', 'funding-bars');
 
       var bar = bars.selectAll('g')
-        .data(currentPieData).enter()
+        .data(currentBarData).enter()
         .append('g')
           .attr('transform', function(d, i) {
             return 'translate(0,' + ((size.barHeight + size.titleHeight + size.barBottomPadding) * i) + ')';
@@ -626,51 +627,26 @@ var setupFundingSection = function() {
         updateFundingPieData();
       });
 
-      // $('.js-funding-filter-type').click(function(event) {
-      //   var type = $(this).attr('data-type');
-      //   fundingFilter.type = type;
-      //   var newData = getFundingPieData();
-
-      //   refreshFundingFilterBar();
-      //   updateFundingSection(newData);
-      // });
+      $('.js-funding-filter-type').click(function(event) {
+        var type = $(this).attr('data-type');
+        fundingFilter.type = type;
+        refreshFundingFilterBar();
+        updateFundingPieData();
+      });
     });
   });
-
-
-
-
-
-
-
-
-
-
-
-
-  // var updateFundingSection = function(newData) {
-  //   var total = newData.reduce(function(num, d) { return num + d.value; }, 0);
-  //   var isEmpty = total === 0;
-
-  //   if (isEmpty) {
-  //     pieData = newData.map(function(d) {
-  //       return {
-  //         sector: d.sector,
-  //         value: 1
-  //       };
-  //     });
-  //   } else {
-  //     pieData = newData;
-  //   }
-
-
-
-
-  // };
 };
 
 var updateFundingPieData = function() {
   var currentPieData = getCurrentPieData();
+  var currentBarData = getCurrentBarData();
+
+  var isEmpty = getFundingPieTotal(currentPieData) === 0;
+  if (isEmpty) {
+    alert('There is no data for that filter, please select a different one.')
+    return;
+  }
+
   d3.selectAll('.arc path').data(fundingPie(currentPieData))
     .attr('class', 'is-animating')
     .transition()
@@ -728,7 +704,7 @@ var updateFundingPieData = function() {
 
   d3.selectAll('.funding-bar').classed('is-animating', true);
 
-  d3.selectAll('.funding-bar-bg').data(currentPieData)
+  d3.selectAll('.funding-bar-bg').data(currentBarData)
     .transition()
       .duration(1000)
       .delay(function(d, i) { return i * 150; })
@@ -737,7 +713,7 @@ var updateFundingPieData = function() {
         d3.select(this.parentNode).classed('is-animating', false);
       });
 
-  d3.selectAll('.funding-bar-text').data(currentPieData)
+  d3.selectAll('.funding-bar-text').data(currentBarData)
     .transition()
       .duration(500)
       .attr('fill-opacity', 0)
@@ -750,7 +726,15 @@ var updateFundingPieData = function() {
 
 var getCurrentPieData = function() {
   var filteredData = $.extend(true, [], cedFundingData);
-  var filteredData = filterFundingDataByYear(filteredData, fundingFilter.year);
+  filteredData = filterFundingDataByType(filteredData, fundingFilter.type);
+  filteredData = filterFundingDataByYear(filteredData, fundingFilter.year);
+  return filteredData;
+};
+
+var getCurrentBarData = function() {
+  var filteredData = $.extend(true, [], cedFundingData);
+  filteredData = filterFundingDataByType(filteredData, fundingFilter.type);
+  filteredData = filterFundingDataByYear(filteredData, fundingFilter.year);
   return filteredData;
 };
 
@@ -761,6 +745,14 @@ var getFundingPieValue = function(d) {
     }, 0);
   }, 0);
 };
+
+var filterFundingDataByType = function(data, type) {
+  if (type === 'All') { return data; }
+  data.forEach(function(sector) {
+    sector.types = sector.types.filter(function(t) { return t.name === type; });
+  });
+  return data;
+}
 
 var filterFundingDataByYear = function(data, year) {
   data.forEach(function(sector) {
@@ -785,7 +777,6 @@ var getFundingSectorTotal = function(sector) {
 };
 
 var getFundingPieTotal = function(data) {
-  console.log('getFundingPieTotal',data)
   return data.reduce(function(num, sector) {
     return num + getFundingSectorTotal(sector)
   }, 0);
