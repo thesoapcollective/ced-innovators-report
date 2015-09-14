@@ -507,33 +507,38 @@ var setupFundingSection = function() {
   var arcs = g.selectAll('.arc')
     .data(pie(data))
   arcs.enter().append('g')
-    .attr('class', 'arc')
+    .attr('class', 'arc is-animating')
     .attr('mask', 'url(#pie-mask)');
   arcs.append('path')
+    .attr('class', 'is-animating')
     .style('fill', function(d) { return colors(d.data.sector).value; })
     .style('fill-opacity', 0.25)
     .each(function(d) { this._current = d; })
     .on('mouseover', function(d, i) {
-      d3.select(this).transition()
-        .duration(250)
-        .style('fill-opacity', 0.5);
-      d3.select(this.parentNode)
-        .attr('mask', '');
+      if (!d3.select(this).classed('is-animating')) {
+        d3.select(this).transition()
+          .duration(250)
+          .style('fill-opacity', 0.5);
+        d3.select(this.parentNode)
+          .attr('mask', '');
 
-      d3.selectAll('.funding-bar').transition()
-        .duration(250)
-        .attr('opacity', function(d, j) { return i === j ? 1 : 0.25; });
+        d3.selectAll('.funding-bar').transition()
+          .duration(250)
+          .attr('opacity', function(d, j) { return i === j ? 1 : 0.25; });
+      }
     })
     .on('mouseout', function(d, i) {
-      d3.select(this).transition()
-        .duration(250)
-        .style('fill-opacity', 0.25);
-      d3.select(this.parentNode)
-        .attr('mask', 'url(#pie-mask)');
+      if (!d3.select(this).classed('is-animating')) {
+        d3.select(this).transition()
+          .duration(250)
+          .style('fill-opacity', 0.25);
+        d3.select(this.parentNode)
+          .attr('mask', 'url(#pie-mask)');
 
-      d3.selectAll('.funding-bar').transition()
-        .duration(250)
-        .attr('opacity', 1);
+        d3.selectAll('.funding-bar').transition()
+          .duration(250)
+          .attr('opacity', 1);
+      }
     })
     .transition()
       .duration(1000)
@@ -543,6 +548,8 @@ var setupFundingSection = function() {
           d.endAngle = i(t);
           return arc(d);
         }
+      }).each('end', function() {
+        d3.select(this).classed('is-animating', false);
       });
 
   // Pie text
@@ -625,30 +632,34 @@ var setupFundingSection = function() {
       .attr('transform', function(d, i) {
         return 'translate(0,' + ((size.barHeight + size.titleHeight + size.barBottomPadding) * i) + ')';
       })
-      .attr('class', 'funding-bar')
+      .attr('class', 'funding-bar is-animating')
       .on('mouseover', function(d, i) {
-        d3.selectAll('.funding-bar').transition()
-          .duration(250)
-          .attr('opacity', function(d, j) { return i === j ? 1 : 0.25; });
+        if (!d3.select(this).classed('is-animating')) {
+          d3.selectAll('.funding-bar').transition()
+            .duration(250)
+            .attr('opacity', function(d, j) { return i === j ? 1 : 0.25; });
 
-        var pieSlice = d3.selectAll('.arc path')[0][i];
-        d3.select(pieSlice).transition()
-          .duration(250)
-          .style('fill-opacity', 0.5);
-        d3.select(pieSlice.parentNode)
-          .attr('mask', '');
+          var pieSlice = d3.selectAll('.arc path')[0][i];
+          d3.select(pieSlice).transition()
+            .duration(250)
+            .style('fill-opacity', 0.5);
+          d3.select(pieSlice.parentNode)
+            .attr('mask', '');
+        }
       })
       .on('mouseout', function(d, i) {
-        d3.selectAll('.funding-bar').transition()
-          .duration(250)
-          .attr('opacity', 1);
+        if (!d3.select(this).classed('is-animating')) {
+          d3.selectAll('.funding-bar').transition()
+            .duration(250)
+            .attr('opacity', 1);
 
-        var pieSlice = d3.selectAll('.arc path')[0][i];
-        d3.select(pieSlice).transition()
-          .duration(250)
-          .style('fill-opacity', 0.25);
-        d3.select(pieSlice.parentNode)
-          .attr('mask', 'url(#pie-mask)');
+          var pieSlice = d3.selectAll('.arc path')[0][i];
+          d3.select(pieSlice).transition()
+            .duration(250)
+            .style('fill-opacity', 0.25);
+          d3.select(pieSlice.parentNode)
+            .attr('mask', 'url(#pie-mask)');
+        }
       });
 
   bar.append('rect')
@@ -679,6 +690,9 @@ var setupFundingSection = function() {
       .duration(1000)
       .delay(function(d, i) { return i * 150; })
       .attr('width', function(d) { return x(d.value); })
+      .each('end', function() {
+        d3.select(this.parentNode).classed('is-animating', false);
+      });
 
   bar.append('text')
     .text(function(d) { return convertToDollars(d.value); })
@@ -728,6 +742,7 @@ var setupFundingSection = function() {
     }
 
     d3.selectAll('.arc path').data(pie(pieData))
+      .attr('class', 'is-animating')
       .transition()
         .duration(1000)
         .attrTween('d', function(d) {
@@ -736,6 +751,8 @@ var setupFundingSection = function() {
           return function(t) {
             return arc(i(t));
           };
+        }).each('end', function() {
+          d3.select(this).classed('is-animating', false);
         });
 
     d3.selectAll('.outer-arc path').data(pie(pieData))
@@ -779,11 +796,16 @@ var setupFundingSection = function() {
         .text(convertToDollars(total))
         .attr('fill-opacity', 1);
 
+    d3.selectAll('.funding-bar').classed('is-animating', true);
+
     d3.selectAll('.funding-bar-bg').data(newData)
       .transition()
         .duration(1000)
         .delay(function(d, i) { return i * 150; })
-        .attr('width', function(d) { return x(d.value); });
+        .attr('width', function(d) { return x(d.value); })
+        .each('end', function() {
+          d3.select(this.parentNode).classed('is-animating', false);
+        });
 
     d3.selectAll('.funding-bar-text').data(newData)
       .transition()
