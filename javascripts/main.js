@@ -273,6 +273,7 @@ var fundingFilter = {
   quarter: 'All',
 };
 
+var fundingBarSize = null;
 var fundingPie = null;
 var fundingArc = null;
 var fundingOuterArc = null;
@@ -507,25 +508,25 @@ var setupFundingSection = function() {
       var barSectionSelector = '.funding-right';
       var $barSection = $(barSectionSelector);
 
-      var size = {
+      fundingBarSize = {
         width: $barSection.width(),
         barHeight: 36
       };
       var barComponentHeight = $('.funding-right').height() - $('.funding-share-box').outerHeight();
-      barComponentHeight = (barComponentHeight / 4 - size.barHeight) / 2;
-      barComponentHeight = Math.min(barComponentHeight, size.barHeight);
-      size.titleHeight = barComponentHeight;
-      size.barBottomPadding = barComponentHeight;
+      barComponentHeight = (barComponentHeight / 4 - fundingBarSize.barHeight) / 2;
+      barComponentHeight = Math.min(barComponentHeight, fundingBarSize.barHeight);
+      fundingBarSize.titleHeight = barComponentHeight;
+      fundingBarSize.barBottomPadding = barComponentHeight;
 
       var barTotals = getFundingBarTotals(currentBarData);
       fundingX = d3.scale.linear()
         .domain([0, d3.max(barTotals)])
-        .range([0, size.width]);
+        .range([0, fundingBarSize.width]);
 
       var chart = d3.select(barSectionSelector)
         .append('svg')
-          .attr('width', size.width)
-          .attr('height', (size.barHeight + size.titleHeight + size.barBottomPadding) * currentBarData.length);
+          .attr('width', fundingBarSize.width)
+          .attr('height', (fundingBarSize.barHeight + fundingBarSize.titleHeight + fundingBarSize.barBottomPadding) * currentBarData.length);
 
       var chartDefs = chart.append('defs');
 
@@ -553,51 +554,47 @@ var setupFundingSection = function() {
         .data(currentBarData).enter()
         .append('g')
           .attr('transform', function(d, i) {
-            return 'translate(0,' + ((size.barHeight + size.titleHeight + size.barBottomPadding) * i + 10) + ')';
+            return 'translate(0,' + ((fundingBarSize.barHeight + fundingBarSize.titleHeight + fundingBarSize.barBottomPadding) * i + 10) + ')';
           })
           .attr('class', 'funding-bar is-animating')
           .on('mouseover', function(d, i) {
-            if (!d3.select(this).classed('is-animating')) {
+            if (!d3.select(this).classed('is-animating') && !d3.select(this).classed('no-hover')) {
               d3.selectAll('.funding-bar').transition()
                 .duration(250)
                 .attr('opacity', function(d, j) { return i === j ? 1 : 0.25; });
 
               var pieSlice = d3.selectAll('.arc path')[0][i];
-              if (!d3.select(pieSlice).classed('no-hover')) {
-                d3.select(pieSlice).transition()
-                  .duration(250)
-                  .style('fill-opacity', 0.5);
-                d3.select(pieSlice.parentNode)
-                  .attr('mask', '');
-              }
+              d3.select(pieSlice).transition()
+                .duration(250)
+                .style('fill-opacity', 0.5);
+              d3.select(pieSlice.parentNode)
+                .attr('mask', '');
             }
           })
           .on('mouseout', function(d, i) {
-            if (!d3.select(this).classed('is-animating')) {
+            if (!d3.select(this).classed('is-animating') && !d3.select(this).classed('no-hover')) {
               d3.selectAll('.funding-bar').transition()
                 .duration(250)
                 .attr('opacity', 1);
 
               var pieSlice = d3.selectAll('.arc path')[0][i];
-              if (!d3.select(pieSlice).classed('no-hover')) {
-                d3.select(pieSlice).transition()
-                  .duration(250)
-                  .style('fill-opacity', 0.25);
-                d3.select(pieSlice.parentNode)
-                  .attr('mask', 'url(#pie-mask)');
-              }
+              d3.select(pieSlice).transition()
+                .duration(250)
+                .style('fill-opacity', 0.25);
+              d3.select(pieSlice.parentNode)
+                .attr('mask', 'url(#pie-mask)');
             }
           });
 
       bar.append('rect')
-        .attr('width', size.width)
-        .attr('height', size.titleHeight + size.barHeight)
+        .attr('width', fundingBarSize.width)
+        .attr('height', fundingBarSize.titleHeight + fundingBarSize.barHeight)
         .attr('opacity', 0);
 
       bar.append('text')
-        .text(function(d, i) { return d.name; })
+        .text(function(d, i) { return d.title; })
         .attr('x', -30)
-        .attr('y', size.titleHeight / 2)
+        .attr('y', fundingBarSize.titleHeight / 2)
         .attr('class', 'funding-bar-title f-inputsans f-light f-italic fs-h3 no-pointer-event')
         .attr('fill', '#fff')
         .attr('fill-opacity', 0)
@@ -610,21 +607,21 @@ var setupFundingSection = function() {
       bar.append('rect')
         .attr('class', 'funding-bar-bg')
         .attr('width', 0)
-        .attr('height', size.barHeight)
-        .attr('y', size.titleHeight)
-        .attr('fill', function(d) { return 'url(#' + colors(d.name).name + '-gradient)'; })
+        .attr('height', fundingBarSize.barHeight)
+        .attr('y', fundingBarSize.titleHeight)
+        .attr('fill', function(d) { return 'url(#' + getSectorColor(d.sector).name + '-gradient)'; })
         .transition()
           .duration(1000)
           .delay(function(d, i) { return i * 150; })
-          .attr('width', function(d) { return fundingX(getFundingSectorTotal(d)); })
+          .attr('width', function(d) { return fundingX(d.value); })
           .each('end', function() {
             d3.select(this.parentNode).classed('is-animating', false);
           });
 
       bar.append('text')
-        .text(function(d) { return convertToDollars(getFundingSectorTotal(d)); })
+        .text(function(d) { return convertToDollars(d.value); })
         .attr('x', 10)
-        .attr('y', size.titleHeight + size.barHeight / 2)
+        .attr('y', fundingBarSize.titleHeight + fundingBarSize.barHeight / 2)
         .attr('dy', '.35em')
         .attr('class', 'funding-bar-text f-adelle f-light no-pointer-event')
         .attr('fill', '#fff')
@@ -746,16 +743,38 @@ var updateFundingPieData = function() {
       .text(convertToDollars(getFundingPieTotal(currentPieData)))
       .attr('fill-opacity', 1);
 
-  d3.selectAll('.funding-bar').classed('is-animating', true);
+  if (fundingFilter.sector !== 'All' && fundingFilter.type === 'Grants & Awards') {
+    return;
+  }
+
+  var barTotals = getFundingBarTotals(currentBarData);
+  fundingX = d3.scale.linear()
+    .domain([0, d3.max(barTotals)])
+    .range([0, fundingBarSize.width]);
+
+  d3.selectAll('.funding-bar')
+    .classed('is-animating', true)
+    .classed('no-hover', function() { return fundingFilter.sector !== 'All'; });
 
   d3.selectAll('.funding-bar-bg').data(currentBarData)
     .transition()
       .duration(1000)
       .delay(function(d, i) { return i * 150; })
-      .attr('width', function(d) { return fundingX(getFundingSectorTotal(d)); })
+      .attr('fill', function(d) { return 'url(#' + getSectorColor(d.sector).name + '-gradient)'; })
+      .attr('width', function(d) { return fundingX(d.value); })
       .each('end', function() {
         d3.select(this.parentNode).classed('is-animating', false);
       });
+
+  d3.selectAll('.funding-bar-title').data(currentBarData)
+    .transition()
+      .duration(500)
+      .attr('fill-opacity', 0)
+    .transition()
+      .duration(500)
+      .delay(1000)
+      .text(function(d) { return d.title; })
+      .attr('fill-opacity', 1);
 
   d3.selectAll('.funding-bar-text').data(currentBarData)
     .transition()
@@ -764,7 +783,7 @@ var updateFundingPieData = function() {
     .transition()
       .duration(500)
       .delay(1000)
-      .text(function(d) { return convertToDollars(getFundingSectorTotal(d)); })
+      .text(function(d) { return convertToDollars(d.value); })
       .attr('fill-opacity', 1);
 };
 
@@ -777,7 +796,46 @@ var getCurrentPieData = function() {
 };
 
 var getCurrentBarData = function() {
+  var filteredData = getFilteredBarData();
+  if (fundingFilter.sector === 'All') {
+    return filteredData.map(function(sector) {
+      return {
+        title: sector.name,
+        sector: sector.name,
+        value: getFundingSectorTotal(sector),
+      };
+    });
+  } else {
+    var sector = filteredData[0];
+    var type = sector.types.find(function(type) { return type.name === 'Equity'; });
+    if (type) {
+      var year = type.years[0];
+      return year.quarters.map(function(quarter, i) {
+        var title;
+        if (i === 0) {
+          title = sector.name + ' ' + year.year + ' ' + quarter.quarter + ' (Equity only)';
+        } else {
+          title = quarter.quarter;
+        }
+        return {
+          title: title,
+          sector: sector.name,
+          value: quarter.value,
+        };
+      });
+    } else {
+      return [{
+        title: sector.name,
+        sector: sector.name,
+        value: 0,
+      }];
+    }
+  }
+};
+
+var getFilteredBarData = function() {
   var filteredData = $.extend(true, [], cedFundingData);
+  filteredData = filterFundingDataBySector(filteredData, fundingFilter.sector);
   filteredData = filterFundingDataByType(filteredData, fundingFilter.type);
   filteredData = filterFundingDataByYear(filteredData, fundingFilter.year);
   return filteredData;
@@ -833,8 +891,8 @@ var getFundingPieTotal = function(data) {
 };
 
 var getFundingBarTotals = function(data) {
-  return data.map(function(sector) {
-    return getFundingSectorTotal(sector);
+  return data.map(function(d) {
+    return d.value;
   });
 };
 
