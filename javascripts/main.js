@@ -2126,7 +2126,7 @@ var getExitsIpoCount = function(data) {
 };
 
 var getExitsIpoTitle = function(data) {
-  return getExitsIpoCount(data) === 0 ? 'IPO' : "IPO's";
+  return getExitsIpoCount(data) === 1 ? 'IPO' : 'IPOs';
 };
 
 var getExitsMaCount = function(data) {
@@ -2141,5 +2141,5 @@ var getExitsMaCount = function(data) {
 };
 
 var getExitsMaTitle = function(data) {
-  return getExitsMaCount(data) === 0 ? 'Merger/Aquisition' : 'Mergers/Aquisitions';
+  return getExitsMaCount(data) === 1 ? 'Merger/Acquisition' : 'Mergers/Acquisitions';
 };
