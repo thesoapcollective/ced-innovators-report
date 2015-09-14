@@ -92,6 +92,13 @@ h1, h2, h3, h4, h5, h6, p {
 
 .no-pointer-event { pointer-events: none; }
 
+.modal-container {
+  padding: $grid-size-double;
+  background: rgba($black, 0.9);
+  border: 2px solid $white;
+  border-radius: 18px;
+}
+
 // ========================================
 // FONTS
 // ========================================
@@ -342,18 +349,51 @@ h1, h2, h3, h4, h5, h6, p {
 
 .funders-state-info {
   @include translateY(-50%);
-  padding: $grid-size-double;
   top: 50%;
   left: 60%;
-  background: rgba($black, 0.9);
-  border: 2px solid $white;
-  border-radius: 18px;
   opacity: 0;
   transition: $opacity-transition;
 
   &.is-active {
     opacity: 1;
   }
+}
+
+.funders-investors-container {
+  @include translateX(-50%);
+  width: 400px;
+  left: 50%;
+  top: -50px;
+  bottom: 0;
+  opacity: 0;
+  transition: $opacity-transition;
+
+  &.is-active {
+    opacity: 1;
+  }
+}
+
+.funders-investors-list {
+  padding: $grid-size-double;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow: scroll;
+}
+
+.funders-investors-list-item {
+  margin-bottom: $grid-size;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.funders-investors-close {
+  top: $grid-size-half;
+  right: $grid-size;
+  z-index: 2;
 }
 
 .exits-container {

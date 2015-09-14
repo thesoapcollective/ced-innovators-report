@@ -146,15 +146,16 @@
         </header>
 
         <div class="funders-container pos-a">
-          <div class="funders-state-info pos-a no-pointer-event js-funders-state-info">
-            <p class="info-title fs-h3 f-adelle js-funders-state-info-title">Test</p>
+          <div class="funders-state-info modal-container pos-a no-pointer-event js-funders-state-info">
+            <p class="info-title fs-h3 f-adelle js-funders-state-info-title"></p>
             <div class="info-item">
               <span class="f-inputsans f-thin f-italic">Investors:</span>
-              <span class="f-adelle js-funders-state-info-investors">99</span>
+              <span class="f-adelle js-funders-state-info-investors"></span>
+              <a class="f-adelle f-italic fs-small js-prevent-default js-funders-state-info-learnmore" href="#">(learn more)</a>
             </div>
             <div class="info-item">
               <span class="f-inputsans f-thin f-italic">Tech:</span>
-              <span class="f-adelle js-funders-state-info-tech">9</span>
+              <span class="f-adelle js-funders-state-info-tech"></span>
             </div>
             <div class="info-item">
               <span class="f-inputsans f-thin f-italic">Life Science:</span>
@@ -162,12 +163,17 @@
             </div>
             <div class="info-item">
               <span class="f-inputsans f-thin f-italic">Advanced M&M:</span>
-              <span class="f-adelle js-funders-state-info-amm">9</span>
+              <span class="f-adelle js-funders-state-info-amm"></span>
             </div>
             <div class="info-item">
               <span class="f-inputsans f-thin f-italic">Cleantech:</span>
-              <span class="f-adelle js-funders-state-info-cleantech">9</span>
+              <span class="f-adelle js-funders-state-info-cleantech"></span>
             </div>
+          </div>
+
+          <div class="funders-investors-container js-funders-investors-container modal-container pos-a no-pointer-event">
+            <a class="funders-investors-close pos-a js-prevent-default js-funders-investors-close fs-h3" href="#">&times;</a>
+            <ul class="list-reset funders-investors-list pos-a"></ul>
           </div>
         </div>
 
@@ -261,6 +267,32 @@
           <span class="f-inputsans f-thin f-italic">Sector:</span>
           <span class="f-adelle">{{sector}}</span>
         </div>
+      </div>
+    </li>
+  </script>
+
+  <script id="funders-investors-item-template" type="text/x-handlebars-template">
+    <li class="funders-investors-list-item">
+      <p class="info-title fs-h3 f-adelle">{{investor_name}}</p>
+      <div class="info-item">
+        <span class="f-inputsans f-thin f-italic">Investor Type:</span>
+        <span class="f-adelle">{{type}}</span>
+      </div>
+      <div class="info-item">
+        <span class="f-inputsans f-thin f-italic">Tech:</span>
+        <span class="f-adelle js-funders-state-info-tech">{{tech}}</span>
+      </div>
+      <div class="info-item">
+        <span class="f-inputsans f-thin f-italic">Life Science:</span>
+        <span class="f-adelle js-funders-state-info-lifescience">{{lifescience}}</span>
+      </div>
+      <div class="info-item">
+        <span class="f-inputsans f-thin f-italic">Advanced M&M:</span>
+        <span class="f-adelle js-funders-state-info-amm">{{amm}}</span>
+      </div>
+      <div class="info-item">
+        <span class="f-inputsans f-thin f-italic">Cleantech:</span>
+        <span class="f-adelle js-funders-state-info-cleantech">{{cleantech}}</span>
       </div>
     </li>
   </script>
