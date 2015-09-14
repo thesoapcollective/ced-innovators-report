@@ -347,9 +347,8 @@ var setupFundingSection = function() {
       };
       size.radius = Math.min(size.width, size.height) / 2;
 
-      var colors = d3.scale.ordinal().range(cedDataColors);
       fundingPie = d3.layout.pie()
-        .value(function(d) { return getFundingPieValue(d); })
+        .value(function(d) { return d.value; })
         .sort(null);
 
       fundingArc = d3.svg.arc()
@@ -416,7 +415,7 @@ var setupFundingSection = function() {
         .append('g')
           .attr('class', 'outer-arc');
       outerArcs.append('path')
-        .style('fill', function(d) { return colors(d.data.name).value; })
+        .style('fill', function(d) { return getSectorColor(d.data.sector).value; })
         .each(function(d) { this._current = d; })
         .transition()
           .duration(1000)
@@ -436,7 +435,7 @@ var setupFundingSection = function() {
         .attr('mask', 'url(#pie-mask)');
       arcs.append('path')
         .attr('class', 'is-animating')
-        .style('fill', function(d) { return colors(d.data.name).value; })
+        .style('fill', function(d) { return getSectorColor(d.data.sector).value; })
         .style('fill-opacity', 0.25)
         .each(function(d) { this._current = d; })
         .on('mouseover', function(d, i) {
@@ -682,14 +681,12 @@ var updateFundingPieData = function() {
         .duration(1000)
         .style('fill', function(d) { return getSectorColor(fundingFilter.sector).value; });
   } else {
-    var colors = d3.scale.ordinal().range(cedDataColors);
-
     d3.selectAll('.arc path').data(fundingPie(currentPieData))
       .classed('is-animating', true)
       .classed('no-hover', false)
       .transition()
         .duration(1000)
-        .style('fill', function(d) { return colors(d.data.name).value; })
+        .style('fill', function(d) { return getSectorColor(d.data.sector).value; })
         .attrTween('d', function(d) {
           var i = d3.interpolate(this._current, d);
           this._current = i(0);
@@ -703,7 +700,7 @@ var updateFundingPieData = function() {
     d3.selectAll('.outer-arc path').data(fundingPie(currentPieData))
       .transition()
         .duration(1000)
-        .style('fill', function(d) { return colors(d.data.name).value; })
+        .style('fill', function(d) { return getSectorColor(d.data.sector).value; })
         .attrTween('d', function(d) {
           var i = d3.interpolate(this._current, d);
           this._current = i(0);
@@ -787,7 +784,71 @@ var updateFundingPieData = function() {
       .attr('fill-opacity', 1);
 };
 
+var getFilteredPieData = function() {
+  var filteredData = $.extend(true, [], cedFundingData);
+  filteredData = filterFundingDataBySector(filteredData, fundingFilter.sector);
+  filteredData = filterFundingDataByType(filteredData, fundingFilter.type);
+  filteredData = filterFundingDataByYear(filteredData, fundingFilter.year);
+  return filteredData;
+};
+
 var getCurrentPieData = function() {
+  var filteredData = getFilteredPieData();
+  if (fundingFilter.sector === 'All') {
+    return filteredData.map(function(sector) {
+      return {
+        sector: sector.name,
+        value: getFundingSectorTotal(sector),
+      };
+    });
+  } else {
+    var sector = filteredData[0];
+    switch (fundingFilter.type) {
+      case 'All':
+        var items = [];
+        sector.types.forEach(function(type) {
+          type.years.forEach(function(year) {
+            items.push({
+              sector: sector.name,
+              value: year.value,
+            });
+          });
+        });
+        return items;
+      case 'Equity':
+        var type = sector.types.find(function(type) { return type.name === 'Equity'; });
+        if (type) {
+          var year = type.years[0];
+          return year.quarters.map(function(quarter) {
+            return {
+              sector: sector.name,
+              value: quarter.value,
+            };
+          });
+        }
+        return [{
+          sector: '',
+          value: 0,
+        }];
+      case 'Grants & Awards':
+        var type = sector.types.find(function(type) { return type.name === 'Grants & Awards'; });
+        if (type) {
+          return type.years.map(function(year) {
+            return {
+              sector: sector.name,
+              value: year.value,
+            };
+          });
+        }
+        return [{
+          sector: '',
+          value: 0,
+        }];
+    }
+  }
+};
+
+var getFilteredBarData = function() {
   var filteredData = $.extend(true, [], cedFundingData);
   filteredData = filterFundingDataBySector(filteredData, fundingFilter.sector);
   filteredData = filterFundingDataByType(filteredData, fundingFilter.type);
@@ -823,30 +884,13 @@ var getCurrentBarData = function() {
           value: quarter.value,
         };
       });
-    } else {
-      return [{
-        title: sector.name,
-        sector: sector.name,
-        value: 0,
-      }];
     }
+    return [{
+      title: '',
+      sector: '',
+      value: 0,
+    }];
   }
-};
-
-var getFilteredBarData = function() {
-  var filteredData = $.extend(true, [], cedFundingData);
-  filteredData = filterFundingDataBySector(filteredData, fundingFilter.sector);
-  filteredData = filterFundingDataByType(filteredData, fundingFilter.type);
-  filteredData = filterFundingDataByYear(filteredData, fundingFilter.year);
-  return filteredData;
-};
-
-var getFundingPieValue = function(d) {
-  return d.types.reduce(function(num1, type) {
-    return num1 + type.years.reduce(function(num2, year) {
-      return num2 + year.value;
-    }, 0);
-  }, 0);
 };
 
 var filterFundingDataBySector = function(data, sector) {
@@ -885,8 +929,8 @@ var getFundingSectorTotal = function(sector) {
 };
 
 var getFundingPieTotal = function(data) {
-  return data.reduce(function(num, sector) {
-    return num + getFundingSectorTotal(sector)
+  return data.reduce(function(num, d) {
+    return num + d.value;
   }, 0);
 };
 
