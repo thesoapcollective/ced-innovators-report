@@ -206,6 +206,10 @@ var getRandomInRange = function(min, max) {
   return Math.random() * (max - min) + min;
 }
 
+var getRandomIntInRange = function(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 var convertToDollars = function(int) {
   return '$' + numeral(int).format('0,0');
 };
@@ -1713,37 +1717,73 @@ var setupDealsSection = function() {
       var g = dealsGroup.selectAll('.circle-group')
         .data(currentDealsData).enter()
         .append('g')
-          .attr('class', 'circle-group');
+          .attr('class', 'circle-group');;
       g.append('circle')
         .attr('class', 'circle-pattern')
         .attr('cx', function(d, i) {
+          var baseCx = 0;
           var halfWidth = size.width / 2;
           var halfCenterRadius = size.centerRadius / 2;
           var halfRadius = size.radiusMax;
           switch (i) {
             case 0:
-              return halfWidth;
+              baseCx = halfWidth;
+              break;
             case 1:
+              var max = halfWidth - halfCenterRadius - halfRadius;
+              baseCx = getRandomInRange(halfRadius, max - max / 2);
+              break;
             case 2:
-              return getRandomInRange(halfRadius, halfWidth - halfCenterRadius - halfRadius);
+              var max = halfWidth - halfCenterRadius - halfRadius;
+              baseCx = getRandomInRange(halfRadius + max / 2, max);
+              break;
             case 3:
+              var min = halfWidth + halfCenterRadius + halfRadius;
+              var max = size.width - halfRadius;
+              var half = (max - min) / 2;
+              baseCx = getRandomInRange(min, max - half);
+              break;
             case 4:
-              return getRandomInRange(halfWidth + halfCenterRadius + halfRadius, size.width - halfRadius);
+              var min = halfWidth + halfCenterRadius + halfRadius;
+              var max = size.width - halfRadius;
+              var half = (max - min) / 2;
+              baseCx = getRandomInRange(min + half, max);
+              break;
           }
+          d.baseCx = baseCx;
+          return baseCx;
         })
         .attr('cy', function(d, i) {
+          var baseCy = 0;
           var halfHeight = size.height / 2;
           var halfRadius = size.radiusMax;
           switch (i) {
             case 0:
-              return halfHeight;
+              baseCy = halfHeight;
+              break;
             case 1:
+              var max = halfHeight;
+              baseCy = getRandomInRange(halfRadius, max - max / 2);
+              break;
             case 3:
-              return getRandomInRange(halfRadius, halfHeight - halfRadius);
+              var max = halfHeight;
+              baseCy = getRandomInRange(halfRadius + max / 2, max);
+              break;
             case 2:
+              var min = halfHeight + halfRadius / 2;
+              var max = size.height - halfRadius;
+              var half = (max - min) / 2;
+              baseCy = getRandomInRange(min, max - half);
+              break;
             case 4:
-              return getRandomInRange(halfHeight + halfRadius, halfRadius);
+              var min = halfHeight + halfRadius / 2;
+              var max = size.height - halfRadius;
+              var half = (max - min) / 2;
+              baseCy = getRandomInRange(min + half, max);
+              break;
           }
+          d.baseCy = baseCy;
+          return baseCy;
         })
         .attr('r', function(d, i) {
           if (i === 0) {
@@ -1756,6 +1796,7 @@ var setupDealsSection = function() {
         .attr('stroke-opacity', 0.25)
         .style('fill', 'url(#deals-pattern)');
       var mainCircle = g.append('circle')
+        .attr('class', 'circle-fill')
         .attr('cx', function(d, i) { return parseFloat(d3.select(d3.selectAll('.circle-pattern')[0][i]).attr('cx')); })
         .attr('cy', function(d, i) { return parseFloat(d3.select(d3.selectAll('.circle-pattern')[0][i]).attr('cy')); })
         .attr('r', function(d, i) { return parseFloat(d3.select(d3.selectAll('.circle-pattern')[0][i]).attr('r')); })
@@ -1794,9 +1835,86 @@ var setupDealsSection = function() {
         .attr('dy', '.35em')
         .attr('class', 'f-adelle f-bold fs-h3 text-shadow-large')
         .attr('fill', '#fff');
+      g.append('line')
+        .attr('stroke', '#fff')
+        .attr('stroke-opacity', 0.25)
+        .attr('x1', function(d, i) {
+          if (i === 0) { return 0; }
+          var source = d3.select('.circle-pattern');
+          var sourceX = parseFloat(source.attr('cx'));
+          var sourceY = parseFloat(source.attr('cy'));
+          var sourceR = parseFloat(source.attr('r'));
+          var target = d3.select(d3.selectAll('.circle-pattern')[0][i]);
+          var targetX = parseFloat(target.attr('cx'));
+          var targetY = parseFloat(target.attr('cy'));
+          var targetR = parseFloat(target.attr('r'));
+          var dx = sourceX - targetX;
+          var dy = sourceY - targetY;
+          var distance = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+          return sourceX - dx * sourceR / distance;
+        })
+        .attr('y1', function(d, i) {
+          if (i === 0) { return 0; }
+          var source = d3.select('.circle-pattern');
+          var sourceX = parseFloat(source.attr('cx'));
+          var sourceY = parseFloat(source.attr('cy'));
+          var sourceR = parseFloat(source.attr('r'));
+          var target = d3.select(d3.selectAll('.circle-pattern')[0][i]);
+          var targetX = parseFloat(target.attr('cx'));
+          var targetY = parseFloat(target.attr('cy'));
+          var targetR = parseFloat(target.attr('r'));
+          var dx = sourceX - targetX;
+          var dy = sourceY - targetY;
+          var distance = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+          return sourceY - dy * sourceR / distance;
+        })
+        .attr('x2', function(d, i) {
+          if (i === 0) { return 0; }
+          var source = d3.select('.circle-pattern');
+          var sourceX = parseFloat(source.attr('cx'));
+          var sourceY = parseFloat(source.attr('cy'));
+          var sourceR = parseFloat(source.attr('r'));
+          var target = d3.select(d3.selectAll('.circle-pattern')[0][i]);
+          var targetX = parseFloat(target.attr('cx'));
+          var targetY = parseFloat(target.attr('cy'));
+          var targetR = parseFloat(target.attr('r'));
+          var dx = sourceX - targetX;
+          var dy = sourceY - targetY;
+          var distance = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+          return targetX + dx * targetR / distance;
+        })
+        .attr('y2', function(d, i) {
+          if (i === 0) { return 0; }
+          var source = d3.select('.circle-pattern');
+          var sourceX = parseFloat(source.attr('cx'));
+          var sourceY = parseFloat(source.attr('cy'));
+          var sourceR = parseFloat(source.attr('r'));
+          var target = d3.select(d3.selectAll('.circle-pattern')[0][i]);
+          var targetX = parseFloat(target.attr('cx'));
+          var targetY = parseFloat(target.attr('cy'));
+          var targetR = parseFloat(target.attr('r'));
+          var dx = sourceX - targetX;
+          var dy = sourceY - targetY;
+          var distance = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+          return targetY + dy * targetR / distance;
+        });
+
+      // animateBubbles();
     });
   });
 }
+
+var animateBubbles = function() {
+  d3.selectAll('.circle-group').transition()
+    .duration(function(d) { return getRandomIntInRange(4000, 6000)})
+    .delay(function(d) { return getRandomIntInRange(1000, 3000)})
+    .ease('quad-in-out')
+    .attr('transform', function(d, i) {
+      if (i === 0) { return ''; }
+      return 'translate(' + getRandomInRange(-20, 20) + ',' + getRandomInRange(-20, 20) + ')';
+    })
+    .each('end', animateBubbles);
+};
 
 var getCurrentDealsData = function() {
   var filteredData = getFilteredDealsData();
