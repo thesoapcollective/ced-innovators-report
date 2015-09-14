@@ -17,7 +17,7 @@
   <link href="stylesheets/normalize.css" rel="stylesheet" type="text/css" />
   <link href="stylesheets/main.css" rel="stylesheet" type="text/css" />
 </head>
-<body>
+<body class="<?php if(isset($_GET['print']) && $_GET['print'] == '1') { echo 'is-printable'; } ?>">
   <div class="page-background-overlay pos-f fullsize"></div>
   <div class="page-background-linear-gradient-overlay pos-f fullsize"></div>
   <div class="page-background-radial-gradient-overlay pos-f"></div>

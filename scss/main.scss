@@ -541,3 +541,18 @@ h1, h2, h3, h4, h5, h6, p {
     .f-italic { font-style: normal; }
   }
 }
+
+// ========================================
+// PRINTING
+// ========================================
+body.is-printable {
+  background: $gray;
+
+  .page-background-overlay,
+  .page-background-linear-gradient-overlay,
+  .page-background-radial-gradient-overlay,
+  .page-footer,
+  .share-box-container {
+    display: none;
+  }
+}
