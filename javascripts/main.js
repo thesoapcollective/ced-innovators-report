@@ -3,6 +3,10 @@ var $socialTextbox = null;
 var $dropdowns = null;
 var currentSectionIndex = 0;
 
+var $fundingPieText = null;
+var $fundingPieTitle = null;
+var $fundingPieSubtitle = null;
+
 $(document).ready(function() {
   cacheElements();
   setupJsClickHandler();
@@ -194,6 +198,10 @@ var cacheElements = function() {
   $win = $(window);
   $socialTextbox = $('.social-list-item:last');
   $dropdowns = $('.js-dropdown');
+
+  $fundingPieText = $('.funding-pie-text');
+  $fundingPieTitle = $('.funding-pie-title');
+  $fundingPieSubtitle = $('.funding-pie-subtitle');
 };
 
 var setupJsClickHandler = function() {
@@ -269,6 +277,20 @@ var createLinePattern = function(defs) {
   return pattern;
 };
 
+var fitTextToWidth = function(node, width) {
+  var nodeWidth = node.getBBox().width;
+  if (nodeWidth > width) {
+    var $node = $(node);
+    var fontSize = $node.css('font-size');
+    fontSize = parseInt(fontSize.substring(0, fontSize.length - 2));
+    fontSize--;
+    if (fontSize > 0) {
+      $node.css('font-size', fontSize + 'px');
+      fitTextToWidth(node, width);
+    }
+  }
+};
+
 // ========================================
 // FUNDING SECTION
 // ========================================
@@ -341,10 +363,6 @@ var setupFundingSection = function() {
 
       var currentPieData = getCurrentPieData();
       var currentBarData = getCurrentBarData();
-
-      // console.log('cedFundingData', cedFundingData);
-      // console.log('currentPieData', currentPieData);
-      // console.log('currentBarData', currentBarData);
 
       var pieSectionSelector = '.funding-left';
       var $pieSection = $(pieSectionSelector);
@@ -485,31 +503,9 @@ var setupFundingSection = function() {
           });
 
       // Pie text
-      g.append('text')
-        .text(getFundingPieTitle())
-        .attr('x', 0)
-        .attr('y', -80)
-        .attr('class', 'funding-pie-title pie-title f-inputsans f-thin f-italic fs-h2 text-shadow-large no-pointer-event')
-        .attr('fill', '#fff')
-        .attr('text-anchor', 'middle')
-        .attr('fill-opacity', 0)
-        .transition()
-          .duration(1000)
-          .attr('y', -40)
-          .attr('fill-opacity', 1);
-
-      g.append('text')
-        .text(convertToDollars(getFundingPieTotal(currentPieData)))
-        .attr('x', 0)
-        .attr('y', 0)
-        .attr('class', 'funding-pie-subtitle pie-title f-adelle f-bold fs-h1 text-shadow-large no-pointer-event')
-        .attr('fill', '#fff')
-        .attr('text-anchor', 'middle')
-        .attr('fill-opacity', 0)
-        .transition()
-          .duration(1000)
-          .attr('y', 40)
-          .attr('fill-opacity', 1);
+      $fundingPieText.width(size.radius * 2);
+      $fundingPieTitle.text(getFundingPieTitle());
+      $fundingPieSubtitle.text(convertToDollars(getFundingPieTotal(currentPieData)));
 
       // Initial svg and bar chart values
       var barSectionSelector = '.funding-right';
@@ -667,10 +663,6 @@ var updateFundingPieData = function() {
   var currentPieData = getCurrentPieData();
   var currentBarData = getCurrentBarData();
 
-  console.log('cedFundingData', cedFundingData);
-  console.log('currentPieData', currentPieData);
-  console.log('currentBarData', currentBarData);
-
   var isEmpty = getFundingPieTotal(currentPieData) === 0;
   if (isEmpty) {
     alert('There is no data for that filter, please select a different one.')
@@ -729,24 +721,14 @@ var updateFundingPieData = function() {
         });
   }
 
-  d3.select('.funding-pie-title')
-    .transition()
-      .duration(500)
-      .attr('fill-opacity', 0)
-    .transition()
-      .duration(500)
-      .delay(1000)
-      .text(getFundingPieTitle())
-      .attr('fill-opacity', 1);
-  d3.select('.funding-pie-subtitle')
-    .transition()
-      .duration(500)
-      .attr('fill-opacity', 0)
-    .transition()
-      .duration(500)
-      .delay(1000)
-      .text(convertToDollars(getFundingPieTotal(currentPieData)))
-      .attr('fill-opacity', 1);
+  $fundingPieText.css('opacity', 0);
+  setTimeout(function() {
+    $fundingPieTitle.text(getFundingPieTitle());
+    $fundingPieSubtitle.text(convertToDollars(getFundingPieTotal(currentPieData)));
+    setTimeout(function() {
+      $fundingPieText.css('opacity', 1);
+    }, 500);
+  }, 500);
 
   if (fundingFilter.sector !== 'All' && fundingFilter.type === 'Grants & Awards') {
     return;
@@ -775,10 +757,14 @@ var updateFundingPieData = function() {
     .transition()
       .duration(500)
       .attr('fill-opacity', 0)
+      .each('end', function(d) {
+        d3.select(this).text(d.title);
+        $(this).css('font-size', '24px');
+        fitTextToWidth(this, $('.funding-right').width());
+      })
     .transition()
       .duration(500)
       .delay(1000)
-      .text(function(d) { return d.title; })
       .attr('fill-opacity', 1);
 
   d3.selectAll('.funding-bar-text').data(currentBarData)

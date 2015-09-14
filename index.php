@@ -107,7 +107,12 @@
           </ul>
         </header>
 
-        <div class="funding-left pos-a filter-content"></div>
+        <div class="funding-left pos-a filter-content">
+          <div class="funding-pie-text pos-a no-pointer-event">
+            <div class="funding-pie-title pie-title f-inputsans f-thin f-italic fs-h2 text-ac text-shadow-large"></div>
+            <div class="funding-pie-subtitle pie-title f-adelle f-bold fs-h1 text-ac text-shadow-large"></div>
+          </div>
+        </div>
         <div class="funding-right pos-a filter-content"></div>
 
         <div class="share-box-container funding-share-box pos-a">
