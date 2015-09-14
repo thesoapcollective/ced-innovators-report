@@ -323,8 +323,9 @@ var setupFundingSection = function() {
       var currentPieData = getCurrentPieData();
       var currentBarData = getCurrentBarData();
 
-      console.log('currentPieData', currentPieData);
       console.log('cedFundingData', cedFundingData);
+      console.log('currentPieData', currentPieData);
+      console.log('currentBarData', currentBarData);
 
       var pieSectionSelector = '.funding-left';
       var $pieSection = $(pieSectionSelector);
@@ -1186,19 +1187,19 @@ var setupFundersSection = function() {
       state: d['State'],
       region: d['Region'],
       sectors: [
-        {name: 'Tech', value: +d['Tech']},
-        {name: 'Life Science', value: +d['Life Science']},
-        {name: 'Advanced Manufacturing & Materials', value: +d['Advanced M&M']},
-        {name: 'Cleantech', value: +d['Cleantech']},
+        {name: 'Tech', value: isNaN(+d['Tech']) ? 0 : +d['Tech']},
+        {name: 'Life Science', value: isNaN(+d['Life Science']) ? 0 : +d['Life Science']},
+        {name: 'Advanced Manufacturing & Materials', value: isNaN(+d['Advanced M&M']) ? 0 : +d['Advanced M&M']},
+        {name: 'Cleantech', value: isNaN(+d['Cleantech']) ? 0 : +d['Cleantech']},
       ],
       types: [
-        {name: 'VC', value: +d['VC']},
-        {name: 'Corporate', value: +d['Corporate']},
-        {name: 'Angel Group', value: +d['Angel Group']},
-        {name: 'Growth', value: +d['Growth']},
-        {name: 'Strategic', value: +d['Strategic']},
-        {name: 'Grant', value: +d['Grant']},
-        {name: 'Award', value: +d['Award']},
+        {name: 'VC', value: isNaN(+d['VC']) ? 0 : +d['VC']},
+        {name: 'Corporate', value: isNaN(+d['Corporate']) ? 0 : +d['Corporate']},
+        {name: 'Angel Group', value: isNaN(+d['Angel Group']) ? 0 : +d['Angel Group']},
+        {name: 'Growth', value: isNaN(+d['Growth']) ? 0 : +d['Growth']},
+        {name: 'Strategic', value: isNaN(+d['Strategic']) ? 0 : +d['Strategic']},
+        {name: 'Grant', value: isNaN(+d['Grant']) ? 0 : +d['Grant']},
+        {name: 'Award', value: isNaN(+d['Award']) ? 0 : +d['Award']},
       ],
     };
   }, function(error, data) {
@@ -1209,9 +1210,9 @@ var setupFundersSection = function() {
         state: d['Billing State/Province'],
         type: d['Investor Type'],
         sectors: [
-          {name: 'Tech', value: +d['Tech']},
-          {name: 'Life Science', value: +d['Life Science']},
-          {name: 'Advanced Manufacturing & Materials', value: +d['AM&M']},
+          {name: 'Tech', value: isNaN(+d['Tech']) ? 0 : +d['Tech']},
+          {name: 'Life Science', value: isNaN(+d['Life Science']) ? 0 : +d['Life Science']},
+          {name: 'Advanced Manufacturing & Materials', value: isNaN(+d['AM&M']) ? 0 : +d['AM&M']},
           {name: 'Cleantech', value: isNaN(d['Cleantech']) ? 0 : +d['Cleantech']},
         ],
       };
