@@ -254,106 +254,7 @@ var createLinePattern = function(defs) {
 // ========================================
 // FUNDING SECTION
 // ========================================
-var cedData = [
-  {sector: 'Tech', funding: [
-    {type: 'Equity', data: [
-      {year: 2015, data: [
-        {quarter: 'Q1', value: 52673746},
-        {quarter: 'Q2', value: 61778573},
-      ]},
-      {year: 2014, data: [
-        {quarter: 'Q1', value: 146012319},
-        {quarter: 'Q2', value: 36084050},
-        {quarter: 'Q3', value: 41149158},
-        {quarter: 'Q4', value: 38584010},
-      ]},
-      {year: 2013, data: [
-        {quarter: 'Q1', value: 22870224},
-        {quarter: 'Q2', value: 24491950},
-        {quarter: 'Q3', value: 23744183},
-        {quarter: 'Q4', value: 20591746},
-      ]},
-    ]},
-    {type: 'Grants & Awards', data: [
-      {year: 2014, value: 15940211},
-      {year: 2013, value: 508230},
-    ]}
-  ]},
-
-  {sector: 'Life Science', funding: [
-    {type: 'Equity', data: [
-      {year: 2015, data: [
-        {quarter: 'Q1', value: 132076554},
-        {quarter: 'Q2', value: 136260374},
-      ]},
-      {year: 2014, data: [
-        {quarter: 'Q1', value: 16176684},
-        {quarter: 'Q2', value: 19381452},
-        {quarter: 'Q3', value: 38205554},
-        {quarter: 'Q4', value: 112992665},
-      ]},
-      {year: 2013, data: [
-        {quarter: 'Q1', value: 48898486},
-        {quarter: 'Q2', value: 70867276},
-        {quarter: 'Q3', value: 52087558},
-        {quarter: 'Q4', value: 51858061},
-      ]},
-    ]},
-    {type: 'Grants & Awards', data: [
-      {year: 2014, value: 65910340},
-      {year: 2013, value: 30757245},
-    ]}
-  ]},
-
-  {sector: 'Advanced Manufacturing & Materials', funding: [
-    {type: 'Equity', data: [
-      {year: 2015, data: [
-        {quarter: 'Q1', value: 23900000},
-        {quarter: 'Q2', value: 10500000},
-      ]},
-      {year: 2014, data: [
-        {quarter: 'Q1', value: 20060810},
-        {quarter: 'Q2', value: 3980814},
-        {quarter: 'Q3', value: 5300000},
-        {quarter: 'Q4', value: 44899700},
-      ]},
-      {year: 2013, data: [
-        {quarter: 'Q1', value: 8963428},
-        {quarter: 'Q2', value: 26905988},
-        {quarter: 'Q3', value: 1366000},
-        {quarter: 'Q4', value: 670000},
-      ]},
-    ]},
-    {type: 'Grants & Awards', data: [
-      {year: 2014, value: 6840927},
-      {year: 2013, value: 30757245},
-    ]}
-  ]},
-
-  {sector: 'Cleantech', funding: [
-    {type: 'Equity', data: [
-      {year: 2015, data: [
-        {quarter: 'Q1', value: 8547500},
-        {quarter: 'Q2', value: 1200000},
-      ]},
-      {year: 2014, data: [
-        {quarter: 'Q1', value: 388000},
-        {quarter: 'Q2', value: 7749175},
-        {quarter: 'Q3', value: 177600},
-        {quarter: 'Q4', value: 1500000},
-      ]},
-      {year: 2013, data: [
-        {quarter: 'Q1', value: 2046400},
-        {quarter: 'Q2', value: 0},
-        {quarter: 'Q3', value: 499996},
-        {quarter: 'Q4', value: 10250000},
-      ]},
-    ]},
-    {type: 'Grants & Awards', data: [
-      {year: 2014, value: 1050000},
-    ]}
-  ]},
-];
+var cedFundingData = null;
 
 var fundingFilter = {
   sector: 'All',
@@ -362,462 +263,585 @@ var fundingFilter = {
   quarter: 'All',
 };
 
+var fundingPie = null;
+var fundingArc = null;
+var fundingOuterArc = null;
+var fundingX = null;
+
 var setupFundingSection = function() {
-  // var data = getFundingPieSliceData();
-  var data = getFundingPieData();
-  // console.log(data)
-
-  // console.log('++++++')
-  // fundingFilter.type = 'Equity'
-  // getFundingPieSliceData()
-
-  // console.log('++++++')
-  // fundingFilter = {
-  //   sector: 'Tech',
-  //   type: 'Equity',
-  //   year: 2015,
-  //   quarter: 'Q2',
-  // }
-  // getFundingPieSliceData()
-
-  // console.log('------')
-  // fundingFilter = {
-  //   sector: 'Tech',
-  //   type: 'All',
-  //   year: 2014,
-  //   quarter: 'All',
-  // }
-  // getFundingPieSliceData()
-
-  // console.log('------')
-  // fundingFilter = {
-  //   sector: 'Tech',
-  //   type: 'Grants & Awards',
-  //   year: 2015,
-  //   quarter: 'All',
-  // }
-  // getFundingPieSliceData()
-
-  var colors = d3.scale.ordinal().range(cedDataColors);
-
-  // Initial svg and pie chart values
-  var pieSectionSelector = '.funding-left';
-  var $pieSection = $(pieSectionSelector);
-
-  var size = {
-    width: $pieSection.width(),
-    height: $pieSection.height()
-  };
-  size.radius = Math.min(size.width, size.height) / 2;
-
-  var pie = d3.layout.pie()
-    .value(function(d) { return d.value; })
-    .sort(null);
-
-  var arc = d3.svg.arc()
-    .innerRadius(0)
-    .outerRadius(size.radius - 2);
-
-  var outerArc = d3.svg.arc()
-    .innerRadius(size.radius - 2)
-    .outerRadius(size.radius);
-
-  var svg = d3.select(pieSectionSelector)
-    .append('svg')
-      .attr('width', size.width)
-      .attr('height', size.height);
-
-  var defs = svg.append('defs');
-
-  // Mask Gradient
-  var maskGadient = defs.append('radialGradient')
-    .attr('id', 'radial-mask-gradient')
-  maskGadient.append('stop')
-    .attr('offset', '0%')
-    .attr('stop-color', '#fff')
-    .attr('stop-opacity', 0);
-  maskGadient.append('stop')
-    .attr('offset', '100%')
-    .attr('stop-color', '#fff')
-    .attr('stop-opacity', 1);
-
-  // Pattern
-  var pattern = defs.append('pattern')
-    .attr('id', 'pie-pattern')
-    .attr('patternUnits', 'userSpaceOnUse')
-    .attr('width', '4')
-    .attr('height', '3')
-  pattern.append('path')
-    .attr('d', 'M0,0 L4,0 M0,1 L4,1')
-    .attr('stroke', '#000')
-    .attr('stroke-width', 1);
-
-  // Main group
-  var mask = svg.append('mask')
-    .attr('id', 'pie-mask')
-    .attr('width', size.width)
-    .attr('height', size.height);
-  mask.append('rect')
-    .attr('transform', 'translate(' + -size.radius + ',' + -size.radius + ')')
-    .attr('width', size.width)
-    .attr('height', size.height)
-    .attr('fill', 'url(#radial-mask-gradient)');
-
-  var g = svg.append('g')
-    .attr('transform', 'translate(' + (size.width / 2) + ',' + size.radius + ')')
-    .attr('class', 'pie-chart');
-
-  // Pattern slices
-  var patternArcs = g.selectAll('.pattern-arc')
-      .data(pie(data)).enter()
-      .append('g')
-        .attr('class', 'pattern-arc');
-  patternArcs.append('path')
-    .style('fill', 'url(#pie-pattern)')
-    .each(function(d) { this._current = d; })
-    .transition()
-      .duration(1000)
-      .attrTween('d', function(d) {
-        var i = d3.interpolate(d.startAngle, d.endAngle);
-        return function(t) {
-          d.endAngle = i(t);
-          return arc(d);
-        }
+  d3.csv('./data/funding_equity.csv', function(d) {
+    adjustedData = {
+      name: d['Sector'],
+      types: [
+        {name: 'Equity', years: [
+          {year: 2015, quarters: [
+            {quarter: 'Q1', value: isNaN(+d['2015 Q1']) ? 0 : +d['2015 Q1']},
+            {quarter: 'Q2', value: isNaN(+d['2015 Q1']) ? 0 : +d['2015 Q2']},
+            {quarter: 'Q3', value: isNaN(+d['2015 Q1']) ? 0 : +d['2015 Q3']},
+            {quarter: 'Q4', value: isNaN(+d['2015 Q1']) ? 0 : +d['2015 Q4']},
+          ]},
+          {year: 2014, quarters: [
+            {quarter: 'Q1', value: isNaN(+d['2014 Q1']) ? 0 : +d['2014 Q1']},
+            {quarter: 'Q2', value: isNaN(+d['2014 Q1']) ? 0 : +d['2014 Q2']},
+            {quarter: 'Q3', value: isNaN(+d['2014 Q1']) ? 0 : +d['2014 Q3']},
+            {quarter: 'Q4', value: isNaN(+d['2014 Q1']) ? 0 : +d['2014 Q4']},
+          ]},
+          {year: 2013, quarters: [
+            {quarter: 'Q1', value: isNaN(+d['2013 Q1']) ? 0 : +d['2013 Q1']},
+            {quarter: 'Q2', value: isNaN(+d['2013 Q1']) ? 0 : +d['2013 Q2']},
+            {quarter: 'Q3', value: isNaN(+d['2013 Q1']) ? 0 : +d['2013 Q3']},
+            {quarter: 'Q4', value: isNaN(+d['2013 Q1']) ? 0 : +d['2013 Q4']},
+          ]},
+        ]},
+      ],
+    };
+    adjustedData.types.forEach(function(type) {
+      if (type.name === 'Equity') {
+        type.years.forEach(function(year) {
+          year.value = year.quarters.reduce(function(num, quarter) { return num + quarter.value; }, 0);
+        });
+      }
+    });
+    return adjustedData;
+  }, function(error, equityData) {
+    cedFundingData = equityData;
+    d3.csv('./data/funding_ga.csv', function(d) {
+      return {
+        name: d['Sector'],
+        years: [
+          {year: 2015, value: isNaN(+d['2015']) ? 0 : +d['2015']},
+          {year: 2014, value: isNaN(+d['2014']) ? 0 : +d['2014']},
+          {year: 2013, value: isNaN(+d['2013']) ? 0 : +d['2013']},
+        ],
+      };
+    }, function(error, grantData) {
+      grantData.forEach(function(gd) {
+        var fundingData = cedFundingData.find(function(d) { return d.name === gd.name; });
+        fundingData.types.push({name: 'Grants & Awards', years: gd.years});
       });
 
-  // Gradient stroke slices
-  var outerArcs = g.selectAll('.outer-arc')
-    .data(pie(data)).enter()
-    .append('g')
-      .attr('class', 'outer-arc');
-  outerArcs.append('path')
-    .style('fill', function(d) { return colors(d.data.sector).value; })
-    .each(function(d) { this._current = d; })
-    .transition()
-      .duration(1000)
-      .attrTween('d', function(d) {
-        var i = d3.interpolate(d.startAngle, d.endAngle);
-        return function(t) {
-          d.endAngle = i(t);
-          return outerArc(d);
-        }
+      var currentPieData = getCurrentPieData();
+
+      console.log('currentPieData', currentPieData);
+      console.log('cedFundingData', cedFundingData);
+
+      var pieSectionSelector = '.funding-left';
+      var $pieSection = $(pieSectionSelector);
+
+      var size = {
+        width: $pieSection.width(),
+        height: $pieSection.height()
+      };
+      size.radius = Math.min(size.width, size.height) / 2;
+
+      var colors = d3.scale.ordinal().range(cedDataColors);
+      fundingPie = d3.layout.pie()
+        .value(function(d) { return getFundingPieValue(d); })
+        .sort(null);
+
+      fundingArc = d3.svg.arc()
+        .innerRadius(0)
+        .outerRadius(size.radius - 2);
+
+      fundingOuterArc = d3.svg.arc()
+        .innerRadius(size.radius - 2)
+        .outerRadius(size.radius);
+
+      var svg = d3.select(pieSectionSelector)
+        .append('svg')
+          .attr('width', size.width)
+          .attr('height', size.height);
+
+      var defs = svg.append('defs');
+      var pattern = createLinePattern(defs).attr('id', 'pie-pattern');
+      var maskGadient = defs.append('radialGradient')
+        .attr('id', 'radial-mask-gradient')
+      maskGadient.append('stop')
+        .attr('offset', '0%')
+        .attr('stop-color', '#fff')
+        .attr('stop-opacity', 0);
+      maskGadient.append('stop')
+        .attr('offset', '100%')
+        .attr('stop-color', '#fff')
+        .attr('stop-opacity', 1);
+
+      var mask = svg.append('mask')
+        .attr('id', 'pie-mask')
+        .attr('width', size.width)
+        .attr('height', size.height);
+      mask.append('rect')
+        .attr('transform', 'translate(' + -size.radius + ',' + -size.radius + ')')
+        .attr('width', size.width)
+        .attr('height', size.height)
+        .attr('fill', 'url(#radial-mask-gradient)');
+
+      var g = svg.append('g')
+        .attr('transform', 'translate(' + (size.width / 2) + ',' + size.radius + ')')
+        .attr('class', 'pie-chart');
+
+      // Pattern slices
+      var patternArcs = g.selectAll('.pattern-arc')
+        .data(fundingPie(currentPieData)).enter()
+        .append('g')
+          .attr('class', 'pattern-arc');
+      patternArcs.append('path')
+        .style('fill', 'url(#pie-pattern)')
+        .each(function(d) { this._current = d; })
+        .transition()
+          .duration(1000)
+          .attrTween('d', function(d) {
+            var i = d3.interpolate(d.startAngle, d.endAngle);
+            return function(t) {
+              d.endAngle = i(t);
+              return fundingArc(d);
+            }
+          });
+
+      // Gradient stroke slices
+      var outerArcs = g.selectAll('.outer-arc')
+        .data(fundingPie(currentPieData)).enter()
+        .append('g')
+          .attr('class', 'outer-arc');
+      outerArcs.append('path')
+        .style('fill', function(d) { return colors(d.data.name).value; })
+        .each(function(d) { this._current = d; })
+        .transition()
+          .duration(1000)
+          .attrTween('d', function(d) {
+            var i = d3.interpolate(d.startAngle, d.endAngle);
+            return function(t) {
+              d.endAngle = i(t);
+              return fundingOuterArc(d);
+            }
+          });
+
+      // Pie slices
+      var arcs = g.selectAll('.arc')
+        .data(fundingPie(currentPieData))
+      arcs.enter().append('g')
+        .attr('class', 'arc is-animating')
+        .attr('mask', 'url(#pie-mask)');
+      arcs.append('path')
+        .attr('class', 'is-animating')
+        .style('fill', function(d) { return colors(d.data.name).value; })
+        .style('fill-opacity', 0.25)
+        .each(function(d) { this._current = d; })
+        .on('mouseover', function(d, i) {
+          if (!d3.select(this).classed('is-animating')) {
+            d3.select(this).transition()
+              .duration(250)
+              .style('fill-opacity', 0.5);
+            d3.select(this.parentNode)
+              .attr('mask', '');
+
+            d3.selectAll('.funding-bar').transition()
+              .duration(250)
+              .attr('opacity', function(d, j) { return i === j ? 1 : 0.25; });
+          }
+        })
+        .on('mouseout', function(d, i) {
+          if (!d3.select(this).classed('is-animating')) {
+            d3.select(this).transition()
+              .duration(250)
+              .style('fill-opacity', 0.25);
+            d3.select(this.parentNode)
+              .attr('mask', 'url(#pie-mask)');
+
+            d3.selectAll('.funding-bar').transition()
+              .duration(250)
+              .attr('opacity', 1);
+          }
+        })
+        .transition()
+          .duration(1000)
+          .attrTween('d', function(d) {
+            var i = d3.interpolate(d.startAngle, d.endAngle);
+            return function(t) {
+              d.endAngle = i(t);
+              return fundingArc(d);
+            }
+          }).each('end', function() {
+            d3.select(this).classed('is-animating', false);
+          });
+
+      // Pie text
+      g.append('text')
+        .text(getFundingPieTitle())
+        .attr('x', 0)
+        .attr('y', -80)
+        .attr('class', 'funding-pie-title pie-title f-inputsans f-thin f-italic fs-h2 text-shadow-large no-pointer-event')
+        .attr('fill', '#fff')
+        .attr('text-anchor', 'middle')
+        .attr('fill-opacity', 0)
+        .transition()
+          .duration(1000)
+          .attr('y', -40)
+          .attr('fill-opacity', 1);
+
+      g.append('text')
+        .text(convertToDollars(getFundingPieTotal(currentPieData)))
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr('class', 'funding-pie-subtitle pie-title f-adelle f-bold fs-h1 text-shadow-large no-pointer-event')
+        .attr('fill', '#fff')
+        .attr('text-anchor', 'middle')
+        .attr('fill-opacity', 0)
+        .transition()
+          .duration(1000)
+          .attr('y', 40)
+          .attr('fill-opacity', 1);
+
+      // Initial svg and bar chart values
+      var barSectionSelector = '.funding-right';
+      var $barSection = $(barSectionSelector);
+
+      var size = {
+        width: $barSection.width(),
+        barHeight: 36
+      };
+      var barComponentHeight = $('.funding-right').height() - $('.funding-share-box').outerHeight();
+      barComponentHeight = (barComponentHeight / 4 - size.barHeight) / 2;
+      barComponentHeight = Math.min(barComponentHeight, size.barHeight);
+      size.titleHeight = barComponentHeight;
+      size.barBottomPadding = barComponentHeight;
+
+      var barTotals = getFundingBarTotals(currentPieData);
+      fundingX = d3.scale.linear()
+        .domain([0, d3.max(barTotals)])
+        .range([0, size.width]);
+
+      var chart = d3.select(barSectionSelector)
+        .append('svg')
+          .attr('width', size.width)
+          .attr('height', (size.barHeight + size.titleHeight + size.barBottomPadding) * currentPieData.length);
+
+      var chartDefs = chart.append('defs');
+
+      // Gradients
+      cedDataColors.forEach(function(color) {
+        var gradient = chartDefs.append('linearGradient')
+          .attr('id', color.name + '-gradient');
+
+        gradient.append('stop')
+          .attr('offset', '0%')
+          .attr('stop-color', color.value)
+          .attr('stop-opacity', 0.6);
+
+        gradient.append('stop')
+          .attr('offset', '100%')
+          .attr('stop-color', color.value)
+          .attr('stop-opacity', 0.1);
       });
 
-  // Pie slices
-  var arcs = g.selectAll('.arc')
-    .data(pie(data))
-  arcs.enter().append('g')
-    .attr('class', 'arc is-animating')
-    .attr('mask', 'url(#pie-mask)');
-  arcs.append('path')
+      // Bars
+      var bars = chart.append('g')
+        .attr('class', 'funding-bars');
+
+      var bar = bars.selectAll('g')
+        .data(currentPieData).enter()
+        .append('g')
+          .attr('transform', function(d, i) {
+            return 'translate(0,' + ((size.barHeight + size.titleHeight + size.barBottomPadding) * i) + ')';
+          })
+          .attr('class', 'funding-bar is-animating')
+          .on('mouseover', function(d, i) {
+            if (!d3.select(this).classed('is-animating')) {
+              d3.selectAll('.funding-bar').transition()
+                .duration(250)
+                .attr('opacity', function(d, j) { return i === j ? 1 : 0.25; });
+
+              var pieSlice = d3.selectAll('.arc path')[0][i];
+              d3.select(pieSlice).transition()
+                .duration(250)
+                .style('fill-opacity', 0.5);
+              d3.select(pieSlice.parentNode)
+                .attr('mask', '');
+            }
+          })
+          .on('mouseout', function(d, i) {
+            if (!d3.select(this).classed('is-animating')) {
+              d3.selectAll('.funding-bar').transition()
+                .duration(250)
+                .attr('opacity', 1);
+
+              var pieSlice = d3.selectAll('.arc path')[0][i];
+              d3.select(pieSlice).transition()
+                .duration(250)
+                .style('fill-opacity', 0.25);
+              d3.select(pieSlice.parentNode)
+                .attr('mask', 'url(#pie-mask)');
+            }
+          });
+
+      bar.append('rect')
+        .attr('width', size.width)
+        .attr('height', size.titleHeight + size.barHeight)
+        .attr('opacity', 0);
+
+      bar.append('text')
+        .text(function(d, i) { return d.name; })
+        .attr('x', -30)
+        .attr('y', size.titleHeight / 2)
+        .attr('class', 'funding-bar-title f-inputsans f-light f-italic fs-h3 no-pointer-event')
+        .attr('fill', '#fff')
+        .attr('fill-opacity', 0)
+        .transition()
+          .duration(1000)
+          .delay(function(d, i) { return i * 150; })
+          .attr('x', 0)
+          .attr('fill-opacity', 1);
+
+      bar.append('rect')
+        .attr('class', 'funding-bar-bg')
+        .attr('width', 0)
+        .attr('height', size.barHeight)
+        .attr('y', size.titleHeight)
+        .attr('fill', function(d) { return 'url(#' + colors(d.name).name + '-gradient)'; })
+        .transition()
+          .duration(1000)
+          .delay(function(d, i) { return i * 150; })
+          .attr('width', function(d) { return fundingX(getFundingSectorTotal(d)); })
+          .each('end', function() {
+            d3.select(this.parentNode).classed('is-animating', false);
+          });
+
+      bar.append('text')
+        .text(function(d) { return convertToDollars(getFundingSectorTotal(d)); })
+        .attr('x', 10)
+        .attr('y', size.titleHeight + size.barHeight / 2)
+        .attr('dy', '.35em')
+        .attr('class', 'funding-bar-text f-adelle f-light no-pointer-event')
+        .attr('fill', '#fff')
+        .attr('fill-opacity', 0)
+        .transition()
+          .duration(1000)
+          .delay(function(d, i) { return i * 150; })
+          .attr('fill-opacity', 1);
+
+      // Filtering
+      $('.js-funding-filter-year').click(function(event) {
+        var year = $(this).attr('data-year');
+        fundingFilter.year = parseInt(year);
+        refreshFundingFilterBar();
+        updateFundingPieData();
+      });
+
+      // $('.js-funding-filter-type').click(function(event) {
+      //   var type = $(this).attr('data-type');
+      //   fundingFilter.type = type;
+      //   var newData = getFundingPieData();
+
+      //   refreshFundingFilterBar();
+      //   updateFundingSection(newData);
+      // });
+    });
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+  // var updateFundingSection = function(newData) {
+  //   var total = newData.reduce(function(num, d) { return num + d.value; }, 0);
+  //   var isEmpty = total === 0;
+
+  //   if (isEmpty) {
+  //     pieData = newData.map(function(d) {
+  //       return {
+  //         sector: d.sector,
+  //         value: 1
+  //       };
+  //     });
+  //   } else {
+  //     pieData = newData;
+  //   }
+
+
+
+
+  // };
+};
+
+var updateFundingPieData = function() {
+  var currentPieData = getCurrentPieData();
+  d3.selectAll('.arc path').data(fundingPie(currentPieData))
     .attr('class', 'is-animating')
-    .style('fill', function(d) { return colors(d.data.sector).value; })
-    .style('fill-opacity', 0.25)
-    .each(function(d) { this._current = d; })
-    .on('mouseover', function(d, i) {
-      if (!d3.select(this).classed('is-animating')) {
-        d3.select(this).transition()
-          .duration(250)
-          .style('fill-opacity', 0.5);
-        d3.select(this.parentNode)
-          .attr('mask', '');
-
-        d3.selectAll('.funding-bar').transition()
-          .duration(250)
-          .attr('opacity', function(d, j) { return i === j ? 1 : 0.25; });
-      }
-    })
-    .on('mouseout', function(d, i) {
-      if (!d3.select(this).classed('is-animating')) {
-        d3.select(this).transition()
-          .duration(250)
-          .style('fill-opacity', 0.25);
-        d3.select(this.parentNode)
-          .attr('mask', 'url(#pie-mask)');
-
-        d3.selectAll('.funding-bar').transition()
-          .duration(250)
-          .attr('opacity', 1);
-      }
-    })
     .transition()
       .duration(1000)
       .attrTween('d', function(d) {
-        var i = d3.interpolate(d.startAngle, d.endAngle);
+        var i = d3.interpolate(this._current, d);
+        this._current = i(0);
         return function(t) {
-          d.endAngle = i(t);
-          return arc(d);
-        }
+          return fundingArc(i(t));
+        };
       }).each('end', function() {
         d3.select(this).classed('is-animating', false);
       });
 
-  // Pie text
-  g.append('text')
-    .text(getFundingPieTitle())
-    .attr('x', 0)
-    .attr('y', -80)
-    .attr('class', 'funding-pie-title pie-title f-inputsans f-thin f-italic fs-h2 text-shadow-large no-pointer-event')
-    .attr('fill', '#fff')
-    .attr('text-anchor', 'middle')
-    .attr('fill-opacity', 0)
+  d3.selectAll('.outer-arc path').data(fundingPie(currentPieData))
     .transition()
       .duration(1000)
-      .attr('y', -40)
-      .attr('fill-opacity', 1);
-
-  var equityTotal = data.reduce(function(num, d) { return num + d.value; }, 0);
-  g.append('text')
-    .text(convertToDollars(equityTotal))
-    .attr('x', 0)
-    .attr('y', 0)
-    .attr('class', 'funding-pie-subtitle pie-title f-adelle f-bold fs-h1 text-shadow-large no-pointer-event')
-    .attr('fill', '#fff')
-    .attr('text-anchor', 'middle')
-    .attr('fill-opacity', 0)
-    .transition()
-      .duration(1000)
-      .attr('y', 40)
-      .attr('fill-opacity', 1);
-
-  // Initial svg and bar chart values
-  var barSectionSelector = '.funding-right';
-  var $barSection = $(barSectionSelector);
-
-  var size = {
-    width: $barSection.width(),
-    barHeight: 36
-  };
-  var barComponentHeight = $('.funding-right').height() - $('.funding-share-box').outerHeight();
-  barComponentHeight = (barComponentHeight / 4 - size.barHeight) / 2;
-  barComponentHeight = Math.min(barComponentHeight, size.barHeight);
-  size.titleHeight = barComponentHeight;
-  size.barBottomPadding = barComponentHeight;
-
-  var barTotals = data.map(function(d) { return d.value; });
-  var x = d3.scale.linear()
-    .domain([0, d3.max(barTotals)])
-    .range([0, size.width]);
-
-  var chart = d3.select(barSectionSelector)
-    .append('svg')
-      .attr('width', size.width)
-      .attr('height', (size.barHeight + size.titleHeight + size.barBottomPadding) * data.length);
-
-  var chartDefs = chart.append('defs')
-
-  // Gradients
-  cedDataColors.forEach(function(color) {
-    var gradient = chartDefs.append('linearGradient')
-      .attr('id', color.name + '-gradient');
-
-    gradient.append('stop')
-      .attr('offset', '0%')
-      .attr('stop-color', color.value)
-      .attr('stop-opacity', 0.6);
-
-    gradient.append('stop')
-      .attr('offset', '100%')
-      .attr('stop-color', color.value)
-      .attr('stop-opacity', 0.1);
-  });
-
-  // Bars
-  var bars = chart.append('g')
-    .attr('class', 'funding-bars');
-
-  var bar = bars.selectAll('g')
-    .data(data).enter()
-    .append('g')
-      .attr('transform', function(d, i) {
-        return 'translate(0,' + ((size.barHeight + size.titleHeight + size.barBottomPadding) * i) + ')';
-      })
-      .attr('class', 'funding-bar is-animating')
-      .on('mouseover', function(d, i) {
-        if (!d3.select(this).classed('is-animating')) {
-          d3.selectAll('.funding-bar').transition()
-            .duration(250)
-            .attr('opacity', function(d, j) { return i === j ? 1 : 0.25; });
-
-          var pieSlice = d3.selectAll('.arc path')[0][i];
-          d3.select(pieSlice).transition()
-            .duration(250)
-            .style('fill-opacity', 0.5);
-          d3.select(pieSlice.parentNode)
-            .attr('mask', '');
-        }
-      })
-      .on('mouseout', function(d, i) {
-        if (!d3.select(this).classed('is-animating')) {
-          d3.selectAll('.funding-bar').transition()
-            .duration(250)
-            .attr('opacity', 1);
-
-          var pieSlice = d3.selectAll('.arc path')[0][i];
-          d3.select(pieSlice).transition()
-            .duration(250)
-            .style('fill-opacity', 0.25);
-          d3.select(pieSlice.parentNode)
-            .attr('mask', 'url(#pie-mask)');
-        }
+      .attrTween('d', function(d) {
+        var i = d3.interpolate(this._current, d);
+        this._current = i(0);
+        return function(t) {
+          return fundingOuterArc(i(t));
+        };
       });
 
-  bar.append('rect')
-    .attr('width', size.width)
-    .attr('height', size.titleHeight + size.barHeight)
-    .attr('opacity', 0);
-
-  bar.append('text')
-    .text(function(d, i) { return d.sector; })
-    .attr('x', -30)
-    .attr('y', size.titleHeight / 2)
-    .attr('class', 'funding-bar-title f-inputsans f-light f-italic fs-h3 no-pointer-event')
-    .attr('fill', '#fff')
-    .attr('fill-opacity', 0)
+  d3.selectAll('.pattern-arc path').data(fundingPie(currentPieData))
     .transition()
       .duration(1000)
-      .delay(function(d, i) { return i * 150; })
-      .attr('x', 0)
+      .attrTween('d', function(d) {
+        var i = d3.interpolate(this._current, d);
+        this._current = i(0);
+        return function(t) {
+          return fundingArc(i(t));
+        };
+      });
+
+  d3.select('.funding-pie-title')
+    .transition()
+      .duration(500)
+      .attr('fill-opacity', 0)
+    .transition()
+      .duration(500)
+      .delay(1000)
+      .text(getFundingPieTitle())
+      .attr('fill-opacity', 1);
+  d3.select('.funding-pie-subtitle')
+    .transition()
+      .duration(500)
+      .attr('fill-opacity', 0)
+    .transition()
+      .duration(500)
+      .delay(1000)
+      .text(convertToDollars(getFundingPieTotal(currentPieData)))
       .attr('fill-opacity', 1);
 
-  bar.append('rect')
-    .attr('class', 'funding-bar-bg')
-    .attr('width', 0)
-    .attr('height', size.barHeight)
-    .attr('y', size.titleHeight)
-    .attr('fill', function(d) { return 'url(#' + colors(d.sector).name + '-gradient)'; })
+  d3.selectAll('.funding-bar').classed('is-animating', true);
+
+  d3.selectAll('.funding-bar-bg').data(currentPieData)
     .transition()
       .duration(1000)
       .delay(function(d, i) { return i * 150; })
-      .attr('width', function(d) { return x(d.value); })
+      .attr('width', function(d) { return fundingX(getFundingSectorTotal(d)); })
       .each('end', function() {
         d3.select(this.parentNode).classed('is-animating', false);
       });
 
-  bar.append('text')
-    .text(function(d) { return convertToDollars(d.value); })
-    .attr('x', 10)
-    .attr('y', size.titleHeight + size.barHeight / 2)
-    .attr('dy', '.35em')
-    .attr('class', 'funding-bar-text f-adelle f-light no-pointer-event')
-    .attr('fill', '#fff')
-    .attr('fill-opacity', 0)
+  d3.selectAll('.funding-bar-text').data(currentPieData)
     .transition()
-      .duration(1000)
-      .delay(function(d, i) { return i * 150; })
+      .duration(500)
+      .attr('fill-opacity', 0)
+    .transition()
+      .duration(500)
+      .delay(1000)
+      .text(function(d) { return convertToDollars(getFundingSectorTotal(d)); })
       .attr('fill-opacity', 1);
-
-  // Filtering
-  $('.js-funding-filter-year').click(function(event) {
-    var year = $(this).attr('data-year');
-    fundingFilter.year = parseInt(year);
-    var newData = getFundingPieData();
-
-    refreshFundingFilterBar();
-    updateFundingSection(newData);
-  });
-
-  $('.js-funding-filter-type').click(function(event) {
-    var type = $(this).attr('data-type');
-    fundingFilter.type = type;
-    var newData = getFundingPieData();
-
-    refreshFundingFilterBar();
-    updateFundingSection(newData);
-  });
-
-  var updateFundingSection = function(newData) {
-    var total = newData.reduce(function(num, d) { return num + d.value; }, 0);
-    var isEmpty = total === 0;
-
-    if (isEmpty) {
-      pieData = newData.map(function(d) {
-        return {
-          sector: d.sector,
-          value: 1
-        };
-      });
-    } else {
-      pieData = newData;
-    }
-
-    d3.selectAll('.arc path').data(pie(pieData))
-      .attr('class', 'is-animating')
-      .transition()
-        .duration(1000)
-        .attrTween('d', function(d) {
-          var i = d3.interpolate(this._current, d);
-          this._current = i(0);
-          return function(t) {
-            return arc(i(t));
-          };
-        }).each('end', function() {
-          d3.select(this).classed('is-animating', false);
-        });
-
-    d3.selectAll('.outer-arc path').data(pie(pieData))
-      .transition()
-        .duration(1000)
-        .attrTween('d', function(d) {
-          var i = d3.interpolate(this._current, d);
-          this._current = i(0);
-          return function(t) {
-            return outerArc(i(t));
-          };
-        });
-
-    d3.selectAll('.pattern-arc path').data(pie(pieData))
-      .transition()
-        .duration(1000)
-        .attrTween('d', function(d) {
-          var i = d3.interpolate(this._current, d);
-          this._current = i(0);
-          return function(t) {
-            return arc(i(t));
-          };
-        });
-
-    d3.select('.funding-pie-title')
-      .transition()
-        .duration(500)
-        .attr('fill-opacity', 0)
-      .transition()
-        .duration(500)
-        .delay(1000)
-        .text(getFundingPieTitle())
-        .attr('fill-opacity', 1);
-    d3.select('.funding-pie-subtitle')
-      .transition()
-        .duration(500)
-        .attr('fill-opacity', 0)
-      .transition()
-        .duration(500)
-        .delay(1000)
-        .text(convertToDollars(total))
-        .attr('fill-opacity', 1);
-
-    d3.selectAll('.funding-bar').classed('is-animating', true);
-
-    d3.selectAll('.funding-bar-bg').data(newData)
-      .transition()
-        .duration(1000)
-        .delay(function(d, i) { return i * 150; })
-        .attr('width', function(d) { return x(d.value); })
-        .each('end', function() {
-          d3.select(this.parentNode).classed('is-animating', false);
-        });
-
-    d3.selectAll('.funding-bar-text').data(newData)
-      .transition()
-        .duration(500)
-        .attr('fill-opacity', 0)
-      .transition()
-        .duration(500)
-        .delay(1000)
-        .text(function(d) { return convertToDollars(d.value); })
-        .attr('fill-opacity', 1);
-  };
 };
+
+var getCurrentPieData = function() {
+  var filteredData = $.extend(true, [], cedFundingData);
+  var filteredData = filterFundingDataByYear(filteredData, fundingFilter.year);
+  return filteredData;
+};
+
+var getFundingPieValue = function(d) {
+  return d.types.reduce(function(num1, type) {
+    return num1 + type.years.reduce(function(num2, year) {
+      return num2 + year.value;
+    }, 0);
+  }, 0);
+};
+
+var filterFundingDataByYear = function(data, year) {
+  data.forEach(function(sector) {
+    sector.types = filterFundingDataTypesByYear(sector.types, year);
+  });
+  return data;
+};
+
+var filterFundingDataTypesByYear = function(types, year) {
+  types.forEach(function(type) {
+    type.years = type.years.filter(function(y) { return y.year === year; });
+  });
+  return types;
+};
+
+var getFundingSectorTotal = function(sector) {
+  return sector.types.reduce(function(num1, type) {
+    return num1 + type.years.reduce(function(num2, year) {
+      return num2 + year.value;
+    }, 0);
+  }, 0);
+};
+
+var getFundingPieTotal = function(data) {
+  console.log('getFundingPieTotal',data)
+  return data.reduce(function(num, sector) {
+    return num + getFundingSectorTotal(sector)
+  }, 0);
+};
+
+var getFundingBarTotals = function(data) {
+  return data.map(function(sector) {
+    return getFundingSectorTotal(sector);
+  });
+};
+
+
+
+
+
+
+// var getFundingEquityTotal = function() {
+//   var total = cedFundingData.reduce(function(num, sector) {
+//     return num + getFundingEquityYearsTotal(sector.years);
+//   }, 0);
+//   return total;
+// };
+
+// var getFundingEquityYearsTotal = function(years) {
+//   return years.reduce(function(num, year) {
+//     return num + getFundingEquityQuartersTotal(year.quarters);
+//   }, 0);
+// }
+
+// var getFundingEquityQuartersTotal = function(quarters) {
+//   return quarters.reduce(function(num, quarter) {
+//     return num + quarter.value;
+//   }, 0);
+// }
+
+// var getFundingGrantTotal = function() {
+//   var total = cedFundingData.reduce(function(num, sector) {
+//     return num + getFundingGrantYearsTotal(sector.years);
+//   }, 0);
+//   return total;
+// };
+
+// var getFundingGrantYearsTotal = function(years) {
+//   return years.reduce(function(num, year) {
+//     return num + year.value;
+//   }, 0);
+// }
+
+
+
+
+
+
+
+
+
 
 var getFundingPieTitle = function() {
   var str = fundingFilter.year;
@@ -829,161 +853,161 @@ var getFundingPieTitle = function() {
   return str;
 };
 
-var getFundingPieData = function() {
-  if (fundingFilter.type === 'All') {
-    return filterFundingByYear();
-  }
-  return filterFundingByTypeAndYear();
-};
+// var getFundingPieData = function() {
+//   if (fundingFilter.type === 'All') {
+//     return filterFundingByYear();
+//   }
+//   return filterFundingByTypeAndYear();
+// };
 
-var filterFundingByYear = function() {
-  return cedData.map(function(data) {
-    var filteredData = {sector: data.sector};
-    filteredData.value = data.funding.reduce(function(num1, type) {
-      return num1 + type.data.reduce(function(num2, year) {
-        if (year.year === fundingFilter.year) {
-          if (year.data) {
-            return year.data.reduce(function(num3, quarter) {
-              return num3 + quarter.value;
-            }, 0);
-          }
-          return num2 + year.value;
-        }
-        return num2 + 0;
-      }, 0);
-    }, 0);
-    return filteredData;
-  });
-};
+// var filterFundingByYear = function() {
+//   return cedData.map(function(data) {
+//     var filteredData = {sector: data.sector};
+//     filteredData.value = data.funding.reduce(function(num1, type) {
+//       return num1 + type.data.reduce(function(num2, year) {
+//         if (year.year === fundingFilter.year) {
+//           if (year.data) {
+//             return year.data.reduce(function(num3, quarter) {
+//               return num3 + quarter.value;
+//             }, 0);
+//           }
+//           return num2 + year.value;
+//         }
+//         return num2 + 0;
+//       }, 0);
+//     }, 0);
+//     return filteredData;
+//   });
+// };
 
-var filterFundingByTypeAndYear = function() {
-  return cedData.map(function(data) {
-    var filteredData = {sector: data.sector};
-    var type = data.funding.find(function(d) { return d.type === fundingFilter.type });
-    filteredData.value = type.data.reduce(function(num2, year) {
-      if (year.year === fundingFilter.year) {
-        if (year.data) {
-          return year.data.reduce(function(num3, quarter) {
-            return num3 + quarter.value;
-          }, 0);
-        }
-        return num2 + year.value;
-      }
-      return num2 + 0;
-    }, 0);
-    return filteredData;
-  });
-};
-
-
+// var filterFundingByTypeAndYear = function() {
+//   return cedData.map(function(data) {
+//     var filteredData = {sector: data.sector};
+//     var type = data.funding.find(function(d) { return d.type === fundingFilter.type });
+//     filteredData.value = type.data.reduce(function(num2, year) {
+//       if (year.year === fundingFilter.year) {
+//         if (year.data) {
+//           return year.data.reduce(function(num3, quarter) {
+//             return num3 + quarter.value;
+//           }, 0);
+//         }
+//         return num2 + year.value;
+//       }
+//       return num2 + 0;
+//     }, 0);
+//     return filteredData;
+//   });
+// };
 
 
 
-var getFundingPieSliceData = function() {
-  var data = cedData;
-  data = filterFundingBySector(data);
 
 
-  // data = filterFundingBySectorType(data);
-  // data = filterFundingBySectorTypeYear(data);
-  // if (data) {
-  //   data = filterFundingBySectorTypeYearQuarter(data);
-  // }
+// var getFundingPieSliceData = function() {
+//   var data = cedData;
+//   data = filterFundingBySector(data);
 
-  // console.log(data)
 
-  return data;
-  // var data;
+//   // data = filterFundingBySectorType(data);
+//   // data = filterFundingBySectorTypeYear(data);
+//   // if (data) {
+//   //   data = filterFundingBySectorTypeYearQuarter(data);
+//   // }
 
-  // // Sector
-  // if (fundingFilter.sector === 'All') {
-  //   data = cedData.map(function(obj) { return obj.funding; });
-  // } else {
-  //   var sector = cedData.find(function(obj) { return obj.sector === fundingFilter.sector; });
-  //   data = [sector.funding];
-  // }
+//   // console.log(data)
 
-  // // Type
-  // data = data.map(function(obj) {
-  //   if (fundingFilter.type === 'All') {
-  //     return obj.map(function(o) { return o.data; });
-  //   } else {
-  //     var type = obj.find(function(o) { return o.type === fundingFilter.type; });
-  //     return type.data;
-  //   }
-  // });
+//   return data;
+//   // var data;
 
-  // // Year
-  // data = data.map(function(obj) {
-  //   var years = obj.map(function(o) {
-  //     console.log(o)
-  //     return o.filter(function(d) { return d.year === fundingFilter.year });
-  //   });
-  //   return years.filter(function(o) { return o.length; });
-  // });
-  // data = data.map(function(obj) { return obj[0]; });
+//   // // Sector
+//   // if (fundingFilter.sector === 'All') {
+//   //   data = cedData.map(function(obj) { return obj.funding; });
+//   // } else {
+//   //   var sector = cedData.find(function(obj) { return obj.sector === fundingFilter.sector; });
+//   //   data = [sector.funding];
+//   // }
 
-  // // Quarter
-  // data = data.map(function(obj) {
-  //   if (fundingFilter.quarter === 'All') {
-  //     return obj.map(function(o) { return o.data; });
-  //   } else {
-  //     var quarter = obj.find(function(o) { return o.quarter === fundingFilter.quarter; });
-  //     return quarter;
-  //   }
-  // });
+//   // // Type
+//   // data = data.map(function(obj) {
+//   //   if (fundingFilter.type === 'All') {
+//   //     return obj.map(function(o) { return o.data; });
+//   //   } else {
+//   //     var type = obj.find(function(o) { return o.type === fundingFilter.type; });
+//   //     return type.data;
+//   //   }
+//   // });
 
-  // console.log(data);
+//   // // Year
+//   // data = data.map(function(obj) {
+//   //   var years = obj.map(function(o) {
+//   //     console.log(o)
+//   //     return o.filter(function(d) { return d.year === fundingFilter.year });
+//   //   });
+//   //   return years.filter(function(o) { return o.length; });
+//   // });
+//   // data = data.map(function(obj) { return obj[0]; });
 
-  // return data;
-};
+//   // // Quarter
+//   // data = data.map(function(obj) {
+//   //   if (fundingFilter.quarter === 'All') {
+//   //     return obj.map(function(o) { return o.data; });
+//   //   } else {
+//   //     var quarter = obj.find(function(o) { return o.quarter === fundingFilter.quarter; });
+//   //     return quarter;
+//   //   }
+//   // });
 
-var filterFundingBySector = function(data) {
-  if (fundingFilter.sector === 'All') {
-    return filterFundingSectorsByType(data);
-  }
-  var sector = data.find(function(d) { return d.sector === fundingFilter.sector; });
-  return filterFundingSectorByType(sector);
-};
+//   // console.log(data);
 
-var filterFundingSectorsByType = function(sectors) {
-  return sectors.map(function(sector) { return filterFundingSectorByType(sector)});
-};
+//   // return data;
+// };
 
-var filterFundingSectorByType = function(sector) {
-  if (fundingFilter.type === 'All') {
-    return filterFundingTypesByYear(sector.funding);
-  }
-  var type = sector.funding.find(function(s) { return s.type === fundingFilter.type; });
-  return filterFundingTypeByYear(type);
-};
+// var filterFundingBySector = function(data) {
+//   if (fundingFilter.sector === 'All') {
+//     return filterFundingSectorsByType(data);
+//   }
+//   var sector = data.find(function(d) { return d.sector === fundingFilter.sector; });
+//   return filterFundingSectorByType(sector);
+// };
 
-var filterFundingTypesByYear = function(types) {
-  return types.map(function(type) { return filterFundingTypeByYear(type)});
-}
+// var filterFundingSectorsByType = function(sectors) {
+//   return sectors.map(function(sector) { return filterFundingSectorByType(sector)});
+// };
 
-var filterFundingTypeByYear = function(type) {
-  var year = type.data.find(function(t) { return t.year === fundingFilter.year; });
-  if (year) {
-    return filterFundingYearByQuarter(year);
-  }
-  return 0;
-}
+// var filterFundingSectorByType = function(sector) {
+//   if (fundingFilter.type === 'All') {
+//     return filterFundingTypesByYear(sector.funding);
+//   }
+//   var type = sector.funding.find(function(s) { return s.type === fundingFilter.type; });
+//   return filterFundingTypeByYear(type);
+// };
 
-var filterFundingYearByQuarter = function(year) {
-  if (year.data) {
-    if (fundingFilter.quarter === 'All') {
-      return filterFundingQuarters(year.data);
-    }
-    var quarter = year.data.find(function(y) { return y.quarter === fundingFilter.quarter; });
-    return quarter.value;
-  }
-  return year.value;
-}
+// var filterFundingTypesByYear = function(types) {
+//   return types.map(function(type) { return filterFundingTypeByYear(type)});
+// }
 
-var filterFundingQuarters = function(quarters) {
-  return quarters.reduce(function(num, quarter) { return num + quarter.value}, 0);
-}
+// var filterFundingTypeByYear = function(type) {
+//   var year = type.data.find(function(t) { return t.year === fundingFilter.year; });
+//   if (year) {
+//     return filterFundingYearByQuarter(year);
+//   }
+//   return 0;
+// }
+
+// var filterFundingYearByQuarter = function(year) {
+//   if (year.data) {
+//     if (fundingFilter.quarter === 'All') {
+//       return filterFundingQuarters(year.data);
+//     }
+//     var quarter = year.data.find(function(y) { return y.quarter === fundingFilter.quarter; });
+//     return quarter.value;
+//   }
+//   return year.value;
+// }
+
+// var filterFundingQuarters = function(quarters) {
+//   return quarters.reduce(function(num, quarter) { return num + quarter.value}, 0);
+// }
 
 
 
