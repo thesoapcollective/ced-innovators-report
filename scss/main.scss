@@ -350,11 +350,10 @@ h1, h2, h3, h4, h5, h6, p {
 
 .funders-container,
 .deals-container {
-  padding: 0 $grid-size;
   top: $content-header-height + ($grid-size-double * 1.5);
   bottom: $page-footer-height + $estimated-twitter-height + ($grid-size * 1.5);
-  left: $grid-size-double;
-  right: $grid-size-double;
+  left: 0;
+  right: 0;
 }
 
 .funders-state-info {

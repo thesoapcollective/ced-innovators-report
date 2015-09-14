@@ -202,6 +202,10 @@ var setupJsClickHandler = function() {
   });
 };
 
+var getRandomInRange = function(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
 var convertToDollars = function(int) {
   return '$' + numeral(int).format('0,0');
 };
@@ -245,7 +249,7 @@ var getSectorColor = function(sector) {
     case 'Cleantech':
       return cedDataColors.find(function(d) { return d.name === 'white'; });
     default:
-      return {name: 'default', value: '#000'};
+      return {name: 'default', value: '#fff'};
   }
 };
 
@@ -1585,277 +1589,303 @@ var mapReset = function() {
 // ========================================
 // DEALS SECTION
 // ========================================
-var cedDealsData = [
-  {sector: 'Tech', deals: 48, companies: 46},
-  {sector: 'Life Science', deals: 26, companies: 26},
-  {sector: 'Advanced Manufacturing & Materials', deals: 10, companies: 9},
-  {sector: 'Cleantech', deals: 6, companies: 4},
-];
+var cedDealsData = null;
 
 var setupDealsSection = function() {
-  var dealsSectionSelector = '.deals-container';
-  var $dealsSection = $(dealsSectionSelector);
+  d3.csv('./data/deals_deals.csv', function(d) {
+    return {
+      type: 'Deals',
+      sector: d['Sector'],
+      years: [
+        {year: 2015, value: isNaN(+d['2015']) ? 0 : +d['2015']},
+        {year: 2014, value: isNaN(+d['2014']) ? 0 : +d['2014']},
+        {year: 2013, value: isNaN(+d['2013']) ? 0 : +d['2013']},
+      ],
+      locations: [
+        {name: 'Triangle Region', value: isNaN(+d['Triangle Region']) ? 0 : +d['Triangle Region']},
+        {name: 'Asheville', value: isNaN(+d['Asheville']) ? 0 : +d['Asheville']},
+        {name: 'Candler', value: isNaN(+d['Candler']) ? 0 : +d['Candler']},
+        {name: 'Cary', value: isNaN(+d['Cary']) ? 0 : +d['Cary']},
+        {name: 'Chapel Hill', value: isNaN(+d['Chapel Hill']) ? 0 : +d['Chapel Hill']},
+        {name: 'Charlotte', value: isNaN(+d['Charlotte']) ? 0 : +d['Charlotte']},
+        {name: 'Clayton', value: isNaN(+d['Clayton']) ? 0 : +d['Clayton']},
+        {name: 'Durham', value: isNaN(+d['Durham']) ? 0 : +d['Durham']},
+        {name: 'Greensboro', value: isNaN(+d['Greensboro']) ? 0 : +d['Greensboro']},
+        {name: 'Horsham', value: isNaN(+d['Horsham']) ? 0 : +d['Horsham']},
+        {name: 'Morrisville', value: isNaN(+d['Morrisville']) ? 0 : +d['Morrisville']},
+        {name: 'Raleigh', value: isNaN(+d['Raleigh']) ? 0 : +d['Raleigh']},
+        {name: 'Research Triangle Park', value: isNaN(+d['Research Triangle Park']) ? 0 : +d['Research Triangle Park']},
+        {name: 'Wake Forest', value: isNaN(+d['Wake Forest']) ? 0 : +d['Wake Forest']},
+        {name: 'Waxhaw', value: isNaN(+d['Waxhaw']) ? 0 : +d['Waxhaw']},
+        {name: 'Wilmington', value: isNaN(+d['Wilmington']) ? 0 : +d['Wilmington']},
+        {name: 'Winston-Salem', value: isNaN(+d['Winston-Salem']) ? 0 : +d['Winston-Salem']},
+        {name: 'Zebulon', value: isNaN(+d['Zebulon']) ? 0 : +d['Zebulon']},
+      ],
+      sizes: [
+        {name: '0-999k', value: isNaN(+d['0-999k']) ? 0 : +d['0-999k']},
+        {name: '1m-4.9m', value: isNaN(+d['1m-4.9m']) ? 0 : +d['1m-4.9m']},
+        {name: '5m-14.9m', value: isNaN(+d['5m-14.9m']) ? 0 : +d['5m-14.9m']},
+        {name: '15m-29.9m', value: isNaN(+d['15m-29.9m']) ? 0 : +d['15m-29.9m']},
+        {name: '30m-49.9m', value: isNaN(+d['30m-49.9m']) ? 0 : +d['30m-49.9m']},
+        {name: '50m+', value: isNaN(+d['50m+']) ? 0 : +d['50m+']},
+      ],
+    };
+  }, function(error, dealsData) {
+    d3.csv('./data/deals_companies.csv', function(d) {
+      return {
+        type: 'Companies',
+        sector: d['Sector'],
+        years: [
+          {year: 2015, value: isNaN(+d['2015']) ? 0 : +d['2015']},
+          {year: 2014, value: isNaN(+d['2014']) ? 0 : +d['2014']},
+          {year: 2013, value: isNaN(+d['2013']) ? 0 : +d['2013']},
+        ],
+        locations: [
+          {name: 'Triangle Region', value: isNaN(+d['Triangle Region']) ? 0 : +d['Triangle Region']},
+          {name: 'Asheville', value: isNaN(+d['Asheville']) ? 0 : +d['Asheville']},
+          {name: 'Candler', value: isNaN(+d['Candler']) ? 0 : +d['Candler']},
+          {name: 'Cary', value: isNaN(+d['Cary']) ? 0 : +d['Cary']},
+          {name: 'Chapel Hill', value: isNaN(+d['Chapel Hill']) ? 0 : +d['Chapel Hill']},
+          {name: 'Charlotte', value: isNaN(+d['Charlotte']) ? 0 : +d['Charlotte']},
+          {name: 'Clayton', value: isNaN(+d['Clayton']) ? 0 : +d['Clayton']},
+          {name: 'Durham', value: isNaN(+d['Durham']) ? 0 : +d['Durham']},
+          {name: 'Greensboro', value: isNaN(+d['Greensboro']) ? 0 : +d['Greensboro']},
+          {name: 'Horsham', value: isNaN(+d['Horsham']) ? 0 : +d['Horsham']},
+          {name: 'Morrisville', value: isNaN(+d['Morrisville']) ? 0 : +d['Morrisville']},
+          {name: 'Raleigh', value: isNaN(+d['Raleigh']) ? 0 : +d['Raleigh']},
+          {name: 'Research Triangle Park', value: isNaN(+d['Research Triangle Park']) ? 0 : +d['Research Triangle Park']},
+          {name: 'Wake Forest', value: isNaN(+d['Wake Forest']) ? 0 : +d['Wake Forest']},
+          {name: 'Waxhaw', value: isNaN(+d['Waxhaw']) ? 0 : +d['Waxhaw']},
+          {name: 'Wilmington', value: isNaN(+d['Wilmington']) ? 0 : +d['Wilmington']},
+          {name: 'Winston-Salem', value: isNaN(+d['Winston-Salem']) ? 0 : +d['Winston-Salem']},
+          {name: 'Zebulon', value: isNaN(+d['Zebulon']) ? 0 : +d['Zebulon']},
+        ],
+        sizes: [
+          {name: '0-999k', value: isNaN(+d['0-999k']) ? 0 : +d['0-999k']},
+          {name: '1m-4.9m', value: isNaN(+d['1m-4.9m']) ? 0 : +d['1m-4.9m']},
+          {name: '5m-14.9m', value: isNaN(+d['5m-14.9m']) ? 0 : +d['5m-14.9m']},
+          {name: '15m-29.9m', value: isNaN(+d['15m-29.9m']) ? 0 : +d['15m-29.9m']},
+          {name: '30m-49.9m', value: isNaN(+d['30m-49.9m']) ? 0 : +d['30m-49.9m']},
+          {name: '50m+', value: isNaN(+d['50m+']) ? 0 : +d['50m+']},
+        ],
+      };
+    }, function(error, companiesData) {
+      cedDealsData = dealsData.map(function(dd, i) {
+        return {
+          name: dd.sector,
+          types: [
+            {name: 'Deals', years: dd.years, locations: dd.locations, sizes: dd.sizes},
+            {name: 'Companies', years: companiesData[i].years, locations: companiesData[i].locations, sizes: companiesData[i].sizes},
+          ],
+        }
+      });
 
-  var size = {
-    width: $dealsSection.width(),
-    height: $dealsSection.height()
-  };
+      var currentDealsData = getCurrentDealsData();
 
-  var svg = d3.select(dealsSectionSelector).append('svg')
-    .attr('width', size.width)
-    .attr('height', size.height);
+      console.log('cedDealsData', cedDealsData);
+      console.log('currentDealsData', currentDealsData);
 
-  var defs = svg.append('defs');
+      var dealsSectionSelector = '.deals-container';
+      var $dealsSection = $(dealsSectionSelector);
 
-  var pattern = defs.append('pattern')
-    .attr('id', 'deals-pattern')
-    .attr('patternUnits', 'userSpaceOnUse')
-    .attr('width', '4')
-    .attr('height', '3')
-  pattern.append('path')
-    .attr('d', 'M0,0 L4,0 M0,1 L4,1')
-    .attr('stroke', '#000')
-    .attr('stroke-width', 1);
+      var size = {
+        width: $dealsSection.width(),
+        height: $dealsSection.height(),
+        centerRadius: 150,
+        radiusMin: 80,
+        radiusMax: 120
+      };
 
-  var dealsGroup = svg.append('g');
+      var svg = d3.select(dealsSectionSelector).append('svg')
+        .attr('width', size.width)
+        .attr('height', size.height);
 
-  var mainCircleGroup = dealsGroup.append('g')
+      var defs = svg.append('defs');
+      var pattern = createLinePattern(defs).attr('id', 'deals-pattern');
 
-  var mainCircle = mainCircleGroup.append('circle')
-    .attr('cx', size.width / 2)
-    .attr('cy', size.height / 2)
-    .attr('r', 150)
-    .attr('stroke', '#fff')
-    .attr('stroke-width', 2)
-    .attr('stroke-opacity', 0.25)
-    .style('fill', 'url(#map-pattern)');
-  mainCircleGroup.append('text')
-    .text('Total # of Deals:')
-    .attr('x', parseFloat(mainCircle.attr('cx')))
-    .attr('y', parseFloat(mainCircle.attr('cy')) - 50)
-    .attr('dy', '.35em')
-    .attr('class', 'f-inputsans f-thin f-italic fs-h3 text-shadow-large')
-    .attr('fill', '#fff')
-    .attr('text-anchor', 'middle');
-  mainCircleGroup.append('text')
-    .text(cedDealsData.reduce(function(num, deal) { return num + deal.deals}, 0))
-    .attr('x', parseFloat(mainCircle.attr('cx')))
-    .attr('y', parseFloat(mainCircle.attr('cy')))
-    .attr('dy', '.35em')
-    .attr('class', 'f-adelle f-bold fs-h1 text-shadow-large')
-    .attr('fill', '#fff')
-    .attr('text-anchor', 'middle');
-  mainCircleGroup.append('text')
-    .text('Companies:')
-    .attr('x', parseFloat(mainCircle.attr('cx')) - 90)
-    .attr('y', parseFloat(mainCircle.attr('cy')) + 65)
-    .attr('dy', '.35em')
-    .attr('class', 'f-inputsans f-thin f-italic fs-h3 text-shadow-large')
-    .attr('fill', '#fff');
-  mainCircleGroup.append('text')
-    .text(cedDealsData.reduce(function(num, deal) { return num + deal.companies}, 0))
-    .attr('x', parseFloat(mainCircle.attr('cx')) + 55)
-    .attr('y', parseFloat(mainCircle.attr('cy')) + 65)
-    .attr('dy', '.35em')
-    .attr('class', 'f-adelle f-bold fs-h3 text-shadow-large')
-    .attr('fill', '#fff');
+      var dealTotals = currentDealsData.map(function(d) { return d.primary.value; });
+      var dealsR = d3.scale.linear()
+        .domain([0, d3.max(dealTotals)])
+        .range([size.radiusMin, size.radiusMax]);
 
-  var circle1Group = dealsGroup.append('g')
-  circle1Group.append('circle')
-    .attr('cx', 100)
-    .attr('cy', 110)
-    .attr('r', 100)
-    .attr('stroke', '#fff')
-    .attr('stroke-width', 2)
-    .attr('stroke-opacity', 0.25)
-    .style('fill', 'url(#deals-pattern)');
-  var circle1 = circle1Group.append('circle')
-    .attr('cx', 100)
-    .attr('cy', 110)
-    .attr('r', 100)
-    .attr('stroke', getSectorColor('Tech').value)
-    .attr('stroke-width', 2)
-    .attr('stroke-opacity', 0.25)
-    .attr('fill', getSectorColor('Tech').value)
-    .attr('fill-opacity', 0.25);
-  circle1Group.append('text')
-    .text('Tech Deals:')
-    .attr('x', parseFloat(circle1.attr('cx')))
-    .attr('y', parseFloat(circle1.attr('cy')) - 40)
-    .attr('dy', '.35em')
-    .attr('class', 'f-inputsans f-thin f-italic text-shadow-large')
-    .attr('fill', '#fff')
-    .attr('text-anchor', 'middle');
-  circle1Group.append('text')
-    .text(cedDealsData.find(function(sector) { return sector.sector === 'Tech'; }).deals)
-    .attr('x', parseFloat(circle1.attr('cx')))
-    .attr('y', parseFloat(circle1.attr('cy')))
-    .attr('dy', '.35em')
-    .attr('class', 'f-adelle f-bold fs-h2 text-shadow-large')
-    .attr('fill', '#fff')
-    .attr('text-anchor', 'middle');
-  circle1Group.append('text')
-    .text('Companies:')
-    .attr('x', parseFloat(circle1.attr('cx')) - 70)
-    .attr('y', parseFloat(circle1.attr('cy')) + 40)
-    .attr('dy', '.35em')
-    .attr('class', 'f-inputsans f-thin f-italic text-shadow-large')
-    .attr('fill', '#fff');
-  circle1Group.append('text')
-    .text(cedDealsData.find(function(sector) { return sector.sector === 'Tech'; }).companies)
-    .attr('x', parseFloat(circle1.attr('cx')) + 40)
-    .attr('y', parseFloat(circle1.attr('cy')) + 40)
-    .attr('dy', '.35em')
-    .attr('class', 'f-adelle f-bold text-shadow-large')
-    .attr('fill', '#fff');
+      var dealsGroup = svg.append('g').attr('class', 'deals-group');
 
-  var circle2Group = dealsGroup.append('g')
-  circle2Group.append('circle')
-    .attr('cx', 275)
-    .attr('cy', size.height - 75)
-    .attr('r', 75)
-    .attr('stroke', '#fff')
-    .attr('stroke-width', 2)
-    .attr('stroke-opacity', 0.25)
-    .style('fill', 'url(#deals-pattern)');
-  var circle1 = circle2Group.append('circle')
-    .attr('cx', 275)
-    .attr('cy', size.height - 75)
-    .attr('r', 75)
-    .attr('stroke', getSectorColor('Life Science').value)
-    .attr('stroke-width', 2)
-    .attr('stroke-opacity', 0.25)
-    .attr('fill', getSectorColor('Life Science').value)
-    .attr('fill-opacity', 0.25);
-  circle2Group.append('text')
-    .text('Life Science Deals:')
-    .attr('x', parseFloat(circle1.attr('cx')))
-    .attr('y', parseFloat(circle1.attr('cy')) - 40)
-    .attr('dy', '.35em')
-    .attr('class', 'f-inputsans f-thin f-italic text-shadow-large')
-    .attr('fill', '#fff')
-    .attr('text-anchor', 'middle');
-  circle2Group.append('text')
-    .text(cedDealsData.find(function(sector) { return sector.sector === 'Life Science'; }).deals)
-    .attr('x', parseFloat(circle1.attr('cx')))
-    .attr('y', parseFloat(circle1.attr('cy')))
-    .attr('dy', '.35em')
-    .attr('class', 'f-adelle f-bold fs-h2 text-shadow-large')
-    .attr('fill', '#fff')
-    .attr('text-anchor', 'middle');
-  circle2Group.append('text')
-    .text('Companies:')
-    .attr('x', parseFloat(circle1.attr('cx')) - 70)
-    .attr('y', parseFloat(circle1.attr('cy')) + 40)
-    .attr('dy', '.35em')
-    .attr('class', 'f-inputsans f-thin f-italic text-shadow-large')
-    .attr('fill', '#fff');
-  circle2Group.append('text')
-    .text(cedDealsData.find(function(sector) { return sector.sector === 'Life Science'; }).companies)
-    .attr('x', parseFloat(circle1.attr('cx')) + 40)
-    .attr('y', parseFloat(circle1.attr('cy')) + 40)
-    .attr('dy', '.35em')
-    .attr('class', 'f-adelle f-bold text-shadow-large')
-    .attr('fill', '#fff');
-
-  var circle3Group = dealsGroup.append('g')
-  circle3Group.append('circle')
-    .attr('cx', size.width / 2 + 300)
-    .attr('cy', 95)
-    .attr('r', 90)
-    .attr('stroke', '#fff')
-    .attr('stroke-width', 2)
-    .attr('stroke-opacity', 0.25)
-    .style('fill', 'url(#deals-pattern)');
-  var circle1 = circle3Group.append('circle')
-    .attr('cx', size.width / 2 + 300)
-    .attr('cy', 95)
-    .attr('r', 90)
-    .attr('stroke', getSectorColor('Advanced Manufacturing & Materials').value)
-    .attr('stroke-width', 2)
-    .attr('stroke-opacity', 0.25)
-    .attr('fill', getSectorColor('Advanced Manufacturing & Materials').value)
-    .attr('fill-opacity', 0.25);
-  circle3Group.append('text')
-    .text('Advanced Manufacturing & Materials Deals:')
-    .attr('x', parseFloat(circle1.attr('cx')))
-    .attr('y', parseFloat(circle1.attr('cy')) - 40)
-    .attr('dy', '.35em')
-    .attr('class', 'f-inputsans f-thin f-italic text-shadow-large')
-    .attr('fill', '#fff')
-    .attr('text-anchor', 'middle');
-  circle3Group.append('text')
-    .text(cedDealsData.find(function(sector) { return sector.sector === 'Advanced Manufacturing & Materials'; }).deals)
-    .attr('x', parseFloat(circle1.attr('cx')))
-    .attr('y', parseFloat(circle1.attr('cy')))
-    .attr('dy', '.35em')
-    .attr('class', 'f-adelle f-bold fs-h2 text-shadow-large')
-    .attr('fill', '#fff')
-    .attr('text-anchor', 'middle');
-  circle3Group.append('text')
-    .text('Companies:')
-    .attr('x', parseFloat(circle1.attr('cx')) - 70)
-    .attr('y', parseFloat(circle1.attr('cy')) + 40)
-    .attr('dy', '.35em')
-    .attr('class', 'f-inputsans f-thin f-italic text-shadow-large')
-    .attr('fill', '#fff');
-  circle3Group.append('text')
-    .text(cedDealsData.find(function(sector) { return sector.sector === 'Advanced Manufacturing & Materials'; }).companies)
-    .attr('x', parseFloat(circle1.attr('cx')) + 40)
-    .attr('y', parseFloat(circle1.attr('cy')) + 40)
-    .attr('dy', '.35em')
-    .attr('class', 'f-adelle f-bold text-shadow-large')
-    .attr('fill', '#fff');
-
-  var circle4Group = dealsGroup.append('g')
-  circle4Group.append('circle')
-    .attr('cx', size.width - 300)
-    .attr('cy', size.height - 150)
-    .attr('r', 75)
-    .attr('stroke', '#fff')
-    .attr('stroke-width', 2)
-    .attr('stroke-opacity', 0.25)
-    .style('fill', 'url(#deals-pattern)');
-  var circle1 = circle4Group.append('circle')
-    .attr('cx', size.width - 300)
-    .attr('cy', size.height - 150)
-    .attr('r', 75)
-    .attr('stroke', getSectorColor('Cleantech').value)
-    .attr('stroke-width', 2)
-    .attr('stroke-opacity', 0.25)
-    .attr('fill', getSectorColor('Cleantech').value)
-    .attr('fill-opacity', 0.25);
-  circle4Group.append('text')
-    .text('Cleantech Deals:')
-    .attr('x', parseFloat(circle1.attr('cx')))
-    .attr('y', parseFloat(circle1.attr('cy')) - 40)
-    .attr('dy', '.35em')
-    .attr('class', 'f-inputsans f-thin f-italic text-shadow-large')
-    .attr('fill', '#fff')
-    .attr('text-anchor', 'middle');
-  circle4Group.append('text')
-    .text(cedDealsData.find(function(sector) { return sector.sector === 'Cleantech'; }).deals)
-    .attr('x', parseFloat(circle1.attr('cx')))
-    .attr('y', parseFloat(circle1.attr('cy')))
-    .attr('dy', '.35em')
-    .attr('class', 'f-adelle f-bold fs-h2 text-shadow-large')
-    .attr('fill', '#fff')
-    .attr('text-anchor', 'middle');
-  circle4Group.append('text')
-    .text('Companies:')
-    .attr('x', parseFloat(circle1.attr('cx')) - 70)
-    .attr('y', parseFloat(circle1.attr('cy')) + 40)
-    .attr('dy', '.35em')
-    .attr('class', 'f-inputsans f-thin f-italic text-shadow-large')
-    .attr('fill', '#fff');
-  circle4Group.append('text')
-    .text(cedDealsData.find(function(sector) { return sector.sector === 'Cleantech'; }).companies)
-    .attr('x', parseFloat(circle1.attr('cx')) + 40)
-    .attr('y', parseFloat(circle1.attr('cy')) + 40)
-    .attr('dy', '.35em')
-    .attr('class', 'f-adelle f-bold text-shadow-large')
-    .attr('fill', '#fff');
+      var g = dealsGroup.selectAll('.circle-group')
+        .data(currentDealsData).enter()
+        .append('g')
+          .attr('class', 'circle-group');
+      g.append('circle')
+        .attr('class', 'circle-pattern')
+        .attr('cx', function(d, i) {
+          var halfWidth = size.width / 2;
+          var halfCenterRadius = size.centerRadius / 2;
+          var halfRadius = size.radiusMax;
+          switch (i) {
+            case 0:
+              return halfWidth;
+            case 1:
+            case 2:
+              return getRandomInRange(halfRadius, halfWidth - halfCenterRadius - halfRadius);
+            case 3:
+            case 4:
+              return getRandomInRange(halfWidth + halfCenterRadius + halfRadius, size.width - halfRadius);
+          }
+        })
+        .attr('cy', function(d, i) {
+          var halfHeight = size.height / 2;
+          var halfRadius = size.radiusMax;
+          switch (i) {
+            case 0:
+              return halfHeight;
+            case 1:
+            case 3:
+              return getRandomInRange(halfRadius, halfHeight - halfRadius);
+            case 2:
+            case 4:
+              return getRandomInRange(halfHeight + halfRadius, halfRadius);
+          }
+        })
+        .attr('r', function(d, i) {
+          if (i === 0) {
+            return size.centerRadius;
+          }
+          return dealsR(d.primary.value);
+        })
+        .attr('stroke', function(d) { return getSectorColor(d.sector).value; })
+        .attr('stroke-width', 2)
+        .attr('stroke-opacity', 0.25)
+        .style('fill', 'url(#deals-pattern)');
+      var mainCircle = g.append('circle')
+        .attr('cx', function(d, i) { return parseFloat(d3.select(d3.selectAll('.circle-pattern')[0][i]).attr('cx')); })
+        .attr('cy', function(d, i) { return parseFloat(d3.select(d3.selectAll('.circle-pattern')[0][i]).attr('cy')); })
+        .attr('r', function(d, i) { return parseFloat(d3.select(d3.selectAll('.circle-pattern')[0][i]).attr('r')); })
+        .attr('stroke', '#fff')
+        .attr('stroke-width', 2)
+        .attr('stroke-opacity', 0.25)
+        .style('fill', function(d) { return getSectorColor(d.sector).value; })
+        .style('fill-opacity', function(d) { return getSectorColor(d.sector).name === 'default' ? 0 : 0.25; });
+      g.append('text')
+        .text(function(d) { return d.primary.title; })
+        .attr('x', function(d, i) { return parseFloat(d3.select(d3.selectAll('.circle-pattern')[0][i]).attr('cx')); })
+        .attr('y', function(d, i) { return parseFloat(d3.select(d3.selectAll('.circle-pattern')[0][i]).attr('cy')) - 50; })
+        .attr('dy', '.35em')
+        .attr('class', 'f-inputsans f-thin f-italic fs-h3 text-shadow-large')
+        .attr('fill', '#fff')
+        .attr('text-anchor', 'middle');
+      g.append('text')
+        .text(function(d) { return d.primary.value; })
+        .attr('x', function(d, i) { return parseFloat(d3.select(d3.selectAll('.circle-pattern')[0][i]).attr('cx')); })
+        .attr('y', function(d, i) { return parseFloat(d3.select(d3.selectAll('.circle-pattern')[0][i]).attr('cy')); })
+        .attr('dy', '.35em')
+        .attr('class', 'f-adelle f-bold fs-h1 text-shadow-large')
+        .attr('fill', '#fff')
+        .attr('text-anchor', 'middle');
+      g.append('text')
+        .text(function(d) { return d.secondary.title; })
+        .attr('x', function(d, i) { return parseFloat(d3.select(d3.selectAll('.circle-pattern')[0][i]).attr('cx')) - 90; })
+        .attr('y', function(d, i) { return parseFloat(d3.select(d3.selectAll('.circle-pattern')[0][i]).attr('cy')) + 65; })
+        .attr('dy', '.35em')
+        .attr('class', 'f-inputsans f-thin f-italic fs-h3 text-shadow-large')
+        .attr('fill', '#fff');
+      g.append('text')
+        .text(function(d) { return d.secondary.value; })
+        .attr('x', function(d, i) { return parseFloat(d3.select(d3.selectAll('.circle-pattern')[0][i]).attr('cx')) + 55; })
+        .attr('y', function(d, i) { return parseFloat(d3.select(d3.selectAll('.circle-pattern')[0][i]).attr('cy')) + 65; })
+        .attr('dy', '.35em')
+        .attr('class', 'f-adelle f-bold fs-h3 text-shadow-large')
+        .attr('fill', '#fff');
+    });
+  });
 }
+
+var getCurrentDealsData = function() {
+  var filteredData = getFilteredDealsData();
+  var bubbles = [];
+
+  bubbles.push({
+    sector: null,
+    primary: {
+      title: 'Total # of 2015 Deals:',
+      value: getTotalDeals(filteredData),
+    },
+    secondary: {
+      title: 'Companies:',
+      value: getTotalCompanies(filteredData),
+    }
+  });
+
+  filteredData.forEach(function(sector) {
+    bubbles.push(getSectorBubble(sector));
+  });
+
+  return bubbles;
+};
+
+var getFilteredDealsData = function() {
+  var filteredData = $.extend(true, [], cedDealsData);
+  // filteredData = filterFundingDataBySector(filteredData, fundingFilter.sector);
+  // filteredData = filterFundingDataByType(filteredData, fundingFilter.type);
+  // filteredData = filterFundingDataByYear(filteredData, fundingFilter.year);
+  return filteredData;
+};
+
+var getSectorBubble = function(sector) {
+  var deals = getDeals(sector);
+  var companies = getCompanies(sector);
+  return {
+    sector: sector.name,
+    primary: {
+      title: sector.name + ' Deals:',
+      value: getSectorTotalDeals(sector),
+    },
+    secondary: {
+      title: 'Companies:',
+      value: getSectorTotalCompanies(sector),
+    }
+  }
+};
+
+var getTotalDeals = function(data) {
+  return data.reduce(function(num, sector) {
+    return num + getSectorTotalDeals(sector);
+  }, 0);
+};
+
+var getSectorTotalDeals = function(sector) {
+  var deals = getDeals(sector);
+  if (deals) {
+    var year = deals.years.find(function(y) { return y.year === 2015; });
+    if (year) {
+      return year.value;
+    }
+  }
+  return 0;
+};
+
+var getTotalCompanies = function(data) {
+  return data.reduce(function(num, sector) {
+    return num + getSectorTotalCompanies(sector);
+  }, 0);
+};
+
+var getSectorTotalCompanies = function(sector) {
+  var companies = getCompanies(sector);
+  if (companies) {
+    var year = companies.years.find(function(y) { return y.year === 2015; });
+    if (year) {
+      return year.value;
+    }
+  }
+  return 0;
+};
+
+var getDeals = function(sector) {
+  return sector.types.find(function(t) { return t.name === 'Deals'; });;
+};
+
+var getCompanies = function(sector) {
+  return sector.types.find(function(t) { return t.name === 'Companies'; });
+};
 
 // ========================================
 // EXITS SECTION
