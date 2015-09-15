@@ -54,7 +54,7 @@ var setupTwitterShare = function() {
   var url = window.location;
 
   // Header
-  var tweet = encodeURIComponent("Check out @CEDNC's Innovators Report!");
+  var tweet = encodeURIComponent("Check out the #InnovatorsReport created by @CEDNC!");
   $('.social-list-item .icons-twitter').attr('href', 'https://twitter.com/share?text=' + tweet + '&url=' + url);
 
   // Share box
@@ -65,7 +65,7 @@ var setupTwitterShare = function() {
     if (tweet.length > tweetLength) {
       tweet = tweet.substring(0, tweetLength - 3) + '...';
     }
-    $this.attr('href', 'https://twitter.com/share?text=' + encodeURIComponent(tweet) + '&url=' + 'http://ianhirschfeld.com' + '&hashtags=InnovatorsReport&via=CEDNC');
+    $this.attr('href', 'https://twitter.com/share?text=' + encodeURIComponent(tweet) + '&url=' + url + '&hashtags=InnovatorsReport&via=CEDNC');
   });
 };
 
