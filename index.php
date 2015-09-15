@@ -180,7 +180,7 @@
             <div class="info-item">
               <span class="f-inputsans f-thin f-italic">Investors:</span>
               <span class="f-adelle js-funders-state-info-investors"></span>
-              <a class="f-adelle f-italic fs-small js-prevent-default js-funders-state-info-learnmore" href="#">(learn more)</a>
+              <a class="color-red f-adelle f-italic fs-small js-prevent-default js-funders-state-info-learnmore" href="#">(learn more)</a>
             </div>
             <div class="info-item">
               <span class="f-inputsans f-thin f-italic">Tech:</span>
@@ -251,7 +251,7 @@
 
         <div class="share-box-container centered-share-box centered-column pos-a">
           <div class="share-box clearfix">
-            <p class="f-inputsans f-xlight f-italic">NC entrepreneurial companies saw one IPO and 11 M&As in first half of 2015.</p>
+            <p class="f-inputsans f-xlight f-italic">NC entrepreneurial companies saw one IPO and 10 M&As in first half of 2015.</p>
             <ul class="list-reset share-box-list float-r">
               <li class="share-box-list-item dis-ib vam f-adelle">Share:</li>
               <li class="share-box-list-item dis-ib vam"><a class="icons icons-twitter text-overflow dis-b a-hover-opacity" href="#" target="_blank">Twitter</a></li>

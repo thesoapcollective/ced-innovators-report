@@ -307,9 +307,8 @@ var cedFundingData = null;
 
 var fundingFilter = {
   sector: 'All',
-  type: 'All',
+  type: 'Equity',
   year: 2015,
-  quarter: 'All',
 };
 
 var fundingBarSize = null;
