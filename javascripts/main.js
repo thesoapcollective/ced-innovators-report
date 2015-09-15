@@ -174,6 +174,11 @@ var refreshFundersFilterBar = function() {
   $('.dropdown-current', $sectorDropdown).text(sectorTitle);
   $('.dis-n', $sectorDropdown).removeClass('dis-n');
 
+  var $typeDropdown = $('.js-funders-type-dropdown');
+  var typeTitle = $('.js-funders-filter-type[data-type="' + fundersFilter.type + '"]').text();
+  $('.dropdown-current', $typeDropdown).text(typeTitle);
+  $('.dis-n', $typeDropdown).removeClass('dis-n');
+
   hideCurrentFilterSelection();
 };
 
@@ -988,7 +993,8 @@ var mapGroup = null;
 var mapProjection = null;
 
 var fundersFilter = {
-  sector: 'All'
+  sector: 'All',
+  type: 'All',
 };
 
 var setupFundersSection = function() {
@@ -1038,8 +1044,8 @@ var setupFundersSection = function() {
         {name: 'Cleantech', value: isNaN(+d['Cleantech']) ? 0 : +d['Cleantech']},
       ],
       types: [
-        {name: 'VC', value: isNaN(+d['VC']) ? 0 : +d['VC']},
-        {name: 'Corporate', value: isNaN(+d['Corporate']) ? 0 : +d['Corporate']},
+        {name: 'Venture Fund', value: isNaN(+d['Venture Fund']) ? 0 : +d['Venture Fund']},
+        {name: 'Corporate Fund', value: isNaN(+d['Corporate Fund']) ? 0 : +d['Corporate Fund']},
         {name: 'Angel Group', value: isNaN(+d['Angel Group']) ? 0 : +d['Angel Group']},
         {name: 'Growth', value: isNaN(+d['Growth']) ? 0 : +d['Growth']},
         {name: 'Strategic', value: isNaN(+d['Strategic']) ? 0 : +d['Strategic']},
@@ -1249,6 +1255,14 @@ var setupFundersSection = function() {
             updateFundersSection();
           });
 
+          $('.js-funders-filter-type').click(function(event) {
+            var type = $(this).attr('data-type');
+            fundersFilter.type = type;
+
+            refreshFundersFilterBar();
+            updateFundersSection();
+          });
+
           $('.js-funders-state-info-learnmore').click(function(event) {
             $('.js-funders-investors-container').addClass('is-active').removeClass('no-pointer-event');
             $list = $('.funders-investors-list');
@@ -1316,7 +1330,7 @@ var updateFundersSection = function() {
           if (fundersFilter.sector === 'All') {
             return getInvestorTotal(d.properties);
           }
-          return getStateSectorTotal(d.properties, fundersFilter.sector);
+          return getStateInvestorTypeTotal(d.properties, fundersFilter.type);
         }
       })
       .attr('fill-opacity', 1);
@@ -1451,8 +1465,21 @@ var getInvestorTotal = function(state) {
   return investors.length;
 };
 
+var getStateInvestorTypeTotal = function(state, type) {
+  if (fundersFilter.type === 'All') {
+    return getInvestorTotal(state);
+  }
+  var investors = getInvestorsByState(state);
+  return investors.filter(function(investor) { return investor.type === fundersFilter.type; }).length;
+};
+
 var getInvestorsByState = function(state) {
-  return cedMapInvestorData.filter(function(d) { return d.state === state.code; });
+  if (fundersFilter.type === 'All') {
+    return cedMapInvestorData.filter(function(d) { return d.state === state.code; });
+  }
+  return cedMapInvestorData.filter(function(d) {
+    return d.state === state.code && d.type === fundersFilter.type;
+  });
 };
 
 var mapClicked = function(d) {

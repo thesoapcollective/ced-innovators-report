@@ -82,22 +82,6 @@
                 <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-funding-filter-year" href="#" data-year="2013">2013</a></li>
               </ul>
             </li>
-            <!-- <li class="filter-list-item dis-ib vat pos-r js-dropdown">
-              <span class="dropdown-title dis-ib vam f-inputsans f-thin">Quarter</span>
-              <span class="dropdown-slash dropdown-slash-first dis-ib vam"></span>
-              <span class="dropdown-slash dis-ib vam"></span>
-              <a class="dropdown-trigger dis-ib vam js-prevent-default" href="#">
-                <span class="dropdown-current dis-ib vam f-adelle">All</span>
-                <span class="dropdown-arrow float-r dis-ib vam icons icons-down-arrow"></span>
-              </a>
-              <ul class="list-reset dropdown-list pos-a f-adelle">
-                <li class="dropdown-list-item"><a class="dis-b js-prevent-default" href="#">All</a></li>
-                <li class="dropdown-list-item"><a class="dis-b js-prevent-default" href="#">Q1</a></li>
-                <li class="dropdown-list-item"><a class="dis-b js-prevent-default" href="#">Q2</a></li>
-                <li class="dropdown-list-item"><a class="dis-b js-prevent-default" href="#">Q3</a></li>
-                <li class="dropdown-list-item"><a class="dis-b js-prevent-default" href="#">Q4</a></li>
-              </ul>
-            </li> -->
             <li class="filter-list-item dis-ib vat pos-r js-dropdown js-funding-sector-dropdown">
               <span class="dropdown-title dis-ib vam f-inputsans f-thin">Sector</span>
               <span class="dropdown-slash dropdown-slash-first dis-ib vam"></span>
@@ -169,6 +153,25 @@
                 <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-funders-filter-sector" href="#" data-sector="Life Science">Life Sci</a></li>
                 <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-funders-filter-sector" href="#" data-sector="Advanced Manufacturing & Materials">Adv M&amp;M</a></li>
                 <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-funders-filter-sector" href="#" data-sector="Cleantech">Cleantech</a></li>
+              </ul>
+            </li>
+            <li class="filter-list-item dis-ib vat pos-r js-dropdown js-funders-type-dropdown">
+              <span class="dropdown-title dis-ib vam f-inputsans f-thin">Investor Type</span>
+              <span class="dropdown-slash dropdown-slash-first dis-ib vam"></span>
+              <span class="dropdown-slash dis-ib vam"></span>
+              <a class="dropdown-trigger dis-ib vam js-prevent-default" href="#">
+                <span class="dropdown-current dis-ib vam f-adelle">All</span>
+                <span class="dropdown-arrow float-r dis-ib vam icons icons-down-arrow"></span>
+              </a>
+              <ul class="list-reset dropdown-list pos-a f-adelle">
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-funders-filter-type" href="#" data-type="All">All</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-funders-filter-type" href="#" data-type="Venture Fund">Venture Fund</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-funders-filter-type" href="#" data-type="Corporate Fund">Corporate Fund</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-funders-filter-type" href="#" data-type="Angel Group">Angel Group</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-funders-filter-type" href="#" data-type="Growth">Growth</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-funders-filter-type" href="#" data-type="Strategic">Strategic</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-funders-filter-type" href="#" data-type="Grant">Grant</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-funders-filter-type" href="#" data-type="Award">Award</a></li>
               </ul>
             </li>
           </ul>
