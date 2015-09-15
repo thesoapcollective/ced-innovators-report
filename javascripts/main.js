@@ -8,6 +8,8 @@ var $fundingPieText = null;
 var $fundingPieTitle = null;
 var $fundingPieSubtitle = null;
 
+var $dealsList = null;
+
 $(document).ready(function() {
   cacheElements();
   setupJsClickHandler();
@@ -144,6 +146,7 @@ var setupFilters = function() {
 var refreshFilterBars = function() {
   refreshFundingFilterBar();
   refreshFundersFilterBar();
+  refreshDealsFilterBar();
 };
 
 var refreshFundingFilterBar = function() {
@@ -170,6 +173,15 @@ var refreshFundersFilterBar = function() {
   var sectorTitle = $('.js-funders-filter-sector[data-sector="' + fundersFilter.sector + '"]').text();
   $('.dropdown-current', $sectorDropdown).text(sectorTitle);
   $('.dis-n', $sectorDropdown).removeClass('dis-n');
+
+  hideCurrentFilterSelection();
+};
+
+var refreshDealsFilterBar = function() {
+  var $segmentDropdown = $('.js-deals-segment-dropdown');
+  var segmentTitle = $('.js-deals-filter-segment[data-segment="' + dealsFilter.segment + '"]').text();
+  $('.dropdown-current', $segmentDropdown).text(segmentTitle);
+  $('.dis-n', $segmentDropdown).removeClass('dis-n');
 
   hideCurrentFilterSelection();
 };
@@ -211,6 +223,8 @@ var cacheElements = function() {
   $fundingPieText = $('.funding-pie-text');
   $fundingPieTitle = $('.funding-pie-title');
   $fundingPieSubtitle = $('.funding-pie-subtitle');
+
+  $dealsList = $('.deals-text-list');
 };
 
 var setupJsClickHandler = function() {
@@ -1589,6 +1603,12 @@ var mapReset = function() {
 // ========================================
 var cedDealsData = null;
 
+var dealsFilter = {
+  segment: '2015'
+};
+
+var dealsSize = null;
+
 var setupDealsSection = function() {
   d3.csv('./data/deals_deals.csv', function(d) {
     return {
@@ -1680,31 +1700,28 @@ var setupDealsSection = function() {
 
       var currentDealsData = getCurrentDealsData();
 
-      console.log('cedDealsData', cedDealsData);
-      console.log('currentDealsData', currentDealsData);
-
       var dealsSectionSelector = '.deals-container';
       var $dealsSection = $(dealsSectionSelector);
 
-      var size = {
+      dealsSize = {
         width: $dealsSection.width(),
         height: $dealsSection.height(),
         radiusCenter: 120,
-        radiusMin: 80,
+        radiusMin: 70,
         radiusMax: 110
       };
 
       var svg = d3.select(dealsSectionSelector).append('svg')
-        .attr('width', size.width)
-        .attr('height', size.height);
+        .attr('width', dealsSize.width)
+        .attr('height', dealsSize.height);
 
       var defs = svg.append('defs');
       var pattern = createLinePattern(defs).attr('id', 'deals-pattern');
 
-      var dealTotals = currentDealsData.map(function(d) { return d.primary.value; });
+      var dealTotals = currentDealsData.filter(function(d, i) { return i > 0; }).map(function(d) { return d.primary.value; });
       var dealsR = d3.scale.linear()
         .domain([0, d3.max(dealTotals)])
-        .range([size.radiusMin, size.radiusMax]);
+        .range([dealsSize.radiusMin, dealsSize.radiusMax]);
 
       var dealsGroup = svg.append('g').attr('class', 'deals-group');
       var linesGroup = dealsGroup.append('g').attr('class', 'lines-group');
@@ -1721,23 +1738,23 @@ var setupDealsSection = function() {
           var max = 0;
           switch (i) {
             case 0:
-              baseCx = size.width / 2;
+              baseCx = dealsSize.width / 2;
               break;
             case 2:
-              min = size.radiusMax;
-              max = size.width / 4 - size.radiusMax;
+              min = dealsSize.radiusMax;
+              max = dealsSize.width / 4 - dealsSize.radiusMax;
               break;
             case 1:
-              min = size.width / 4 + size.radiusMax;
-              max = size.width / 2 - size.radiusCenter - size.radiusMax;
+              min = dealsSize.width / 4 + dealsSize.radiusMax;
+              max = dealsSize.width / 2 - dealsSize.radiusCenter - dealsSize.radiusMax;
               break;
             case 3:
-              min = size.width / 2 + size.radiusCenter + size.radiusMax;
-              max = size.width * 3 / 4 - size.radiusMax;
+              min = dealsSize.width / 2 + dealsSize.radiusCenter + dealsSize.radiusMax;
+              max = dealsSize.width * 3 / 4 - dealsSize.radiusMax;
               break;
             case 4:
-              min = size.width * 3 / 4 + size.radiusMax
-              max = size.width - size.radiusMax;
+              min = dealsSize.width * 3 / 4 + dealsSize.radiusMax
+              max = dealsSize.width - dealsSize.radiusMax;
               break;
           }
           if (i > 0) { baseCx = getRandomInRange(min, max); }
@@ -1750,17 +1767,17 @@ var setupDealsSection = function() {
           var max = 0;
           switch (i) {
             case 0:
-              baseCy = size.height / 2;
+              baseCy = dealsSize.height / 2;
               break;
             case 1:
             case 3:
-              min = size.radiusMax;
-              max = size.height / 2;
+              min = dealsSize.radiusMax;
+              max = dealsSize.height / 2;
               break;
             case 2:
             case 4:
-              min = size.height / 2;
-              max = size.height - size.radiusMax;
+              min = dealsSize.height / 2;
+              max = dealsSize.height - dealsSize.radiusMax;
               break;
           }
           if (i > 0) { baseCy = getRandomInRange(min, max); }
@@ -1769,7 +1786,7 @@ var setupDealsSection = function() {
         })
         .attr('r', function(d, i) {
           if (i === 0) {
-            return size.radiusCenter;
+            return dealsSize.radiusCenter;
           }
           return dealsR(d.primary.value);
         })
@@ -1843,9 +1860,102 @@ var setupDealsSection = function() {
           });
 
       // animateBubbles();
+
+      // Filtering
+      $('.js-deals-filter-segment').click(function(event) {
+        var segment = $(this).attr('data-segment');
+        dealsFilter.segment = segment;
+
+        refreshDealsFilterBar();
+        updateDealsSection();
+      });
     });
   });
 }
+
+var updateDealsSection = function() {
+  var currentDealsData = getCurrentDealsData();
+
+  var dealTotals = currentDealsData.filter(function(d, i) { return i > 0; }).map(function(d) { return d.primary.value; });
+  var dealsR = d3.scale.linear()
+    .domain([0, d3.max(dealTotals)])
+    .range([dealsSize.radiusMin, dealsSize.radiusMax]);
+
+  d3.selectAll('.circle-pattern').data(currentDealsData)
+    .transition()
+      .duration(500)
+      .ease('elastic')
+      .attr('r', function(d, i) {
+        if (i === 0) {
+          return dealsSize.radiusCenter;
+        }
+        return dealsR(d.primary.value);
+      });
+
+  d3.selectAll('.circle-fill').data(currentDealsData)
+    .transition()
+      .duration(500)
+      .ease('elastic')
+      .attr('r', function(d, i) {
+        if (i === 0) {
+          return dealsSize.radiusCenter;
+        }
+        return dealsR(d.primary.value);
+      });
+
+  d3.selectAll('.circle-line').data(currentDealsData)
+    .transition()
+      .ease('elastic')
+      .duration(500)
+      .attr('x1', function(d, i) {
+        if (i === 0) { return 0; }
+        var source = d3.select('.circle-pattern');
+        var target = d3.select(d3.selectAll('.circle-pattern')[0][i]);
+        var info = getDistanceInfoWithRadius(source, target, dealsR(d.primary.value));
+        return info.sourceX - info.dx * info.sourceR / info.distance;
+      })
+      .attr('y1', function(d, i) {
+        if (i === 0) { return 0; }
+        var source = d3.select('.circle-pattern');
+        var target = d3.select(d3.selectAll('.circle-pattern')[0][i]);
+        var info = getDistanceInfoWithRadius(source, target, dealsR(d.primary.value));
+        return info.sourceY - info.dy * info.sourceR / info.distance;
+      })
+      .attr('x2', function(d, i) {
+        if (i === 0) { return 0; }
+        var source = d3.select('.circle-pattern');
+        var target = d3.select(d3.selectAll('.circle-pattern')[0][i]);
+        var info = getDistanceInfoWithRadius(source, target, dealsR(d.primary.value));
+        return info.targetX + info.dx * info.targetR / info.distance;
+      })
+      .attr('y2', function(d, i) {
+        if (i === 0) { return 0; }
+        var source = d3.select('.circle-pattern');
+        var target = d3.select(d3.selectAll('.circle-pattern')[0][i]);
+        var info = getDistanceInfoWithRadius(source, target, dealsR(d.primary.value));
+        return info.targetY + info.dy * info.targetR / info.distance;
+      });
+
+  $dealsList.css('opacity', 0);
+  setTimeout(function() {
+    var isEmpty = false;
+    d3.selectAll('.circle-pattern').each(function(d, i) {
+      if (i === 0) { isEmpty = d.primary.value === 0; }
+      var $circle = $('.circle-pattern:eq(' + i + ')');
+      var $item = $('.deals-text-list-item:eq(' + i + ')');
+      $item.width($circle[0].getBBox().width);
+      $('.deals-text-list-item-p-title', $item).text(d.primary.title);
+      $('.deals-text-list-item-p-value', $item).text(d.primary.value);
+      $('.deals-text-list-item-s-title', $item).text(d.secondary.title).toggleClass('dis-n', isEmpty);
+      $('.deals-text-list-item-s-value', $item).text(d.secondary.value).toggleClass('dis-n', isEmpty);
+      $item.css({
+        left: parseFloat($circle.attr('cx')) - parseFloat($circle.attr('r')),
+        top: parseFloat($circle.attr('cy')) - $item.height() / 2,
+      });
+    });
+    $dealsList.css('opacity', 1);
+  }, 500);
+};
 
 var animateBubbles = function() {
   d3.selectAll('.circle-group').transition()
@@ -1874,6 +1984,21 @@ var getDistanceInfo = function(source, target) {
   return data;
 };
 
+var getDistanceInfoWithRadius = function(source, target, targetR) {
+  var data = {
+    sourceX: parseFloat(source.attr('cx')),
+    sourceY: parseFloat(source.attr('cy')),
+    sourceR: parseFloat(source.attr('r')),
+    targetX: parseFloat(target.attr('cx')),
+    targetY: parseFloat(target.attr('cy')),
+    targetR: targetR,
+  };
+  data.dx = data.sourceX - data.targetX;
+  data.dy = data.sourceY - data.targetY;
+  data.distance = Math.sqrt(Math.pow(data.dx, 2) + Math.pow(data.dy, 2));
+  return data;
+};
+
 var getCurrentDealsData = function() {
   var filteredData = getFilteredDealsData();
   var bubbles = [];
@@ -1881,7 +2006,7 @@ var getCurrentDealsData = function() {
   bubbles.push({
     sector: null,
     primary: {
-      title: 'Total # of 2015 Deals:',
+      title: 'Total # of ' + dealsFilter.segment + ' Deals:',
       value: getTotalDeals(filteredData),
     },
     secondary: {
@@ -1930,9 +2055,11 @@ var getTotalDeals = function(data) {
 var getSectorTotalDeals = function(sector) {
   var deals = getDeals(sector);
   if (deals) {
-    var year = deals.years.find(function(y) { return y.year === 2015; });
-    if (year) {
-      return year.value;
+    if (['2015', '2014', '2013'].indexOf(dealsFilter.segment) >= 0) {
+      var year = deals.years.find(function(y) { return y.year === parseInt(dealsFilter.segment); });
+      if (year) {
+        return year.value;
+      }
     }
   }
   return 0;
@@ -1947,9 +2074,11 @@ var getTotalCompanies = function(data) {
 var getSectorTotalCompanies = function(sector) {
   var companies = getCompanies(sector);
   if (companies) {
-    var year = companies.years.find(function(y) { return y.year === 2015; });
-    if (year) {
-      return year.value;
+    if (['2015', '2014', '2013'].indexOf(dealsFilter.segment) >= 0) {
+      var year = companies.years.find(function(y) { return y.year === 2015; });
+      if (year) {
+        return year.value;
+      }
     }
   }
   return 0;

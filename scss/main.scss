@@ -457,6 +457,10 @@ body.cover-panel-active {
   z-index: 2;
 }
 
+.deals-text-list {
+  transition: $opacity-transition;
+}
+
 .exits-container {
   top: $content-header-height + $grid-size-double;
   bottom: $page-footer-height + $estimated-twitter-height + ($grid-size * 1.5);

@@ -221,6 +221,22 @@
       <section id="deals" class="content-section pos-r fullsize" data-panel="deals">
         <header class="content-header pos-r clearfix">
           <h2 class="content-title float-r f-inputsans f-thin f-italic fs-h2">Deals</h2>
+          <ul class="list-reset filter-list pos-a">
+            <li class="filter-list-item dis-ib vat pos-r js-dropdown js-deals-segment-dropdown">
+              <span class="dropdown-title dis-ib vam f-inputsans f-thin">Filter</span>
+              <span class="dropdown-slash dropdown-slash-first dis-ib vam"></span>
+              <span class="dropdown-slash dis-ib vam"></span>
+              <a class="dropdown-trigger dis-ib vam js-prevent-default" href="#">
+                <span class="dropdown-current dis-ib vam f-adelle">2015</span>
+                <span class="dropdown-arrow float-r dis-ib vam icons icons-down-arrow"></span>
+              </a>
+              <ul class="list-reset dropdown-list pos-a f-adelle">
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="2015">2015</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="2014">2014</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="2013">2013</a></li>
+              </ul>
+            </li>
+          </ul>
         </header>
 
         <div class="deals-container pos-a">
@@ -331,9 +347,9 @@
 
   <script id="deals-text-item-template" type="text/x-handlebars-template">
     <li class="deals-text-list-item pos-a text-ac">
-      <div class="f-inputsans f-thin f-italic text-shadow">{{primary_title}}</div>
-      <div class="f-adelle f-bold fs-h2 text-shadow">{{primary_value}}</div>
-      <span class="f-inputsans f-thin f-italic text-shadow">{{secondary_title}}</span> <span class="f-adelle f-bold text-shadow">{{secondary_value}}</span>
+      <div class="deals-text-list-item-p-title f-inputsans f-thin f-italic text-shadow">{{primary_title}}</div>
+      <div class="deals-text-list-item-p-value f-adelle f-bold fs-h2 text-shadow">{{primary_value}}</div>
+      <span class="deals-text-list-item-s-title f-inputsans f-thin f-italic text-shadow">{{secondary_title}}</span> <span class="deals-text-list-item-s-value f-adelle f-bold text-shadow">{{secondary_value}}</span>
     </li>
   </script>
 
