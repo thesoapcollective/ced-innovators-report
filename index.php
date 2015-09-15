@@ -223,7 +223,9 @@
           <h2 class="content-title float-r f-inputsans f-thin f-italic fs-h2">Deals</h2>
         </header>
 
-        <div class="deals-container pos-a"></div>
+        <div class="deals-container pos-a">
+          <ul class="list-reset deals-text-list"></ul>
+        </div>
 
         <div class="share-box-container centered-share-box centered-column pos-a">
           <div class="share-box clearfix">
@@ -324,6 +326,14 @@
         <span class="f-inputsans f-thin f-italic">Cleantech:</span>
         <span class="f-adelle js-funders-state-info-cleantech">{{cleantech}}</span>
       </div>
+    </li>
+  </script>
+
+  <script id="deals-text-item-template" type="text/x-handlebars-template">
+    <li class="deals-text-list-item pos-a text-ac">
+      <div class="f-inputsans f-thin f-italic text-shadow">{{primary_title}}</div>
+      <div class="f-adelle f-bold fs-h2 text-shadow">{{primary_value}}</div>
+      <span class="f-inputsans f-thin f-italic text-shadow">{{secondary_title}}</span> <span class="f-adelle f-bold text-shadow">{{secondary_value}}</span>
     </li>
   </script>
 
