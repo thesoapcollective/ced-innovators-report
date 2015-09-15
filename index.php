@@ -234,12 +234,38 @@
                 <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="2015">2015</a></li>
                 <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="2014">2014</a></li>
                 <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="2013">2013</a></li>
+
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="0-999k">0-999k</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="1m-4.9m">1m-4.9m</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="5m-14.9m">5m-14.9m</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="15m-29.9m">15m-29.9m</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="30m-49.9m">30m-49.9m</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="50m+">50m+</a></li>
+
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="Triangle Region">Triangle Region</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="Asheville">Asheville</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="Candler">Candler</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="Cary">Cary</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="Chapel Hill">Chapel Hill</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="Charlotte">Charlotte</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="Clayton">Clayton</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="Durham">Durham</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="Greensboro">Greensboro</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="Horsham">Horsham</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="Morrisville">Morrisville</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="Raleigh">Raleigh</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="Research Triangle Park">Research Tri-Park</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="Wake Forest">Wake Forest</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="Waxhaw">Waxhaw</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="Wilmington">Wilmington</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="Winston-Salem">Winston-Salem</a></li>
+                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="Zebulon">Zebulon</a></li>
               </ul>
             </li>
           </ul>
         </header>
 
-        <div class="deals-container pos-a">
+        <div class="deals-container pos-a filter-content">
           <ul class="list-reset deals-text-list"></ul>
         </div>
 

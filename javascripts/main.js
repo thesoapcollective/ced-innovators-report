@@ -21,8 +21,8 @@ $(document).ready(function() {
   refreshFilterBars();
 
   setTimeout(setupFundingSection, 500);
-  setupFundersSection();
-  setupDealsSection();
+  setTimeout(setupFundersSection, 750);
+  setTimeout(setupDealsSection, 1000);
   setupExitsSection();
 });
 
@@ -1946,8 +1946,9 @@ var updateDealsSection = function() {
       $item.width($circle[0].getBBox().width);
       $('.deals-text-list-item-p-title', $item).text(d.primary.title);
       $('.deals-text-list-item-p-value', $item).text(d.primary.value);
-      $('.deals-text-list-item-s-title', $item).text(d.secondary.title).toggleClass('dis-n', isEmpty);
-      $('.deals-text-list-item-s-value', $item).text(d.secondary.value).toggleClass('dis-n', isEmpty);
+      var shouldHide = isEmpty || d.secondary.value === 0;
+      $('.deals-text-list-item-s-title', $item).text(d.secondary.title).toggleClass('dis-n', shouldHide);
+      $('.deals-text-list-item-s-value', $item).text(d.secondary.value).toggleClass('dis-n', shouldHide);
       $item.css({
         left: parseFloat($circle.attr('cx')) - parseFloat($circle.attr('r')),
         top: parseFloat($circle.attr('cy')) - $item.height() / 2,
@@ -2060,6 +2061,16 @@ var getSectorTotalDeals = function(sector) {
       if (year) {
         return year.value;
       }
+    } else if (['0-999k', '1m-4.9m', '5m-14.9m', '15m-29.9m', '30m-49.9m', '50m+'].indexOf(dealsFilter.segment) >= 0) {
+      var size = deals.sizes.find(function(s) { return s.name === dealsFilter.segment; });
+      if (size) {
+        return size.value;
+      }
+    } else if (['Triangle Region', 'Asheville', 'Candler', 'Cary', 'Chapel Hill', 'Charlotte', 'Clayton', 'Durham', 'Greensboro', 'Horsham', 'Morrisville', 'Raleigh', 'Research Triangle Park', 'Wake Forest', 'Waxhaw', 'Wilmington', 'Winston-Salem', 'Zebulon'].indexOf(dealsFilter.segment) >= 0) {
+      var location = deals.locations.find(function(l) { return l.name === dealsFilter.segment; });
+      if (location) {
+        return location.value;
+      }
     }
   }
   return 0;
@@ -2078,6 +2089,16 @@ var getSectorTotalCompanies = function(sector) {
       var year = companies.years.find(function(y) { return y.year === 2015; });
       if (year) {
         return year.value;
+      }
+    } else if (['0-999k', '1m-4.9m', '5m-14.9m', '15m-29.9m', '30m-49.9m', '50m+'].indexOf(dealsFilter.segment) >= 0) {
+      var size = companies.sizes.find(function(s) { return s.name === dealsFilter.segment; });
+      if (size) {
+        return size.value;
+      }
+    } else if (['Triangle Region', 'Asheville', 'Candler', 'Cary', 'Chapel Hill', 'Charlotte', 'Clayton', 'Durham', 'Greensboro', 'Horsham', 'Morrisville', 'Raleigh', 'Research Triangle Park', 'Wake Forest', 'Waxhaw', 'Wilmington', 'Winston-Salem', 'Zebulon'].indexOf(dealsFilter.segment) >= 0) {
+      var location = companies.locations.find(function(l) { return l.name === dealsFilter.segment; });
+      if (location) {
+        return location.value;
       }
     }
   }
