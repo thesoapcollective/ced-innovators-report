@@ -1534,6 +1534,7 @@ var mapZoomToRegion = function(node, d, region) {
 };
 
 var mapZoomToState = function(node, d) {
+  $('.js-funders-investors-container').addClass('no-pointer-event').removeClass('is-active');
   activeMapState = d3.select(node);
   var bounds = mapPath.bounds(d);
   var dx = bounds[1][0] - bounds[0][0];
