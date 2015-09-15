@@ -26,6 +26,7 @@ body {
   color: $white;
   font-size: $base-font-size;
   line-height: 1.3;
+  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -99,6 +100,11 @@ h1, h2, h3, h4, h5, h6, p {
   border-radius: 18px;
 }
 
+.centered-column {
+  max-width: 900px;
+  width: 100%;
+}
+
 // ========================================
 // FONTS
 // ========================================
@@ -106,14 +112,17 @@ h1, h2, h3, h4, h5, h6, p {
 .f-inputsans { font-family: 'InputSansCondensed', Helvetica, sans-serif; }
 
 .f-bold { font-weight: bold; }
+.f-normal { font-weight: 400; }
 .f-light { font-weight: 300; }
 .f-xlight { font-weight: 200; }
 .f-thin { font-weight: 100; }
 
 .f-italic { font-style: italic; }
+.f-s-normal { font-style: normal; }
 
 .fs-base { font-size: $base-font-size; }
 .fs-small { font-size: 14px; }
+.fs-xsmall { font-size: 12px; }
 .fs-h1 { font-size: 72px; }
 .fs-h2 { font-size: 48px; }
 .fs-h3 { font-size: 24px; }
@@ -155,6 +164,7 @@ h1, h2, h3, h4, h5, h6, p {
 .page-header {
   left: 0;
   z-index: 2;
+  transition: $opacity-transition;
 }
 
 .logo-container {
@@ -176,9 +186,12 @@ h1, h2, h3, h4, h5, h6, p {
   width: 54px;
   height: 36px;
   margin: $grid-size 0 0 $grid-size;
+  z-index: 2;
+}
+
+.logo-image {
   background: image-url('ced_logo.png') no-repeat center center;
   background-size: contain;
-  z-index: 2;
 }
 
 .page-title-container {
@@ -278,6 +291,14 @@ h1, h2, h3, h4, h5, h6, p {
 // ========================================
 // CONTENT
 // ========================================
+body.cover-panel-active {
+  .page-header,
+  .page-footer {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
 .page-background-overlay {
   background: $light-gray;
   z-index: 1;
@@ -328,6 +349,30 @@ h1, h2, h3, h4, h5, h6, p {
   width: 100%;
   padding: 0 $grid-size;
   bottom: 0;
+}
+
+#cover { overflow: scroll; }
+
+.cover-container {
+  margin: 0 auto;
+
+  p {
+    margin-bottom: $grid-size;
+  }
+}
+
+.cover-logo {
+  width: 177px;
+  height: 118px;
+  margin: $grid-size-half auto $grid-size-double;
+}
+
+.cover-view-report {
+  margin: 20px auto 30px;
+  padding: 16px 80px;
+  background: $red;
+  border-radius: 54px;
+  line-height: 1;
 }
 
 .funding-left,
@@ -518,8 +563,6 @@ h1, h2, h3, h4, h5, h6, p {
 
 .centered-share-box {
   @include translateX(-50%);
-  max-width: 900px;
-  width: 100%;
   padding: 0 $grid-size;
   left: 50%;
   bottom: $page-footer-height + $grid-size;
@@ -534,6 +577,7 @@ h1, h2, h3, h4, h5, h6, p {
   bottom: 0;
   left: 0;
   z-index: 2;
+  transition: $opacity-transition;
 }
 
 .nav-list {}

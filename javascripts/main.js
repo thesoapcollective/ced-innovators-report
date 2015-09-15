@@ -1,4 +1,5 @@
 var $win = null;
+var $body = null;
 var $socialTextbox = null;
 var $dropdowns = null;
 var currentSectionIndex = 0;
@@ -72,7 +73,7 @@ var setupTwitterShare = function() {
 // NAVIGATION
 // ========================================
 var setupNavigation = function() {
-  $('body').panelSnap({
+  $body.panelSnap({
     $menu: $('.nav-list'),
     panelSelector: '.content-section',
     menuSelector: '.nav-list-item a',
@@ -81,12 +82,19 @@ var setupNavigation = function() {
     easing: 'swing',
     onActivate: snappedToSection
   });
+
+  $('.cover-view-report').click(function(event) {
+    $('html, body').animate({
+      scrollTop: $('.content-section:eq(1)').offset().top
+    }, 500);
+  });
 };
 
 var snappedToSection = function($section) {
   var index = $section.index();
   currentSectionIndex = index;
   selectNavListItem();
+  $body.toggleClass('cover-panel-active', index === 0);
 };
 
 var selectNavListItem = function() {
@@ -196,6 +204,7 @@ var cedPatternStrokeSize = 3;
 
 var cacheElements = function() {
   $win = $(window);
+  $body = $('body');
   $socialTextbox = $('.social-list-item:last');
   $dropdowns = $('.js-dropdown');
 
@@ -1672,8 +1681,8 @@ var setupDealsSection = function() {
 
       var currentDealsData = getCurrentDealsData();
 
-      console.log('cedDealsData', cedDealsData);
-      console.log('currentDealsData', currentDealsData);
+      // console.log('cedDealsData', cedDealsData);
+      // console.log('currentDealsData', currentDealsData);
 
       var dealsSectionSelector = '.deals-container';
       var $dealsSection = $(dealsSectionSelector);

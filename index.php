@@ -17,7 +17,7 @@
   <link href="stylesheets/normalize.css" rel="stylesheet" type="text/css" />
   <link href="stylesheets/main.css" rel="stylesheet" type="text/css" />
 </head>
-<body class="<?php if(isset($_GET['print']) && $_GET['print'] == '1') { echo 'is-printable'; } ?>">
+<body class="cover-panel-active <?php if(isset($_GET['print']) && $_GET['print'] == '1') { echo 'is-printable'; } ?>">
   <div class="page-background-overlay pos-f fullsize"></div>
   <div class="page-background-linear-gradient-overlay pos-f fullsize"></div>
   <div class="page-background-radial-gradient-overlay pos-f"></div>
@@ -25,7 +25,7 @@
     <header class="page-header pos-f">
       <div class="logo-container dis-ib vat pos-r">
         <div class="logo-background pos-a"></div>
-        <div class="logo pos-a"></div>
+        <div class="logo logo-image pos-a"></div>
       </div>
       <div class="page-title-container dis-ib vat pos-r">
         <div class="page-title-background pos-a"></div>
@@ -40,6 +40,30 @@
     </header>
 
     <article class="page-content fullsize pos-a">
+      <section id="cover" class="content-section pos-r fullsize text-ac" data-panel="cover">
+        <div class="cover-container centered-column">
+          <div class="cover-logo logo-image"></div>
+          <h1 class="f-inputsans f-italic f-thin fs-h2">Innovators Report</h1>
+          <a class="cover-view-report dis-ib f-adelle fs-h3 f-bold js-prevent-default" href="#">View Report</a>
+          <div class="cover-copy-container">
+            <p class="f-inputsans f-italic f-thin fs-small">The Council for Entrepreneurial Development (CED) is the largest and longest-running network for entrepreneurs in the country. Its proprietary <span class="f-normal f-s-normal">Innovators Report</span> compiles data on startup and scaleup company activity in North Carolina with an unrivaled depth and scope.</p>
+            <p class="f-inputsans f-italic f-thin fs-small">This digital, interactive version of the <span class="f-normal f-s-normal">Innovators Report</span> contains data going back to 2013, covering funding, funders, deals, and exits.  The Report allows for filtering across a number of useful categories, including year-over-year comparisons, sectors, locations, funding and investor types and much more.</p>
+            <p class="f-inputsans f-italic f-thin fs-small">Please enjoy exploring the <span class="f-normal f-s-normal">Innovators Report</span>. If you have feedback or insights to share, contact Dhruv Patel, CED’s Director of Investor Relations: <a class="f-normal f-s-normal" href="mailto:dpatel@cednc.org">dpatel@cednc.org</a></p>
+            <br />
+            <p class="f-inputsans fs-xsmall">Data Sources: Innovators Report data were compiled from SEC Filings, media coverage, our partners, and the entrepreneurs themselves. A special thanks to our data partners:</p>
+            <p class="f-inputsans fs-xsmall">
+              National Venture Capital Association (NVCA)<br />
+              North Carolina Biotechnology Center<br />
+              Ernst &amp; Young<br />
+              PricewaterhouseCoopers<br />
+              <a href="https://www.sbir.gov" target="_blank">SBIR.gov</a><br />
+              The Innovators Report is made possible by generous gifts to the CED Annual Fund. Thank you to our many supporters! For more information on how to contribute, please visit <a href="http://www.cednc.org/donate" target="_blank">www.cednc.org/donate</a>.
+            </p>
+            <h3 class="f-inputsans fs-h3">Connect + Grow</h3>
+          </div>
+        </div>
+      </section>
+
       <section id="funding" class="content-section pos-r fullsize" data-panel="funding">
         <header class="content-header pos-r clearfix">
           <h2 class="content-title float-r f-inputsans f-thin f-italic fs-h2">Funding</h2>
@@ -182,7 +206,7 @@
           </div>
         </div>
 
-        <div class="share-box-container centered-share-box pos-a">
+        <div class="share-box-container centered-share-box centered-column pos-a">
           <div class="share-box clearfix">
             <p class="f-inputsans f-xlight f-italic">NC companies snag $$ from 2 big U.S. funding hubs – 19 Northeast & 15 California investors.</p>
             <ul class="list-reset share-box-list float-r">
@@ -201,7 +225,7 @@
 
         <div class="deals-container pos-a"></div>
 
-        <div class="share-box-container centered-share-box pos-a">
+        <div class="share-box-container centered-share-box centered-column pos-a">
           <div class="share-box clearfix">
             <p class="f-inputsans f-xlight f-italic">85 NC entrepreneurial companies did 90 equity deals in Q1/Q2 and raised nearly $427m.</p>
             <ul class="list-reset share-box-list float-r">
@@ -225,7 +249,7 @@
           <ul class="list-reset exits-list text-ac"></ul>
         </div>
 
-        <div class="share-box-container centered-share-box pos-a">
+        <div class="share-box-container centered-share-box centered-column pos-a">
           <div class="share-box clearfix">
             <p class="f-inputsans f-xlight f-italic">NC entrepreneurial companies saw one IPO and 11 M&As in first half of 2015.</p>
             <ul class="list-reset share-box-list float-r">
@@ -240,7 +264,8 @@
 
     <footer class="page-footer pos-f">
       <ul class="list-reset nav-list dis-b text-ac">
-        <li class="nav-list-item dis-ib f-inputsans is-active"><a class="js-prevent-default" href="#funding" data-panel="funding"><div class="f-xlight f-italic fs-small">Funding</div><div>&middot;</div></a></li>
+        <li class="nav-list-item dis-ib f-inputsans is-active"><a class="js-prevent-default" href="#cover" data-panel="cover"><div class="f-xlight f-italic fs-small">Cover</div><div>&middot;</div></a></li>
+        <li class="nav-list-item dis-ib f-inputsans"><a class="js-prevent-default" href="#funding" data-panel="funding"><div class="f-xlight f-italic fs-small">Funding</div><div>&middot;</div></a></li>
         <li class="nav-list-item dis-ib f-inputsans"><a class="js-prevent-default" href="#funders" data-panel="funders"><div class="f-xlight f-italic fs-small">Funders</div><div>&middot;</div></a></li>
         <li class="nav-list-item dis-ib f-inputsans"><a class="js-prevent-default" href="#deals" data-panel="deals"><div class="f-xlight f-italic fs-small">Deals</div><div>&middot;</div></a></li>
         <li class="nav-list-item dis-ib f-inputsans"><a class="js-prevent-default" href="#exits" data-panel="exits"><div class="f-xlight f-italic fs-small">Exits</div><div>&middot;</div></a></li>
