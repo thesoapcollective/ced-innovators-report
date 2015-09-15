@@ -1114,7 +1114,7 @@ var setupFundersSection = function() {
           stateGroups.append('text')
             .text(function(d) {
               if (stateHasDeals(d.properties)) {
-                return getStateTotal(d.properties);
+                return getInvestorTotal(d.properties);
               }
             })
             .attr('x', function(d) {
@@ -1292,7 +1292,7 @@ var updateFundersSection = function() {
       .text(function(d) {
         if (stateHasDeals(d.properties)) {
           if (fundersFilter.sector === 'All') {
-            return getStateTotal(d.properties);
+            return getInvestorTotal(d.properties);
           }
           return getStateSectorTotal(d.properties, fundersFilter.sector);
         }
