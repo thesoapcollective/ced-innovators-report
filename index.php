@@ -5,17 +5,17 @@
   <meta content='IE=edge,chrome=1' http-equiv='X-UA-Compatible'>
   <meta content='' name='description'>
   <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
-  <!-- <meta content='http://www.ianhirschfeld.com' property='og:url'>
+  <meta content='http://www.cednc.org' property='og:url'>
   <meta content='website' property='og:type'>
-  <meta content='' property='og:title'>
-  <meta content='.' property='og:description'>
-  <meta content='http://www.ianhirschfeld.com/open_graph.jpg' property='og:image'>
-  <link href='http://www.ianhirschfeld.com/apple-touch-icon.png' rel='apple-touch-icon'>
-  <link href='http://www.ianhirschfeld.com/favicon.png' rel='shortcut icon' type='image/x-icon'>
-  <link href='http://www.ianhirschfeld.com/favicon.png' rel='icon' type='image/x-icon'> -->
-  <title>CED</title>
-  <link href="stylesheets/normalize.css" rel="stylesheet" type="text/css" />
-  <link href="stylesheets/main.css" rel="stylesheet" type="text/css" />
+  <meta content='Innovators Report - CED' property='og:title'>
+  <meta content='' property='og:description'>
+  <!-- <meta content='http://www.cednc.org/open_graph.jpg' property='og:image'>
+  <link href='http://www.cednc.org/apple-touch-icon.png' rel='apple-touch-icon'>
+  <link href='http://www.cednc.org/favicon.png' rel='shortcut icon' type='image/x-icon'>
+  <link href='http://www.cednc.org/favicon.png' rel='icon' type='image/x-icon'> -->
+  <title>Innovators Report - CED</title>
+  <link href="./stylesheets/normalize.css" rel="stylesheet" type="text/css" />
+  <link href="./stylesheets/main.css" rel="stylesheet" type="text/css" />
 </head>
 <body class="cover-panel-active <?php if(isset($_GET['print']) && $_GET['print'] == '1') { echo 'is-printable'; } ?>">
   <div class="page-background-overlay pos-f fullsize"></div>
