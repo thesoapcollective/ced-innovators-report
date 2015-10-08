@@ -76,11 +76,7 @@
                 <span class="dropdown-current dis-ib vam f-adelle">2015</span>
                 <span class="dropdown-arrow float-r dis-ib vam icons icons-down-arrow"></span>
               </a>
-              <ul class="list-reset dropdown-list pos-a f-adelle">
-                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-funding-filter-year" href="#" data-year="2015">2015</a></li>
-                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-funding-filter-year" href="#" data-year="2014">2014</a></li>
-                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-funding-filter-year" href="#" data-year="2013">2013</a></li>
-              </ul>
+              <ul class="list-reset dropdown-list pos-a f-adelle"></ul>
             </li>
             <li class="filter-list-item dis-ib vat pos-r js-dropdown js-funding-sector-dropdown">
               <span class="dropdown-title dis-ib vam f-inputsans f-thin">Sector</span>
@@ -319,6 +315,10 @@
       </ul>
     </footer>
   </div>
+
+  <script id="funding-filter-year-item-template" type="text/x-handlebars-template">
+    <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-funding-filter-year" href="#" data-year="{{year}}">{{year}}</a></li>
+  </script>
 
   <script id="exits-item-template" type="text/x-handlebars-template">
     <li class="exits-list-item dis-ib vat pos-r">

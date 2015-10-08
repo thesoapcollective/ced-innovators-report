@@ -108,7 +108,14 @@ var selectNavListItem = function() {
 // FILTERS
 // ========================================
 var setupFilters = function() {
-  $dropdowns.each(function(i) {
+  // setupFundingDropdowns();
+  setupFundersDropdowns();
+  setupDealsDropdowns();
+  setupExitsDropdowns();
+};
+
+var setupDropdown = function(selector) {
+  $(selector + ' .js-dropdown').each(function(i) {
     var $this = $(this);
     var $trigger = $('.dropdown-trigger', $this);
     var $triggerArrow = $('.dropdown-arrow', $this);
@@ -130,21 +137,39 @@ var setupFilters = function() {
     }
   });
 
-  $('.dropdown-trigger').mouseenter(function() {
+  $(selector + ' .dropdown-trigger').mouseenter(function() {
     var $this = $(this);
     $this.closest('.content-section').addClass('filter-is-active');
     $this.parent().addClass('is-active');
   });
 
-  $('.js-dropdown').mouseleave(function() {
+  $(selector + ' .js-dropdown').mouseleave(function() {
     var $this = $(this);
     $this.closest('.content-section').removeClass('filter-is-active');
     $this.removeClass('is-active');
   });
+
+  setupJsClickHandler();
+};
+
+var setupFundingDropdowns = function() {
+  setupDropdown('#funding');
+};
+
+var setupFundersDropdowns = function() {
+  setupDropdown('#funders');
+};
+
+var setupDealsDropdowns = function() {
+  setupDropdown('#deals');
+};
+
+var setupExitsDropdowns = function() {
+  setupDropdown('#exits');
 };
 
 var refreshFilterBars = function() {
-  refreshFundingFilterBar();
+  // refreshFundingFilterBar();
   refreshFundersFilterBar();
   refreshDealsFilterBar();
 };
@@ -233,18 +258,25 @@ var cacheElements = function() {
 };
 
 var setupJsClickHandler = function() {
-  $('.js-prevent-default').click(function(event) {
-    event.preventDefault();
-  });
+  $('.js-prevent-default').unbind('click', jsClickHandler);
+  $('.js-prevent-default').bind('click', jsClickHandler);
+};
+
+var jsClickHandler = function(event) {
+  event.preventDefault();
+}
+
+var convertToNumber = function(str) {
+  return isNaN(+str) ? 0 : +str;
 };
 
 var getRandomInRange = function(min, max) {
   return Math.random() * (max - min) + min;
-}
+};
 
 var getRandomIntInRange = function(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+};
 
 var convertToDollars = function(int) {
   return '$' + numeral(int).format('0,0');
@@ -319,6 +351,12 @@ var fitTextToWidth = function(node, width) {
   }
 };
 
+var numberSortDesc = function(a, b) {
+  if (a < b) { return 1; }
+  else if (a > b) { return -1; }
+  else { return 0; }
+};
+
 // ========================================
 // FUNDING SECTION
 // ========================================
@@ -338,31 +376,41 @@ var fundingX = null;
 
 var setupFundingSection = function() {
   d3.csv('./data/funding_equity.csv', function(d) {
-    adjustedData = {
+    var adjustedData = {
       name: d['Sector'],
-      types: [
-        {name: 'Equity', years: [
-          {year: 2015, quarters: [
-            {quarter: 'Q1', value: isNaN(+d['2015 Q1']) ? 0 : +d['2015 Q1']},
-            {quarter: 'Q2', value: isNaN(+d['2015 Q1']) ? 0 : +d['2015 Q2']},
-            {quarter: 'Q3', value: isNaN(+d['2015 Q1']) ? 0 : +d['2015 Q3']},
-            {quarter: 'Q4', value: isNaN(+d['2015 Q1']) ? 0 : +d['2015 Q4']},
-          ]},
-          {year: 2014, quarters: [
-            {quarter: 'Q1', value: isNaN(+d['2014 Q1']) ? 0 : +d['2014 Q1']},
-            {quarter: 'Q2', value: isNaN(+d['2014 Q1']) ? 0 : +d['2014 Q2']},
-            {quarter: 'Q3', value: isNaN(+d['2014 Q1']) ? 0 : +d['2014 Q3']},
-            {quarter: 'Q4', value: isNaN(+d['2014 Q1']) ? 0 : +d['2014 Q4']},
-          ]},
-          {year: 2013, quarters: [
-            {quarter: 'Q1', value: isNaN(+d['2013 Q1']) ? 0 : +d['2013 Q1']},
-            {quarter: 'Q2', value: isNaN(+d['2013 Q1']) ? 0 : +d['2013 Q2']},
-            {quarter: 'Q3', value: isNaN(+d['2013 Q1']) ? 0 : +d['2013 Q3']},
-            {quarter: 'Q4', value: isNaN(+d['2013 Q1']) ? 0 : +d['2013 Q4']},
-          ]},
-        ]},
-      ],
+      types: [{name: 'Equity', years: []}],
     };
+
+    // Gather all unique years.
+    var years = [];
+    for (var column in d) {
+      if (column !== 'Sector') {
+        var year = parseInt(column.substring(0, column.length - 3));
+        if (years.indexOf(year) < 0) {
+          years.push(year);
+        }
+      }
+    }
+    years.sort(numberSortDesc);
+
+    // Add year data.
+    years.forEach(function(year) {
+      adjustedData.types.forEach(function(type) {
+        if (type.name === 'Equity') {
+          type.years.push({
+            year: year,
+            quarters: [
+              {quarter: 'Q1', value: convertToNumber(d[year + ' Q1'])},
+              {quarter: 'Q2', value: convertToNumber(d[year + ' Q2'])},
+              {quarter: 'Q3', value: convertToNumber(d[year + ' Q3'])},
+              {quarter: 'Q4', value: convertToNumber(d[year + ' Q4'])},
+            ]
+          });
+        }
+      });
+    });
+
+    // Add year quarter aggregate value.
     adjustedData.types.forEach(function(type) {
       if (type.name === 'Equity') {
         type.years.forEach(function(year) {
@@ -370,18 +418,49 @@ var setupFundingSection = function() {
         });
       }
     });
+
     return adjustedData;
   }, function(error, equityData) {
     cedFundingData = equityData;
+
+    // Populate year dropdown
+    equityData[0].types.forEach(function(type) {
+      if (type.name === 'Equity') {
+        type.years.forEach(function(year) {
+          var source = $('#funding-filter-year-item-template').html();
+          var template = Handlebars.compile(source);
+          var html = template({year: year.year});
+          $('.js-funding-year-dropdown .dropdown-list').append(html);
+        });
+      }
+    });
+    setupFundingDropdowns();
+    refreshFundingFilterBar();
+
     d3.csv('./data/funding_ga.csv', function(d) {
-      return {
+      var adjustedData = {
         name: d['Sector'],
-        years: [
-          {year: 2015, value: isNaN(+d['2015']) ? 0 : +d['2015']},
-          {year: 2014, value: isNaN(+d['2014']) ? 0 : +d['2014']},
-          {year: 2013, value: isNaN(+d['2013']) ? 0 : +d['2013']},
-        ],
+        years: []
       };
+
+      // Gather all unique years.
+      var years = [];
+      for (var column in d) {
+        if (column !== 'Sector') {
+          var year = parseInt(column);
+          if (years.indexOf(year) < 0) {
+            years.push(year);
+          }
+        }
+      }
+      years.sort(numberSortDesc);
+
+      // Add year data.
+      years.forEach(function(year) {
+        adjustedData.years.push({year: year, value: convertToNumber(d[year + ''])});
+      });
+
+      return adjustedData;
     }, function(error, grantData) {
       grantData.forEach(function(gd) {
         var fundingData = cedFundingData.find(function(d) { return d.name === gd.name; });
