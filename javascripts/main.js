@@ -118,8 +118,8 @@ var setupFilters = function() {
     $dropdown.attr('style', '');
 
     var triggerArrowWidth = $triggerArrow.outerWidth(true);
-    var triggerWidth = $trigger.outerWidth(true) + 5;
-    var dropdownWidth = $dropdown.outerWidth(true) + triggerArrowWidth + 5;
+    var triggerWidth = $trigger.outerWidth(true) + 20;
+    var dropdownWidth = $dropdown.outerWidth(true) + triggerArrowWidth + 20;
 
     if (triggerWidth >= dropdownWidth) {
       $trigger.width(triggerWidth);
