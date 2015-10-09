@@ -203,12 +203,18 @@ var refreshFundersFilterBar = function() {
 };
 
 var refreshDealsFilterBar = function() {
-  var $segmentDropdown = $('.js-deals-segment-dropdown');
-  var segmentTitle = $('.js-deals-filter-segment[data-segment="' + dealsFilter.segment + '"]').text();
-  $('.dropdown-current', $segmentDropdown).text(segmentTitle);
-  $('.dis-n', $segmentDropdown).removeClass('dis-n');
+  $('.js-deals-segment-dropdown').each(function(i) {
+    $this = $(this);
 
-  hideCurrentFilterSelection();
+    var segmentTitle = $('.js-deals-filter-segment[data-segment="' + dealsFilter.segment + '"]', $this).text();
+    if (segmentTitle === '') {
+      segmentTitle = 'None'
+    }
+    $('.dropdown-current', $this).text(segmentTitle);
+    $('.dis-n', $this).removeClass('dis-n');
+
+    hideCurrentFilterSelection();
+  });
 };
 
 var hideCurrentFilterSelection = function() {
@@ -1763,37 +1769,37 @@ var setupDealsSection = function() {
       type: 'Deals',
       sector: d['Sector'],
       years: [
-        {year: 2015, value: isNaN(+d['2015']) ? 0 : +d['2015']},
-        {year: 2014, value: isNaN(+d['2014']) ? 0 : +d['2014']},
-        {year: 2013, value: isNaN(+d['2013']) ? 0 : +d['2013']},
+        {year: 2015, value: convertToNumber(d['2015'])},
+        {year: 2014, value: convertToNumber(d['2014'])},
+        {year: 2013, value: convertToNumber(d['2013'])},
       ],
       locations: [
-        {name: 'Triangle Region', value: isNaN(+d['Triangle Region']) ? 0 : +d['Triangle Region']},
-        {name: 'Asheville', value: isNaN(+d['Asheville']) ? 0 : +d['Asheville']},
-        {name: 'Candler', value: isNaN(+d['Candler']) ? 0 : +d['Candler']},
-        {name: 'Cary', value: isNaN(+d['Cary']) ? 0 : +d['Cary']},
-        {name: 'Chapel Hill', value: isNaN(+d['Chapel Hill']) ? 0 : +d['Chapel Hill']},
-        {name: 'Charlotte', value: isNaN(+d['Charlotte']) ? 0 : +d['Charlotte']},
-        {name: 'Clayton', value: isNaN(+d['Clayton']) ? 0 : +d['Clayton']},
-        {name: 'Durham', value: isNaN(+d['Durham']) ? 0 : +d['Durham']},
-        {name: 'Greensboro', value: isNaN(+d['Greensboro']) ? 0 : +d['Greensboro']},
-        {name: 'Horsham', value: isNaN(+d['Horsham']) ? 0 : +d['Horsham']},
-        {name: 'Morrisville', value: isNaN(+d['Morrisville']) ? 0 : +d['Morrisville']},
-        {name: 'Raleigh', value: isNaN(+d['Raleigh']) ? 0 : +d['Raleigh']},
-        {name: 'Research Triangle Park', value: isNaN(+d['Research Triangle Park']) ? 0 : +d['Research Triangle Park']},
-        {name: 'Wake Forest', value: isNaN(+d['Wake Forest']) ? 0 : +d['Wake Forest']},
-        {name: 'Waxhaw', value: isNaN(+d['Waxhaw']) ? 0 : +d['Waxhaw']},
-        {name: 'Wilmington', value: isNaN(+d['Wilmington']) ? 0 : +d['Wilmington']},
-        {name: 'Winston-Salem', value: isNaN(+d['Winston-Salem']) ? 0 : +d['Winston-Salem']},
-        {name: 'Zebulon', value: isNaN(+d['Zebulon']) ? 0 : +d['Zebulon']},
+        {name: 'Triangle Region', value: convertToNumber(d['Triangle Region'])},
+        {name: 'Asheville', value: convertToNumber(d['Asheville'])},
+        {name: 'Candler', value: convertToNumber(d['Candler'])},
+        {name: 'Cary', value: convertToNumber(d['Cary'])},
+        {name: 'Chapel Hill', value: convertToNumber(d['Chapel Hill'])},
+        {name: 'Charlotte', value: convertToNumber(d['Charlotte'])},
+        {name: 'Clayton', value: convertToNumber(d['Clayton'])},
+        {name: 'Durham', value: convertToNumber(d['Durham'])},
+        {name: 'Greensboro', value: convertToNumber(d['Greensboro'])},
+        {name: 'Horsham', value: convertToNumber(d['Horsham'])},
+        {name: 'Morrisville', value: convertToNumber(d['Morrisville'])},
+        {name: 'Raleigh', value: convertToNumber(d['Raleigh'])},
+        {name: 'Research Triangle Park', value: convertToNumber(d['Research Triangle Park'])},
+        {name: 'Wake Forest', value: convertToNumber(d['Wake Forest'])},
+        {name: 'Waxhaw', value: convertToNumber(d['Waxhaw'])},
+        {name: 'Wilmington', value: convertToNumber(d['Wilmington'])},
+        {name: 'Winston-Salem', value: convertToNumber(d['Winston-Salem'])},
+        {name: 'Zebulon', value: convertToNumber(d['Zebulon'])},
       ],
       sizes: [
-        {name: '0-999k', value: isNaN(+d['0-999k']) ? 0 : +d['0-999k']},
-        {name: '1m-4.9m', value: isNaN(+d['1m-4.9m']) ? 0 : +d['1m-4.9m']},
-        {name: '5m-14.9m', value: isNaN(+d['5m-14.9m']) ? 0 : +d['5m-14.9m']},
-        {name: '15m-29.9m', value: isNaN(+d['15m-29.9m']) ? 0 : +d['15m-29.9m']},
-        {name: '30m-49.9m', value: isNaN(+d['30m-49.9m']) ? 0 : +d['30m-49.9m']},
-        {name: '50m+', value: isNaN(+d['50m+']) ? 0 : +d['50m+']},
+        {name: '0-999k', value: convertToNumber(d['0-999k'])},
+        {name: '1m-4.9m', value: convertToNumber(d['1m-4.9m'])},
+        {name: '5m-14.9m', value: convertToNumber(d['5m-14.9m'])},
+        {name: '15m-29.9m', value: convertToNumber(d['15m-29.9m'])},
+        {name: '30m-49.9m', value: convertToNumber(d['30m-49.9m'])},
+        {name: '50m+', value: convertToNumber(d['50m+'])},
       ],
     };
   }, function(error, dealsData) {
@@ -1802,37 +1808,37 @@ var setupDealsSection = function() {
         type: 'Companies',
         sector: d['Sector'],
         years: [
-          {year: 2015, value: isNaN(+d['2015']) ? 0 : +d['2015']},
-          {year: 2014, value: isNaN(+d['2014']) ? 0 : +d['2014']},
-          {year: 2013, value: isNaN(+d['2013']) ? 0 : +d['2013']},
+          {year: 2015, value: convertToNumber(d['2015'])},
+          {year: 2014, value: convertToNumber(d['2014'])},
+          {year: 2013, value: convertToNumber(d['2013'])},
         ],
         locations: [
-          {name: 'Triangle Region', value: isNaN(+d['Triangle Region']) ? 0 : +d['Triangle Region']},
-          {name: 'Asheville', value: isNaN(+d['Asheville']) ? 0 : +d['Asheville']},
-          {name: 'Candler', value: isNaN(+d['Candler']) ? 0 : +d['Candler']},
-          {name: 'Cary', value: isNaN(+d['Cary']) ? 0 : +d['Cary']},
-          {name: 'Chapel Hill', value: isNaN(+d['Chapel Hill']) ? 0 : +d['Chapel Hill']},
-          {name: 'Charlotte', value: isNaN(+d['Charlotte']) ? 0 : +d['Charlotte']},
-          {name: 'Clayton', value: isNaN(+d['Clayton']) ? 0 : +d['Clayton']},
-          {name: 'Durham', value: isNaN(+d['Durham']) ? 0 : +d['Durham']},
-          {name: 'Greensboro', value: isNaN(+d['Greensboro']) ? 0 : +d['Greensboro']},
-          {name: 'Horsham', value: isNaN(+d['Horsham']) ? 0 : +d['Horsham']},
-          {name: 'Morrisville', value: isNaN(+d['Morrisville']) ? 0 : +d['Morrisville']},
-          {name: 'Raleigh', value: isNaN(+d['Raleigh']) ? 0 : +d['Raleigh']},
-          {name: 'Research Triangle Park', value: isNaN(+d['Research Triangle Park']) ? 0 : +d['Research Triangle Park']},
-          {name: 'Wake Forest', value: isNaN(+d['Wake Forest']) ? 0 : +d['Wake Forest']},
-          {name: 'Waxhaw', value: isNaN(+d['Waxhaw']) ? 0 : +d['Waxhaw']},
-          {name: 'Wilmington', value: isNaN(+d['Wilmington']) ? 0 : +d['Wilmington']},
-          {name: 'Winston-Salem', value: isNaN(+d['Winston-Salem']) ? 0 : +d['Winston-Salem']},
-          {name: 'Zebulon', value: isNaN(+d['Zebulon']) ? 0 : +d['Zebulon']},
+          {name: 'Triangle Region', value: convertToNumber(d['Triangle Region'])},
+          {name: 'Asheville', value: convertToNumber(d['Asheville'])},
+          {name: 'Candler', value: convertToNumber(d['Candler'])},
+          {name: 'Cary', value: convertToNumber(d['Cary'])},
+          {name: 'Chapel Hill', value: convertToNumber(d['Chapel Hill'])},
+          {name: 'Charlotte', value: convertToNumber(d['Charlotte'])},
+          {name: 'Clayton', value: convertToNumber(d['Clayton'])},
+          {name: 'Durham', value: convertToNumber(d['Durham'])},
+          {name: 'Greensboro', value: convertToNumber(d['Greensboro'])},
+          {name: 'Horsham', value: convertToNumber(d['Horsham'])},
+          {name: 'Morrisville', value: convertToNumber(d['Morrisville'])},
+          {name: 'Raleigh', value: convertToNumber(d['Raleigh'])},
+          {name: 'Research Triangle Park', value: convertToNumber(d['Research Triangle Park'])},
+          {name: 'Wake Forest', value: convertToNumber(d['Wake Forest'])},
+          {name: 'Waxhaw', value: convertToNumber(d['Waxhaw'])},
+          {name: 'Wilmington', value: convertToNumber(d['Wilmington'])},
+          {name: 'Winston-Salem', value: convertToNumber(d['Winston-Salem'])},
+          {name: 'Zebulon', value: convertToNumber(d['Zebulon'])},
         ],
         sizes: [
-          {name: '0-999k', value: isNaN(+d['0-999k']) ? 0 : +d['0-999k']},
-          {name: '1m-4.9m', value: isNaN(+d['1m-4.9m']) ? 0 : +d['1m-4.9m']},
-          {name: '5m-14.9m', value: isNaN(+d['5m-14.9m']) ? 0 : +d['5m-14.9m']},
-          {name: '15m-29.9m', value: isNaN(+d['15m-29.9m']) ? 0 : +d['15m-29.9m']},
-          {name: '30m-49.9m', value: isNaN(+d['30m-49.9m']) ? 0 : +d['30m-49.9m']},
-          {name: '50m+', value: isNaN(+d['50m+']) ? 0 : +d['50m+']},
+          {name: '0-999k', value: convertToNumber(d['0-999k'])},
+          {name: '1m-4.9m', value: convertToNumber(d['1m-4.9m'])},
+          {name: '5m-14.9m', value: convertToNumber(d['5m-14.9m'])},
+          {name: '15m-29.9m', value: convertToNumber(d['15m-29.9m'])},
+          {name: '30m-49.9m', value: convertToNumber(d['30m-49.9m'])},
+          {name: '50m+', value: convertToNumber(d['50m+'])},
         ],
       };
     }, function(error, companiesData) {

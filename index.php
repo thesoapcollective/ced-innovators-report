@@ -222,7 +222,7 @@
           <h2 class="content-title float-r f-inputsans f-thin f-italic fs-h2">Deals</h2>
           <ul class="list-reset filter-list pos-a">
             <li class="filter-list-item dis-ib vat pos-r js-dropdown js-deals-segment-dropdown">
-              <span class="dropdown-title dis-ib vam f-inputsans f-thin">Filter</span>
+              <span class="dropdown-title dis-ib vam f-inputsans f-thin">Year</span>
               <span class="dropdown-slash dropdown-slash-first dis-ib vam"></span>
               <span class="dropdown-slash dis-ib vam"></span>
               <a class="dropdown-trigger dis-ib vam js-prevent-default" href="#">
@@ -233,14 +233,34 @@
                 <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="2015">2015</a></li>
                 <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="2014">2014</a></li>
                 <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="2013">2013</a></li>
-
+              </ul>
+            </li>
+            <li class="filter-list-item dis-ib vat pos-r js-dropdown js-deals-segment-dropdown">
+              <span class="dropdown-title dis-ib vam f-inputsans f-thin">Size</span>
+              <span class="dropdown-slash dropdown-slash-first dis-ib vam"></span>
+              <span class="dropdown-slash dis-ib vam"></span>
+              <a class="dropdown-trigger dis-ib vam js-prevent-default" href="#">
+                <span class="dropdown-current dis-ib vam f-adelle">None</span>
+                <span class="dropdown-arrow float-r dis-ib vam icons icons-down-arrow"></span>
+              </a>
+              <ul class="list-reset dropdown-list pos-a f-adelle">
                 <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="0-999k">0-999k</a></li>
                 <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="1m-4.9m">1m-4.9m</a></li>
                 <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="5m-14.9m">5m-14.9m</a></li>
                 <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="15m-29.9m">15m-29.9m</a></li>
                 <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="30m-49.9m">30m-49.9m</a></li>
                 <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="50m+">50m+</a></li>
-
+              </ul>
+            </li>
+            <li class="filter-list-item dis-ib vat pos-r js-dropdown js-deals-segment-dropdown">
+              <span class="dropdown-title dis-ib vam f-inputsans f-thin">Location</span>
+              <span class="dropdown-slash dropdown-slash-first dis-ib vam"></span>
+              <span class="dropdown-slash dis-ib vam"></span>
+              <a class="dropdown-trigger dis-ib vam js-prevent-default" href="#">
+                <span class="dropdown-current dis-ib vam f-adelle">None</span>
+                <span class="dropdown-arrow float-r dis-ib vam icons icons-down-arrow"></span>
+              </a>
+              <ul class="list-reset dropdown-list pos-a f-adelle">
                 <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="Triangle Region">Triangle Region</a></li>
                 <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="Asheville">Asheville</a></li>
                 <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="Candler">Candler</a></li>
