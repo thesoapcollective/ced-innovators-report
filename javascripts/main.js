@@ -111,7 +111,6 @@ var setupFilters = function() {
   // setupFundingDropdowns();
   setupFundersDropdowns();
   setupDealsDropdowns();
-  setupExitsDropdowns();
 };
 
 var setupDropdown = function(selector) {
@@ -162,10 +161,6 @@ var setupFundersDropdowns = function() {
 
 var setupDealsDropdowns = function() {
   setupDropdown('#deals');
-};
-
-var setupExitsDropdowns = function() {
-  setupDropdown('#exits');
 };
 
 var refreshFilterBars = function() {
@@ -571,6 +566,7 @@ var setupFundingSection = function() {
       var arcs = g.selectAll('.arc')
         .data(fundingPie(currentPieData))
       arcs.enter().append('g')
+        .attr('data-sector', function(d) { return d.data.sector; })
         .attr('class', 'arc')
         .attr('mask', 'url(#pie-mask)');
       arcs.append('path')
@@ -583,6 +579,7 @@ var setupFundingSection = function() {
             d3.select(this).transition()
               .duration(250)
               .style('fill-opacity', 0.5);
+
             d3.select(this.parentNode)
               .attr('mask', '');
 
@@ -596,12 +593,19 @@ var setupFundingSection = function() {
             d3.select(this).transition()
               .duration(250)
               .style('fill-opacity', 0.25);
+
             d3.select(this.parentNode)
               .attr('mask', 'url(#pie-mask)');
 
             d3.selectAll('.funding-bar').transition()
               .duration(250)
               .attr('opacity', 1);
+          }
+        })
+        .on('click', function(d, i) {
+          if (!d3.select(this).classed('is-animating') && !d3.select(this).classed('no-hover')) {
+            fundingFilter.sector = d3.select(this.parentNode).attr('data-sector');
+            refreshFundingData();
           }
         })
         .transition()
@@ -674,6 +678,7 @@ var setupFundingSection = function() {
             return 'translate(0,' + ((fundingBarSize.barHeight + fundingBarSize.titleHeight + fundingBarSize.barBottomPadding) * i + 10) + ')';
           })
           .attr('class', 'funding-bar is-animating')
+          .attr('data-sector', function(d) { return d.sector; })
           .on('mouseover', function(d, i) {
             if (!d3.select(this).classed('is-animating') && !d3.select(this).classed('no-hover')) {
               d3.selectAll('.funding-bar').transition()
@@ -700,6 +705,12 @@ var setupFundingSection = function() {
                 .style('fill-opacity', 0.25);
               d3.select(pieSlice.parentNode)
                 .attr('mask', 'url(#pie-mask)');
+            }
+          })
+          .on('click', function(d) {
+            if (!d3.select(this).classed('is-animating') && !d3.select(this).classed('no-hover')) {
+              fundingFilter.sector = d3.select(this).attr('data-sector');
+              refreshFundingData();
             }
           });
 
@@ -753,27 +764,29 @@ var setupFundingSection = function() {
         tempFundingFilter = $.extend(true, [], fundingFilter);
         var year = $(this).attr('data-year');
         fundingFilter.year = parseInt(year);
-        refreshFundingFilterBar();
-        updateFundingPieData();
+        refreshFundingData();
       });
 
       $('.js-funding-filter-sector').click(function(event) {
         tempFundingFilter = $.extend(true, [], fundingFilter);
         var sector = $(this).attr('data-sector');
         fundingFilter.sector = sector;
-        refreshFundingFilterBar();
-        updateFundingPieData();
+        refreshFundingData();
       });
 
       $('.js-funding-filter-type').click(function(event) {
         tempFundingFilter = $.extend(true, [], fundingFilter);
         var type = $(this).attr('data-type');
         fundingFilter.type = type;
-        refreshFundingFilterBar();
-        updateFundingPieData();
+        refreshFundingData();
       });
     });
   });
+};
+
+var refreshFundingData = function() {
+  refreshFundingFilterBar();
+  updateFundingPieData();
 };
 
 var updateFundingPieData = function() {
@@ -794,7 +807,11 @@ var updateFundingPieData = function() {
       .classed('no-hover', true)
       .transition()
         .duration(1000)
-        .style('fill', function(d) { return getSectorColor(fundingFilter.sector).value; });
+        .style('fill-opacity', 0.25)
+        .style('fill', function(d) {
+          d3.select(this.parentNode).attr('mask', 'url(#pie-mask)');
+          return getSectorColor(fundingFilter.sector).value;
+        });
 
     d3.selectAll('.outer-arc path')
       .transition()
@@ -806,7 +823,11 @@ var updateFundingPieData = function() {
       .classed('no-hover', false)
       .transition()
         .duration(1000)
-        .style('fill', function(d) { return getSectorColor(d.data.sector).value; })
+        .style('fill-opacity', 0.25)
+        .style('fill', function(d) {
+          d3.select(this.parentNode).attr('mask', 'url(#pie-mask)');
+          return getSectorColor(d.data.sector).value;
+        })
         .attrTween('d', function(d) {
           var i = d3.interpolate(this._current, d);
           this._current = i(0);
@@ -864,7 +885,10 @@ var updateFundingPieData = function() {
 
   d3.selectAll('.funding-bar')
     .classed('is-animating', true)
-    .classed('no-hover', function() { return fundingFilter.sector !== 'All'; });
+    .classed('no-hover', function() { return fundingFilter.sector !== 'All'; })
+    .transition()
+      .duration(1000)
+      .attr('opacity', 1);
 
   d3.selectAll('.funding-bar-bg').data(currentBarData)
     .transition()
