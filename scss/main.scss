@@ -100,6 +100,19 @@ h1, h2, h3, h4, h5, h6, p {
   border-radius: 18px;
 }
 
+.no-data-modal {
+  @include translate(-50%,-50%);
+  top: 50%;
+  left: 50%;
+  opacity: 0;
+  pointer-events: none;
+  transition: $opacity-transition;
+
+  &.is-active {
+    opacity: 1;
+  }
+}
+
 .centered-column {
   max-width: 900px;
   width: 100%;

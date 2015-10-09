@@ -303,6 +303,10 @@
           </div>
         </div>
       </section>
+
+      <div class="pos-f modal-container no-data-modal f-adelle text-ac">
+        <p>Oops! There's no data for that filter,<br />please select a different one.</p>
+      </div>
     </article>
 
     <footer class="page-footer pos-f">

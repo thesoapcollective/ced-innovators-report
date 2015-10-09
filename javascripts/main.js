@@ -357,6 +357,13 @@ var numberSortDesc = function(a, b) {
   else { return 0; }
 };
 
+var showNoDataAlert = function() {
+  $('.no-data-modal').addClass('is-active');
+  setTimeout(function() {
+    $('.no-data-modal').removeClass('is-active');
+  }, 5000);
+};
+
 // ========================================
 // FUNDING SECTION
 // ========================================
@@ -367,6 +374,7 @@ var fundingFilter = {
   type: 'Equity',
   year: 2015,
 };
+var tempFundingFilter = {};
 
 var fundingBarSize = null;
 var fundingPie = null;
@@ -742,6 +750,7 @@ var setupFundingSection = function() {
 
       // Filtering
       $('.js-funding-filter-year').click(function(event) {
+        tempFundingFilter = $.extend(true, [], fundingFilter);
         var year = $(this).attr('data-year');
         fundingFilter.year = parseInt(year);
         refreshFundingFilterBar();
@@ -749,6 +758,7 @@ var setupFundingSection = function() {
       });
 
       $('.js-funding-filter-sector').click(function(event) {
+        tempFundingFilter = $.extend(true, [], fundingFilter);
         var sector = $(this).attr('data-sector');
         fundingFilter.sector = sector;
         refreshFundingFilterBar();
@@ -756,6 +766,7 @@ var setupFundingSection = function() {
       });
 
       $('.js-funding-filter-type').click(function(event) {
+        tempFundingFilter = $.extend(true, [], fundingFilter);
         var type = $(this).attr('data-type');
         fundingFilter.type = type;
         refreshFundingFilterBar();
@@ -771,7 +782,10 @@ var updateFundingPieData = function() {
 
   var isEmpty = getFundingPieTotal(currentPieData) === 0;
   if (isEmpty) {
-    alert('There is no data for that filter, please select a different one.')
+    showNoDataAlert();
+    fundingFilter = $.extend(true, [], tempFundingFilter);
+    refreshFundingFilterBar();
+    updateFundingPieData();
     return;
   }
 
@@ -827,14 +841,17 @@ var updateFundingPieData = function() {
         });
   }
 
-  $fundingPieText.css('opacity', 0);
-  setTimeout(function() {
-    $fundingPieTitle.text(getFundingPieTitle());
-    $fundingPieSubtitle.text(convertToDollars(getFundingPieTotal(currentPieData)));
+  if ($fundingPieTitle.text() !== getFundingPieTitle() ||
+      $fundingPieSubtitle.text() !== convertToDollars(getFundingPieTotal(currentPieData))) {
+    $fundingPieText.css('opacity', 0);
     setTimeout(function() {
-      $fundingPieText.css('opacity', 1);
+      $fundingPieTitle.text(getFundingPieTitle());
+      $fundingPieSubtitle.text(convertToDollars(getFundingPieTotal(currentPieData)));
+      setTimeout(function() {
+        $fundingPieText.css('opacity', 1);
+      }, 500);
     }, 500);
-  }, 500);
+  }
 
   if (fundingFilter.sector !== 'All' && fundingFilter.type === 'Grants & Awards') {
     return;
@@ -862,7 +879,7 @@ var updateFundingPieData = function() {
   d3.selectAll('.funding-bar-title').data(currentBarData)
     .transition()
       .duration(500)
-      .attr('fill-opacity', 0)
+      .attr('fill-opacity', function(d) { return d3.select(this).text() === d.title ? 1 : 0; })
       .each('end', function(d) {
         d3.select(this).text(d.title);
         $(this).css('font-size', '24px');
@@ -876,7 +893,7 @@ var updateFundingPieData = function() {
   d3.selectAll('.funding-bar-text').data(currentBarData)
     .transition()
       .duration(500)
-      .attr('fill-opacity', 0)
+      .attr('fill-opacity', function(d) { return d3.select(this).text() === convertToDollars(d.value) ? 1 : 0; })
     .transition()
       .duration(500)
       .delay(1000)
