@@ -1560,17 +1560,13 @@ var getStateSectorTotal = function(state, sector) {
 };
 
 var getStateInvestorTotal = function(state, sector) {
-  var stateData = getStateDataByCode(state.code);
-  if (stateData) {
-    var investors = cedMapInvestorData.filter(function(d) {
-      return d.state === state.name;
-    });
-    return investors.reduce(function(num, investor) {
-      var s = investor.sectors.find(function(s) { return s.name === sector; });
-      return num + s.value;
-    }, 0);
-  }
-  return 0;
+  var investors = cedMapInvestorData.filter(function(d) {
+    return d.state === state.code;
+  });
+  return investors.reduce(function(num, investor) {
+    var s = investor.sectors.find(function(s) { return s.name === sector; });
+    return num + s.value;
+  }, 0);
 };
 
 var getStatesByRegion = function(region) {
@@ -1816,10 +1812,10 @@ var mapZoomToState = function(node, d) {
   $('.js-funders-state-info').addClass('is-active').removeClass('no-pointer-event');
   $('.js-funders-state-info-title').text(d.properties.name);
   $('.js-funders-state-info-investors').text(getFilteredStateInvestorsData(d.properties).length);
-  $('.js-funders-state-info-tech').text(getStateSectorTotal(d.properties, 'Tech'));
-  $('.js-funders-state-info-lifescience').text(getStateSectorTotal(d.properties, 'Life Science'));
-  $('.js-funders-state-info-amm').text(getStateSectorTotal(d.properties, 'Advanced Manufacturing & Materials'));
-  $('.js-funders-state-info-cleantech').text(getStateSectorTotal(d.properties, 'Cleantech'));
+  $('.js-funders-state-info-tech').text(getStateInvestorTotal(d.properties, 'Tech'));
+  $('.js-funders-state-info-lifescience').text(getStateInvestorTotal(d.properties, 'Life Science'));
+  $('.js-funders-state-info-amm').text(getStateInvestorTotal(d.properties, 'Advanced Manufacturing & Materials'));
+  $('.js-funders-state-info-cleantech').text(getStateInvestorTotal(d.properties, 'Cleantech'));
 };
 
 var mapZoomOut = function(node, d) {
