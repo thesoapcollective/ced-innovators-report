@@ -350,7 +350,7 @@ body.cover-panel-active {
   z-index: 1;
 }
 
-.content-section { padding: $grid-size; }
+.content-section { padding: $grid-size $grid-size-double $grid-size $grid-size; }
 
 .content-header {
   height: $content-header-height;
@@ -391,7 +391,7 @@ body.cover-panel-active {
 
 .funding-left,
 .funding-right {
-  padding: 0 $grid-size;
+  padding: 0 $grid-size-double 0 $grid-size;
   bottom: $page-footer-height + $grid-size;
 }
 
@@ -574,7 +574,7 @@ body.cover-panel-active {
 
 .funding-share-box {
   width: 40%; // Same as .funding-right
-  padding: 0 $grid-size;
+  padding: 0 $grid-size-double 0 $grid-size;
   bottom: $page-footer-height + $grid-size;
   right: 0;
 }
