@@ -1629,8 +1629,8 @@ var filterInvestorsDataByType = function(data, type) {
 };
 
 var mapClicked = function(d) {
-  if (activeMapState.node() === this || !stateHasDeals(d.properties)) {
-    return mapZoomOut(this, d);
+  if (activeMapState.node() === this || !stateHasInvestors(d.properties)) {
+    return mapZoomOut(activeMapState.node(), d);
   }
 
   var clickedElement = d3.select(this);
@@ -1742,9 +1742,10 @@ var mapZoomToState = function(node, d) {
 
 var mapZoomOut = function(node, d) {
   if (activeMapRegion.node() !== null && activeMapState.node() !== null) {
+    stateNodeCopy = activeMapState.node()
     activeMapState = d3.select(null);
     var region = activeMapRegion.attr('data-region');
-    mapZoomToRegion(node, d, region);
+    mapZoomToRegion(stateNodeCopy, d, region);
   } else {
     mapReset();
   }
