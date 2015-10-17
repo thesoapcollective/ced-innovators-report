@@ -400,9 +400,9 @@
 
   <script id="deals-text-item-template" type="text/x-handlebars-template">
     <li class="deals-text-list-item pos-a text-ac">
-      <div class="deals-text-list-item-p-title f-inputsans f-thin f-italic text-shadow">{{primary_title}}</div>
-      <div class="deals-text-list-item-p-value f-adelle f-bold fs-h2 text-shadow">{{primary_value}}</div>
-      <span class="deals-text-list-item-s-title f-inputsans f-thin f-italic text-shadow">{{secondary_title}}</span> <span class="deals-text-list-item-s-value f-adelle f-bold text-shadow">{{secondary_value}}</span>
+      <div class="deals-text-list-item-p-title f-inputsans f-thin f-italic text-shadow fs-small">{{primary_title}}</div>
+      <div class="deals-text-list-item-p-value f-adelle f-bold fs-h4 text-shadow">{{primary_value}}</div>
+      <span class="deals-text-list-item-s-title f-inputsans f-thin f-italic text-shadow fs-small">{{secondary_title}}</span> <span class="deals-text-list-item-s-value f-adelle f-bold text-shadow fs-small">{{secondary_value}}</span>
     </li>
   </script>
 

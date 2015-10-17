@@ -1973,8 +1973,8 @@ var setupDealsSection = function() {
         $list.append($item);
         $item.width($circle[0].getBBox().width);
         $item.css({
-          left: parseFloat($circle.attr('cx')) - parseFloat($circle.attr('r')),
-          top: parseFloat($circle.attr('cy')) - $item.height() / 2,
+          left: parseFloat($circle.attr('cx')) - parseFloat($circle.attr('r')) - parseFloat($item.css('paddingLeft').substring(0, $item.css('paddingLeft').length - 2)),
+          top: parseFloat($circle.attr('cy')) - $item.outerHeight() / 2,
         });
       });
 
@@ -2104,8 +2104,8 @@ var updateDealsSection = function() {
       $('.deals-text-list-item-s-title', $item).text(d.secondary.title).toggleClass('dis-n', shouldHide);
       $('.deals-text-list-item-s-value', $item).text(d.secondary.value).toggleClass('dis-n', shouldHide);
       $item.css({
-        left: parseFloat($circle.attr('cx')) - parseFloat($circle.attr('r')),
-        top: parseFloat($circle.attr('cy')) - $item.height() / 2,
+        left: parseFloat($circle.attr('cx')) - parseFloat($circle.attr('r')) - parseFloat($item.css('paddingLeft').substring(0, $item.css('paddingLeft').length - 2)),
+        top: parseFloat($circle.attr('cy')) - $item.outerHeight() / 2,
       });
     });
     $dealsList.css('opacity', 1);
