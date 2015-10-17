@@ -1501,21 +1501,16 @@ var getRegionTotal = function(region) {
   return mappedStates.reduce(function(num, state) { return num + getStateTotal(state.properties); }, 0);
 };
 
-var getStateDataByCode = function(code) {
-  return cedMapData.find(function(d) { return d.state === code; });
-};
-
-var getStateSectorWithMostDeals = function(state) {
-  var sector;
+var getStateTotal = function(state) {
   var stateData = getStateDataByCode(state.code);
   if (stateData) {
-    stateData.sectors.forEach(function(s) {
-      if (typeof sector === 'undefined' || s.value > sector.value) {
-        sector = s;
-      }
-    });
+    return stateData.sectors.reduce(function(num, sector) { return num + sector.value; }, 0);
   }
-  return sector;
+  return 0;
+};
+
+var getStateDataByCode = function(code) {
+  return cedMapData.find(function(d) { return d.state === code; });
 };
 
 var getStateSectorWithMostInvestors = function(state) {
@@ -1538,25 +1533,6 @@ var getStateSectorWithMostInvestors = function(state) {
     }
   });
   return sector;
-};
-
-var getStateTotal = function(state) {
-  var stateData = getStateDataByCode(state.code);
-  if (stateData) {
-    return stateData.sectors.reduce(function(num, sector) { return num + sector.value; }, 0);
-  }
-  return 0;
-};
-
-var getStateSectorTotal = function(state, sector) {
-  var stateData = getStateDataByCode(state.code);
-  if (stateData) {
-    var filteredSector = stateData.sectors.find(function(s) { return s.name === sector; });
-    if (filteredSector) {
-      return filteredSector.value;
-    }
-  }
-  return 0;
 };
 
 var getStateInvestorTotal = function(state, sector) {
@@ -1585,28 +1561,6 @@ var getStateRegion = function(state) {
   }
 };
 
-var getRegionSectorWithMostDeals = function(region) {
-  var aggregatedSectors = [];
-  var states = getStatesByRegion(region);
-  states.forEach(function(state) {
-    state.sectors.forEach(function(s) {
-      var sector = aggregatedSectors.find(function(d) { return d.name === s.name; });
-      if (typeof sector === 'undefined') {
-        sector = {name: s.name, value: 0};
-        aggregatedSectors.push(sector);
-      }
-      sector.value += s.value;
-    });
-  });
-  var sector;
-  aggregatedSectors.forEach(function(s) {
-    if (typeof sector === 'undefined' || s.value > sector.value) {
-      sector = s;
-    }
-  });
-  return sector;
-};
-
 var getRegionSectorWithMostInvestors = function(region) {
   var aggregatedSectors = [];
   var states = getStatesByRegion(region);
@@ -1629,16 +1583,6 @@ var getRegionSectorWithMostInvestors = function(region) {
     }
   });
   return sector;
-};
-
-var stateHasDeals = function(state) {
-  var total = 0;
-  if (fundersFilter.sector === 'All') {
-    total = getStateTotal(state);
-  } else {
-    total = getStateSectorTotal(state, fundersFilter.sector);
-  }
-  return total > 0;
 };
 
 var stateHasInvestors = function(state) {
@@ -1682,28 +1626,6 @@ var filterInvestorsDataBySector = function(data, sector) {
 var filterInvestorsDataByType = function(data, type) {
   if (type === 'All') { return data };
   return data.filter(function(d) { return d.type === type });
-};
-
-var getInvestorTotal = function(state) {
-  var investors = getInvestorsByState(state);
-  return investors.length;
-};
-
-var getStateInvestorTypeTotal = function(state, type) {
-  if (fundersFilter.type === 'All') {
-    return getInvestorTotal(state);
-  }
-  var investors = getInvestorsByState(state);
-  return investors.filter(function(investor) { return investor.type === fundersFilter.type; }).length;
-};
-
-var getInvestorsByState = function(state) {
-  if (fundersFilter.type === 'All') {
-    return cedMapInvestorData.filter(function(d) { return d.state === state.code; });
-  }
-  return cedMapInvestorData.filter(function(d) {
-    return d.state === state.code && d.type === fundersFilter.type;
-  });
 };
 
 var mapClicked = function(d) {
@@ -2277,9 +2199,6 @@ var getCurrentDealsData = function() {
 
 var getFilteredDealsData = function() {
   var filteredData = $.extend(true, [], cedDealsData);
-  // filteredData = filterFundingDataBySector(filteredData, fundingFilter.sector);
-  // filteredData = filterFundingDataByType(filteredData, fundingFilter.type);
-  // filteredData = filterFundingDataByYear(filteredData, fundingFilter.year);
   return filteredData;
 };
 
