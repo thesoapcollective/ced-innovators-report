@@ -20,6 +20,16 @@ var fundingFilter = {
 };
 ```
 
+## Funders
+
+Default Filter:
+```
+var fundersFilter = {
+  sector: 'All',
+  type: 'All',
+};
+```
+
 ## Deals
 
 Data Notes:

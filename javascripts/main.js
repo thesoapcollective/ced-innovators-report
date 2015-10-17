@@ -1164,19 +1164,19 @@ var setupFundersSection = function() {
       state: d['State'],
       region: d['Region'],
       sectors: [
-        {name: 'Tech', value: isNaN(+d['Tech']) ? 0 : +d['Tech']},
-        {name: 'Life Science', value: isNaN(+d['Life Science']) ? 0 : +d['Life Science']},
-        {name: 'Advanced Manufacturing & Materials', value: isNaN(+d['Advanced M&M']) ? 0 : +d['Advanced M&M']},
-        {name: 'Cleantech', value: isNaN(+d['Cleantech']) ? 0 : +d['Cleantech']},
+        {name: 'Tech', value: convertToNumber(d['Tech'])},
+        {name: 'Life Science', value: convertToNumber(d['Life Science'])},
+        {name: 'Advanced Manufacturing & Materials', value: convertToNumber(d['Advanced M&M'])},
+        {name: 'Cleantech', value: convertToNumber(d['Cleantech'])},
       ],
       types: [
-        {name: 'Venture Fund', value: isNaN(+d['Venture Fund']) ? 0 : +d['Venture Fund']},
-        {name: 'Corporate Fund', value: isNaN(+d['Corporate Fund']) ? 0 : +d['Corporate Fund']},
-        {name: 'Angel Group', value: isNaN(+d['Angel Group']) ? 0 : +d['Angel Group']},
-        {name: 'Growth', value: isNaN(+d['Growth']) ? 0 : +d['Growth']},
-        {name: 'Strategic', value: isNaN(+d['Strategic']) ? 0 : +d['Strategic']},
-        {name: 'Grant', value: isNaN(+d['Grant']) ? 0 : +d['Grant']},
-        {name: 'Award', value: isNaN(+d['Award']) ? 0 : +d['Award']},
+        {name: 'Venture Fund', value: convertToNumber(d['Venture Fund'])},
+        {name: 'Corporate Fund', value: convertToNumber(d['Corporate Fund'])},
+        {name: 'Angel Group', value: convertToNumber(d['Angel Group'])},
+        {name: 'Growth', value: convertToNumber(d['Growth'])},
+        {name: 'Strategic', value: convertToNumber(d['Strategic'])},
+        {name: 'Grant', value: convertToNumber(d['Grant'])},
+        {name: 'Award', value: convertToNumber(d['Award'])},
       ],
     };
   }, function(error, data) {
@@ -1187,10 +1187,10 @@ var setupFundersSection = function() {
         state: d['Billing State/Province'],
         type: d['Investor Type'],
         sectors: [
-          {name: 'Tech', value: isNaN(+d['Tech']) ? 0 : +d['Tech']},
-          {name: 'Life Science', value: isNaN(+d['Life Science']) ? 0 : +d['Life Science']},
-          {name: 'Advanced Manufacturing & Materials', value: isNaN(+d['AM&M']) ? 0 : +d['AM&M']},
-          {name: 'Cleantech', value: isNaN(d['Cleantech']) ? 0 : +d['Cleantech']},
+          {name: 'Tech', value: convertToNumber(d['Tech'])},
+          {name: 'Life Science', value: convertToNumber(d['Life Science'])},
+          {name: 'Advanced Manufacturing & Materials', value: convertToNumber(d['AM&M'])},
+          {name: 'Cleantech', value: convertToNumber(d['Cleantech'])},
         ],
       };
     }, function(error, investorsData) {
@@ -1222,44 +1222,48 @@ var setupFundersSection = function() {
             .attr('fill', function(d) {
               var region = getStateRegion(d.properties);
               if (region) {
-                var sector = getRegionSectorWithMostDeals(region);
-                return getSectorColor(sector.name).value;
-              } else if (stateHasDeals(d.properties)) {
-                var sector = getStateSectorWithMostDeals(d.properties);
-                return getSectorColor(sector.name).value;
+                var sector = getRegionSectorWithMostInvestors(region);
+                if (sector) {
+                  return getSectorColor(sector.name).value;
+                }
+              } else if (stateHasInvestors(d.properties)) {
+                var sector = getStateSectorWithMostInvestors(d.properties);
+                if (sector) {
+                  return getSectorColor(sector.name).value;
+                }
               }
               return '#000'
             })
-            .attr('fill-opacity', function(d) { return stateHasDeals(d.properties) ? 0.25 : 0; })
+            .attr('fill-opacity', function(d) { return stateHasInvestors(d.properties) ? 0.25 : 0; })
             .on('mouseover', function(d, i) {
-              if (stateHasDeals(d.properties)) {
+              if (stateHasInvestors(d.properties)) {
                 var region = getStateRegion(d.properties);
                 if (region) {
                   d3.selectAll('.state-section[data-region="' + region + '"]')
                     .transition()
                       .duration(250)
-                      .attr('fill-opacity', function(d) { return stateHasDeals(d.properties) ? 0.5 : 0; });
+                      .attr('fill-opacity', function(d) { return stateHasInvestors(d.properties) ? 0.5 : 0; });
                 } else {
                   d3.select(this)
                     .transition()
                       .duration(250)
-                      .attr('fill-opacity', function(d) { return stateHasDeals(d.properties) ? 0.5 : 0; });
+                      .attr('fill-opacity', function(d) { return stateHasInvestors(d.properties) ? 0.5 : 0; });
                 }
               }
             })
             .on('mouseout', function(d, i) {
-              if (stateHasDeals(d.properties)) {
+              if (stateHasInvestors(d.properties)) {
                 var region = getStateRegion(d.properties);
                 if (region) {
                   d3.selectAll('.state-section[data-region="' + region + '"]')
                     .transition()
                       .duration(250)
-                      .attr('fill-opacity', function(d) { return stateHasDeals(d.properties) ? 0.25 : 0; });
+                      .attr('fill-opacity', function(d) { return stateHasInvestors(d.properties) ? 0.25 : 0; });
                 } else {
                   d3.select(this)
                     .transition()
                       .duration(250)
-                      .attr('fill-opacity', function(d) { return stateHasDeals(d.properties) ? 0.25 : 0; });
+                      .attr('fill-opacity', function(d) { return stateHasInvestors(d.properties) ? 0.25 : 0; });
                 }
               }
             })
@@ -1267,8 +1271,8 @@ var setupFundersSection = function() {
 
           stateGroups.append('text')
             .text(function(d) {
-              if (stateHasDeals(d.properties)) {
-                return getInvestorTotal(d.properties);
+              if (stateHasInvestors(d.properties)) {
+                return getFilteredStateInvestorsData(d.properties).length;
               }
             })
             .attr('x', function(d) {
@@ -1394,7 +1398,7 @@ var setupFundersSection = function() {
             $list = $('.funders-investors-list');
             $list.empty();
             var state = mapData.find(function(d) { return d.properties.code === activeMapState.attr('data-state'); });
-            var investors = getInvestorsByState(state.properties);
+            var investors = getFilteredStateInvestorsData(state.properties);
             var source = $('#funders-investors-item-template').html();
             var template = Handlebars.compile(source);
             investors.forEach(function(investor) {
@@ -1429,21 +1433,19 @@ var updateFundersSection = function() {
     .attr('fill', function(d) {
       var region = getStateRegion(d.properties);
       if (region) {
-        if (fundersFilter.sector === 'All') {
-          var sector = getRegionSectorWithMostDeals(region);
+        var sector = getRegionSectorWithMostInvestors(region);
+        if (sector) {
           return getSectorColor(sector.name).value;
         }
-        return getSectorColor(fundersFilter.sector).value;
-      } else if (stateHasDeals(d.properties)) {
-        if (fundersFilter.sector === 'All') {
-          var sector = getStateSectorWithMostDeals(d.properties);
+      } else if (stateHasInvestors(d.properties)) {
+        var sector = getStateSectorWithMostInvestors(d.properties);
+        if (sector) {
           return getSectorColor(sector.name).value;
         }
-        return getSectorColor(fundersFilter.sector).value;
       }
       return '#000'
     })
-    .attr('fill-opacity', function(d) { return stateHasDeals(d.properties) ? 0.25 : 0; })
+    .attr('fill-opacity', function(d) { return stateHasInvestors(d.properties) ? 0.25 : 0; })
 
   stateGroups.selectAll('.state-text')
     .transition()
@@ -1452,11 +1454,8 @@ var updateFundersSection = function() {
     .transition()
       .duration(250)
       .text(function(d) {
-        if (stateHasDeals(d.properties)) {
-          if (fundersFilter.sector === 'All') {
-            return getInvestorTotal(d.properties);
-          }
-          return getStateInvestorTypeTotal(d.properties, fundersFilter.type);
+        if (stateHasInvestors(d.properties)) {
+          return getFilteredStateInvestorsData(d.properties).length;
         }
       })
       .attr('fill-opacity', 1);
@@ -1519,6 +1518,28 @@ var getStateSectorWithMostDeals = function(state) {
   return sector;
 };
 
+var getStateSectorWithMostInvestors = function(state) {
+  var aggregatedSectors = [];
+  var investors = getFilteredStateInvestorsData(state)
+  investors.forEach(function(investor) {
+    investor.sectors.forEach(function(s) {
+      var sector = aggregatedSectors.find(function(d) { return d.name === s.name; });
+      if (typeof sector === 'undefined') {
+        sector = {name: s.name, value: 0};
+        aggregatedSectors.push(sector);
+      }
+      sector.value += s.value;
+    });
+  });
+  var sector;
+  aggregatedSectors.forEach(function(s) {
+    if (typeof sector === 'undefined' || s.value > sector.value) {
+      sector = s;
+    }
+  });
+  return sector;
+};
+
 var getStateTotal = function(state) {
   var stateData = getStateDataByCode(state.code);
   if (stateData) {
@@ -1538,11 +1559,25 @@ var getStateSectorTotal = function(state, sector) {
   return 0;
 };
 
+var getStateInvestorTotal = function(state, sector) {
+  var stateData = getStateDataByCode(state.code);
+  if (stateData) {
+    var investors = cedMapInvestorData.filter(function(d) {
+      return d.state === state.name;
+    });
+    return investors.reduce(function(num, investor) {
+      var s = investor.sectors.find(function(s) { return s.name === sector; });
+      return num + s.value;
+    }, 0);
+  }
+  return 0;
+};
+
 var getStatesByRegion = function(region) {
   var states = cedMapData.filter(function(state) { return state.region === region; });
   states = states.filter(function(s) {
     var mapState = mapData.find(function(md) { return md.properties.code === s.state; });
-    return mapState && stateHasDeals(mapState.properties);
+    return !!mapState;
   });
   return states;
 };
@@ -1576,6 +1611,30 @@ var getRegionSectorWithMostDeals = function(region) {
   return sector;
 };
 
+var getRegionSectorWithMostInvestors = function(region) {
+  var aggregatedSectors = [];
+  var states = getStatesByRegion(region);
+  var stateCodes = states.map(function(s) { return s.state; });
+  var investors = getFilteredRegionInvestorsData(region)
+  investors.forEach(function(investor) {
+    investor.sectors.forEach(function(s) {
+      var sector = aggregatedSectors.find(function(d) { return d.name === s.name; });
+      if (typeof sector === 'undefined') {
+        sector = {name: s.name, value: 0};
+        aggregatedSectors.push(sector);
+      }
+      sector.value += s.value;
+    });
+  });
+  var sector;
+  aggregatedSectors.forEach(function(s) {
+    if (typeof sector === 'undefined' || s.value > sector.value) {
+      sector = s;
+    }
+  });
+  return sector;
+};
+
 var stateHasDeals = function(state) {
   var total = 0;
   if (fundersFilter.sector === 'All') {
@@ -1584,6 +1643,49 @@ var stateHasDeals = function(state) {
     total = getStateSectorTotal(state, fundersFilter.sector);
   }
   return total > 0;
+};
+
+var stateHasInvestors = function(state) {
+  return getFilteredStateInvestorsData(state).length > 0;
+};
+
+var getFilteredRegionInvestorsData = function(region) {
+  var filteredData = $.extend(true, [], cedMapInvestorData);
+  filteredData = filterInvestorsDataByRegion(filteredData, region);
+  filteredData = filterInvestorsDataBySector(filteredData, fundersFilter.sector);
+  filteredData = filterInvestorsDataByType(filteredData, fundersFilter.type);
+  return filteredData;
+};
+
+var getFilteredStateInvestorsData = function(state) {
+  var filteredData = $.extend(true, [], cedMapInvestorData);
+  filteredData = filterInvestorsDataByState(filteredData, state);
+  filteredData = filterInvestorsDataBySector(filteredData, fundersFilter.sector);
+  filteredData = filterInvestorsDataByType(filteredData, fundersFilter.type);
+  return filteredData;
+};
+
+var filterInvestorsDataByRegion = function(data, region) {
+  var states = getStatesByRegion(region);
+  var stateCodes = states.map(function(s) { return s.state; });
+  return data.filter(function(d) { return stateCodes.indexOf(d.state) > -1; });
+};
+
+var filterInvestorsDataByState = function(data, state) {
+  return data.filter(function(d) { return d.state === state.code; });
+};
+
+var filterInvestorsDataBySector = function(data, sector) {
+  if (sector === 'All') { return data };
+  return data.filter(function(d) {
+    sectorData = d.sectors.find(function(s) { return s.name === sector; });
+    return !!sectorData ? sectorData.value > 0 : false;
+  });
+};
+
+var filterInvestorsDataByType = function(data, type) {
+  if (type === 'All') { return data };
+  return data.filter(function(d) { return d.type === type });
 };
 
 var getInvestorTotal = function(state) {
@@ -1713,7 +1815,7 @@ var mapZoomToState = function(node, d) {
 
   $('.js-funders-state-info').addClass('is-active').removeClass('no-pointer-event');
   $('.js-funders-state-info-title').text(d.properties.name);
-  $('.js-funders-state-info-investors').text(getInvestorTotal(d.properties));
+  $('.js-funders-state-info-investors').text(getFilteredStateInvestorsData(d.properties).length);
   $('.js-funders-state-info-tech').text(getStateSectorTotal(d.properties, 'Tech'));
   $('.js-funders-state-info-lifescience').text(getStateSectorTotal(d.properties, 'Life Science'));
   $('.js-funders-state-info-amm').text(getStateSectorTotal(d.properties, 'Advanced Manufacturing & Materials'));
