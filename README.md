@@ -22,6 +22,10 @@ var fundingFilter = {
 
 ## Funders
 
+Data Notes:
+
+- All states should have a region attached to them, even if they are the only state in the region.
+
 Default Filter:
 ```
 var fundersFilter = {

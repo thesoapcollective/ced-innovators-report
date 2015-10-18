@@ -1234,36 +1234,52 @@ var setupFundersSection = function() {
               }
               return '#000'
             })
-            .attr('fill-opacity', function(d) { return stateHasInvestors(d.properties) ? 0.25 : 0; })
+            .attr('fill-opacity', function(d) {
+              var region = getStateRegion(d.properties);
+              if (region) {
+                return regionHasInvestors(region) ? 0.25 : 0;
+              }
+              return stateHasInvestors(d.properties) ? 0.25 : 0;
+            })
             .on('mouseover', function(d, i) {
-              if (stateHasInvestors(d.properties)) {
+              if (activeMapRegion.node() !== null || activeMapState.node() !== null) {
+                d3.select(this)
+                  .transition()
+                    .duration(250)
+                    .attr('fill-opacity', function(d) { return stateHasInvestors(d.properties) ? 0.5 : 0; });
+              } else {
                 var region = getStateRegion(d.properties);
-                if (region) {
+                if (region && regionHasInvestors(region)) {
                   d3.selectAll('.state-section[data-region="' + region + '"]')
                     .transition()
                       .duration(250)
-                      .attr('fill-opacity', function(d) { return stateHasInvestors(d.properties) ? 0.5 : 0; });
-                } else {
+                      .attr('fill-opacity', 0.5);
+                } else if (stateHasInvestors(d.properties)) {
                   d3.select(this)
                     .transition()
                       .duration(250)
-                      .attr('fill-opacity', function(d) { return stateHasInvestors(d.properties) ? 0.5 : 0; });
+                      .attr('fill-opacity', 0.5);
                 }
               }
             })
             .on('mouseout', function(d, i) {
-              if (stateHasInvestors(d.properties)) {
+              if (activeMapRegion.node() !== null || activeMapState.node() !== null) {
+                d3.select(this)
+                  .transition()
+                    .duration(250)
+                    .attr('fill-opacity', function(d) { return stateHasInvestors(d.properties) ? 0.25 : 0; });
+              } else {
                 var region = getStateRegion(d.properties);
-                if (region) {
+                if (region && regionHasInvestors(region)) {
                   d3.selectAll('.state-section[data-region="' + region + '"]')
                     .transition()
                       .duration(250)
-                      .attr('fill-opacity', function(d) { return stateHasInvestors(d.properties) ? 0.25 : 0; });
-                } else {
+                      .attr('fill-opacity', 0.25);
+                } else if (stateHasInvestors(d.properties)) {
                   d3.select(this)
                     .transition()
                       .duration(250)
-                      .attr('fill-opacity', function(d) { return stateHasInvestors(d.properties) ? 0.25 : 0; });
+                      .attr('fill-opacity', 0.25);
                 }
               }
             })
@@ -1275,104 +1291,25 @@ var setupFundersSection = function() {
                 return getFilteredStateInvestorsData(d.properties).length;
               }
             })
-            .attr('x', function(d) {
-              var centroid = mapPath.centroid(d);
-              return isNaN(centroid[0]) ? -10 : centroid[0];
-            })
-            .attr('y', function(d) {
-              var centroid = mapPath.centroid(d);
-              return isNaN(centroid[1]) ? -10 : centroid[1];
-            })
             .attr('data-region', function(d) { return getStateRegion(d.properties); })
             .attr('data-state', function(d) { return d.properties.code; })
             .attr('fill', '#fff')
-            .attr('fill-opacity', 1)
+            .attr('fill-opacity', 0)
             .attr('stroke-width', 0)
             .attr('class', 'state-text f-adelle f-bold fs-base text-shadow no-pointer-event')
             .attr('text-anchor', 'middle');
 
-          // var regions = getUsRegions();
-          // regions.forEach(function(region) {
-          //   var states = getStatesByRegion(region);
-          //   var centroids = [];
-          //   mapGroup.append('text')
-          //     .text(function() { return getRegionTotal(region); })
-          //     .attr('x', function(d) {
-          //       var bounds = states.map(function(s) {
-          //         var state = mapData.find(function(md) { return md.properties.code === s.state; });
-          //         return mapPath.bounds(state);
-          //       });
-          //       var tops = bounds.map(function(b) { return b[0][1]; });
-          //       var bottoms = bounds.map(function(b) { return b[1][1]; });
-          //       var lefts = bounds.map(function(b) { return b[0][0]; });
-          //       var rights = bounds.map(function(b) { return b[1][0]; });
-          //       var topBound = Math.min.apply(null, tops);
-          //       var bottomBound = Math.max.apply(null, bottoms);
-          //       var leftBound = Math.min.apply(null, lefts);
-          //       var rightBound = Math.max.apply(null, rights);
-
-          //       console.log('lefts', lefts)
-          //       console.log('rights', rights)
-
-          //       return lefts.reduce(function(num, left) { return num + left; }, 0) / lefts.length;
-          //       return (leftBound + rightBound) / 2;
-
-
-          //       states.forEach(function(state) {
-          //         var mapState = mapData.find(function(d) { return d.properties.code === state.state; });
-          //         centroids.push(mapPath.centroid(mapState));
-          //       });
-          //       var x = centroids.reduce(function(num, centroid) {
-          //         var total = num;
-          //         if (!isNaN(centroid[0])) {
-          //           total += centroid[0];
-          //           centroidsCount++;
-          //         }
-          //         return total;
-          //       }, 0);
-          //       return x / centroids.length;
-          //     })
-          //     .attr('y', function(d) {
-          //       var bounds = states.map(function(s) {
-          //         var state = mapData.find(function(md) { return md.properties.code === s.state; });
-          //         return mapPath.bounds(state);
-          //       });
-          //       var tops = bounds.map(function(b) { return b[0][1]; });
-          //       var bottoms = bounds.map(function(b) { return b[1][1]; });
-          //       var lefts = bounds.map(function(b) { return b[0][0]; });
-          //       var rights = bounds.map(function(b) { return b[1][0]; });
-          //       var topBound = Math.min.apply(null, tops);
-          //       var bottomBound = Math.max.apply(null, bottoms);
-          //       var leftBound = Math.min.apply(null, lefts);
-          //       var rightBound = Math.max.apply(null, rights);
-
-
-          //       // return (topBound + bottomBound) / 2;
-
-
-          //       var y = centroids.reduce(function(num, centroid) {
-          //         var total = num;
-          //         if (!isNaN(centroid[1])) {
-          //           total += centroid[1];
-          //         }
-          //         return total;
-          //       }, 0);
-          //       return 50;//y / centroids.length;
-          //     })
-          //     // .attr('data-region', function(d) { return getStateRegion(d.properties); })
-          //     // .attr('data-state', function(d) { return d.properties.code; })
-          //     .attr('fill', '#fff')
-          //     .attr('fill-opacity', 1)
-          //     .attr('stroke-width', 0)
-          //     .attr('class', 'region-text f-adelle f-bold fs-base text-shadow no-pointer-event')
-          //     .attr('text-anchor', 'middle');
-          // });
-
-          // var mapDatum = topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; });
-          // var mapMesh = mapGroup.append('path')
-          //   .datum(mapDatum)
-          //   .attr('class', 'map-mesh')
-          //   .attr('d', mapPath);
+          var regions = getUsRegions();
+          regions.forEach(function(region) {
+            mapGroup.append('text')
+              .text(function() { return getFilteredRegionInvestorsData(region).length; })
+              .attr('data-region', region)
+              .attr('fill', '#fff')
+              .attr('fill-opacity', 1)
+              .attr('stroke-width', 0)
+              .attr('class', 'region-text f-adelle f-bold fs-base fs-h4 text-shadow-large-blur no-pointer-event')
+              .attr('text-anchor', 'middle');
+          });
 
           redrawMap();
 
@@ -1427,7 +1364,6 @@ var updateFundersSection = function() {
   mapReset();
 
   var stateGroups = mapGroup.selectAll('.state-group');
-
   stateGroups.selectAll('.state-section').transition()
     .duration(500)
     .attr('fill', function(d) {
@@ -1445,20 +1381,36 @@ var updateFundersSection = function() {
       }
       return '#000'
     })
-    .attr('fill-opacity', function(d) { return stateHasInvestors(d.properties) ? 0.25 : 0; })
+    .attr('fill-opacity', function(d) {
+      var region = getStateRegion(d.properties);
+      if (region) {
+        return regionHasInvestors(region) ? 0.25 : 0;
+      }
+      return stateHasInvestors(d.properties) ? 0.25 : 0;
+    });
 
   stateGroups.selectAll('.state-text')
+    .text(function(d) {
+      if (stateHasInvestors(d.properties)) {
+        return getFilteredStateInvestorsData(d.properties).length;
+      }
+    })
+    .attr('fill-opacity', 0);
+
+  d3.selectAll('.region-text')
     .transition()
       .duration(250)
       .attr('fill-opacity', 0)
     .transition()
       .duration(250)
       .text(function(d) {
-        if (stateHasInvestors(d.properties)) {
-          return getFilteredStateInvestorsData(d.properties).length;
-        }
+        var region = d3.select(this).attr('data-region');
+        return getFilteredRegionInvestorsData(region).length;
       })
-      .attr('fill-opacity', 1);
+      .attr('fill-opacity', function(d) {
+        var region = d3.select(this).attr('data-region');
+        return regionHasInvestors(region) ? 1 : 0;
+      });
 };
 
 var redrawMap = function() {
@@ -1468,18 +1420,43 @@ var redrawMap = function() {
   var newScale = hscale < vscale ? hscale : vscale;
 
   mapProjection.scale(newScale).translate([mapSize.width / 2, mapSize.height / 2]);
-
   mapPath = d3.geo.path().projection(mapProjection);
+
   d3.selectAll('.state-pattern').attr('d', mapPath)
   d3.selectAll('.state-section').attr('d', mapPath)
-  d3.selectAll('.state-text').attr('x', function(d) {
-    var centroid = mapPath.centroid(d);
-    return isNaN(centroid[0]) ? -10 : centroid[0];
-  })
-  .attr('y', function(d) {
-    var centroid = mapPath.centroid(d);
-    return isNaN(centroid[1]) ? -10 : centroid[1];
-  });
+  d3.selectAll('.state-text')
+    .attr('x', function(d) {
+      var centroid = mapPath.centroid(d);
+      return isNaN(centroid[0]) ? -10 : centroid[0];
+    })
+    .attr('y', function(d) {
+      var centroid = mapPath.centroid(d);
+      return isNaN(centroid[1]) ? -10 : centroid[1];
+    });
+
+  d3.selectAll('.region-text')
+    .attr('x', function(d) {
+      var region = d3.select(this).attr('data-region');
+      var states = getStatesByRegion(region);
+      var centroids = [];
+      states.forEach(function(state) {
+        var mapState = mapData.find(function(d) { return d.properties.code === state.state; });
+        centroids.push(mapPath.centroid(mapState));
+      });
+      var xTotal = centroids.reduce(function(num, centroid) { return num + centroid[0]; }, 0);
+      return xTotal / centroids.length;
+    })
+    .attr('y', function(d) {
+      var region = d3.select(this).attr('data-region');
+      var states = getStatesByRegion(region);
+      var centroids = [];
+      states.forEach(function(state) {
+        var mapState = mapData.find(function(d) { return d.properties.code === state.state; });
+        centroids.push(mapPath.centroid(mapState));
+      });
+      var yTotal = centroids.reduce(function(num, centroid) { return num + centroid[1]; }, 0);
+      return yTotal / centroids.length;
+    });
 };
 
 var getUsRegions = function() {
@@ -1492,21 +1469,6 @@ var getUsRegions = function() {
     }
   });
   return regions;
-};
-
-var getRegionTotal = function(region) {
-  var states = getStatesByRegion(region);
-  states = states.map(function(state) { return state.state; });
-  var mappedStates = mapData.filter(function(d) { return states.indexOf(d.properties.code) >= 0; });
-  return mappedStates.reduce(function(num, state) { return num + getStateTotal(state.properties); }, 0);
-};
-
-var getStateTotal = function(state) {
-  var stateData = getStateDataByCode(state.code);
-  if (stateData) {
-    return stateData.sectors.reduce(function(num, sector) { return num + sector.value; }, 0);
-  }
-  return 0;
 };
 
 var getStateDataByCode = function(code) {
@@ -1585,6 +1547,10 @@ var getRegionSectorWithMostInvestors = function(region) {
   return sector;
 };
 
+var regionHasInvestors = function(region) {
+  return getFilteredRegionInvestorsData(region).length > 0;
+};
+
 var stateHasInvestors = function(state) {
   return getFilteredStateInvestorsData(state).length > 0;
 };
@@ -1629,7 +1595,10 @@ var filterInvestorsDataByType = function(data, type) {
 };
 
 var mapClicked = function(d) {
-  if (activeMapState.node() === this || !stateHasInvestors(d.properties)) {
+  var region = getStateRegion(d.properties);
+  if (activeMapState.node() === this ||
+      (!!region && (!regionHasInvestors(region) || (activeMapRegion.node() !== null && !stateHasInvestors(d.properties)))) ||
+      (!!!region && !stateHasInvestors(d.properties))) {
     return mapZoomOut(activeMapState.node(), d);
   }
 
@@ -1698,12 +1667,24 @@ var mapZoomToRegion = function(node, d, region) {
     .duration(750)
     .attr('stroke-width', 2.5);
 
+  var stateGroups = mapGroup.selectAll('.state-group');
+  stateGroups.selectAll('.state-section').transition()
+    .duration(750)
+    .attr('fill-opacity', function(d) {
+      return stateHasInvestors(d.properties) ? 0.25 : 0;
+    });
+
   d3.selectAll('.state-text').transition()
     .duration(750)
     .attr('fill-opacity', function() {
       return $(this).attr('data-region') === region ? 1 : 0;
     })
     .style('font-size', '14px');
+
+  d3.selectAll('.region-text')
+    .transition()
+      .duration(750)
+      .attr('fill-opacity', 0)
 };
 
 var mapZoomToState = function(node, d) {
@@ -1730,6 +1711,11 @@ var mapZoomToState = function(node, d) {
     .duration(750)
     .attr('fill-opacity', 1)
     .style('font-size', function() { return scale > 5 ? '10px' : '14px'});
+
+  d3.selectAll('.region-text')
+    .transition()
+      .duration(750)
+      .attr('fill-opacity', 0)
 
   $('.js-funders-state-info').addClass('is-active').removeClass('no-pointer-event');
   $('.js-funders-state-info-title').text(d.properties.name);
@@ -1764,10 +1750,28 @@ var mapReset = function() {
     .duration(750)
     .attr('stroke-width', cedPatternStrokeSize);
 
+  var stateGroups = mapGroup.selectAll('.state-group');
+  stateGroups.selectAll('.state-section').transition()
+    .duration(500)
+    .attr('fill-opacity', function(d) {
+      var region = getStateRegion(d.properties);
+      if (region) {
+        return regionHasInvestors(region) ? 0.25 : 0;
+      }
+      return stateHasInvestors(d.properties) ? 0.25 : 0;
+    });
+
   d3.selectAll('.state-text').transition()
     .duration(750)
     .style('font-size', '18px')
-    .attr('fill-opacity', 1);
+    .attr('fill-opacity', 0);
+
+  d3.selectAll('.region-text').transition()
+    .duration(750)
+    .attr('fill-opacity', function(d) {
+      var region = d3.select(this).attr('data-region');
+      return regionHasInvestors(region) ? 1 : 0;
+    });
 
   $('.js-funders-state-info').addClass('no-pointer-event').removeClass('is-active');
   $('.js-funders-investors-container').addClass('no-pointer-event').removeClass('is-active');

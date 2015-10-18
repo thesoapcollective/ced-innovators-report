@@ -68,6 +68,7 @@ h1, h2, h3, h4, h5, h6, p {
 .text-al { text-align: left }
 .text-shadow { text-shadow: 0 2px 0 rgba($black, 0.65) }
 .text-shadow-large { text-shadow: 0 4px 0 rgba($black, 0.65) }
+.text-shadow-large-blur { text-shadow: 0 4px 10px $black }
 
 .a-hover-opacity {
   opacity: 0.5;
