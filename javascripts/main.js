@@ -1160,8 +1160,10 @@ var setupFundersSection = function() {
     .style('stroke-width', mapSize.strokeWidth);
 
   d3.csv('./data/funders.csv', function(d) {
+    var state = d['State'];
     return {
-      state: d['State'],
+      state: state === 'DC' ? 'VA' : state,
+      original_state: state,
       region: d['Region'],
       sectors: [
         {name: 'Tech', value: convertToNumber(d['Tech'])},
@@ -1182,9 +1184,11 @@ var setupFundersSection = function() {
   }, function(error, data) {
     cedMapData = data;
     d3.csv('./data/funders_investors.csv', function(d) {
+      var state = d['Billing State/Province'];
       return {
         name: d['Funder'],
-        state: d['Billing State/Province'],
+        state: state === 'DC' ? 'VA' : state,
+        original_state: state,
         type: d['Investor Type'],
         sectors: [
           {name: 'Tech', value: convertToNumber(d['Tech'])},
