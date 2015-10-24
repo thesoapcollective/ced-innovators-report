@@ -177,6 +177,7 @@ h1, h2, h3, h4, h5, h6, p {
   left: 0;
   z-index: 2;
   transition: $opacity-transition;
+  pointer-events: none;
 }
 
 .logo-container {
@@ -228,6 +229,7 @@ h1, h2, h3, h4, h5, h6, p {
 
 .social-list {
   margin-top: 8px;
+  pointer-events: auto;
 }
 
 .social-list-item {
@@ -281,6 +283,8 @@ h1, h2, h3, h4, h5, h6, p {
 }
 
 .filter-list-item.is-active {
+  z-index: 100;
+
   .dropdown-list { display: block; }
 
   .icons-down-arrow { background-position: -96px center; }
@@ -443,7 +447,7 @@ body.cover-panel-active {
   @include translateX(-50%);
   width: 400px;
   left: 50%;
-  top: -50px;
+  top: 0;
   bottom: 0;
   opacity: 0;
   transition: $opacity-transition;
@@ -636,6 +640,43 @@ body.cover-panel-active {
 // ========================================
 // RESPONSIVENESS
 // ========================================
+@media only screen and (max-width: 1200px) {
+  .fs-h1 { font-size: 60px; }
+  .fs-h2 { font-size: 40px; }
+  .fs-h3 { font-size: 20px; }
+  .fs-h4 { font-size: 30px; } // Oops on ordering
+
+  .content-header {
+    height: 120px;
+  }
+
+  .filter-list {
+    left: 100px;
+  }
+
+  .filter-list-item {
+    margin-bottom: $grid-size-half;
+  }
+
+  .funding-pie-text {
+    @include translate(-50%,0);
+    top: 15%;
+  }
+
+  .exits-list-item {
+    width: 15%;
+    padding-top: 15%;
+    margin: 5px;
+  }
+}
+
+@media only screen and (max-width: 800px) and (min-height: 768px) {
+  .exits-list-item {
+    width: 20%;
+    padding-top: 20%;
+  }
+}
+
 @media only screen and (max-width: 767px) {
   body {
     width: auto;

@@ -1,4 +1,5 @@
 var isTouch = false;
+var isMedium = false;
 var isSmall = false;
 
 var $win = null;
@@ -17,6 +18,7 @@ $(document).ready(function() {
   cacheElements();
 
   isTouch = 'ontouchstart' in window || 'onmsgesturechange' in window;
+  isMedium = $win.width() > 767 && $win.width() <= 1200;
   isSmall = $win.width() <= 767;
 
   // Are we on a touch device?
@@ -1909,9 +1911,9 @@ var setupDealsSection = function() {
       dealsSize = {
         width: isSmall ? $dealsSection.width() + 18 : $dealsSection.width(),
         height: $dealsSection.height(),
-        radiusCenter: isSmall ? 90 : 120,
+        radiusCenter: isSmall || isMedium ? 90 : 120,
         radiusMin: 60,
-        radiusMax: isSmall ? 80 : 110
+        radiusMax: isSmall || isMedium ? 80 : 110
       };
 
       var svg = d3.select(dealsSectionSelector).append('svg')
