@@ -17,7 +17,7 @@ $(document).ready(function() {
   cacheElements();
 
   isTouch = 'ontouchstart' in window || 'onmsgesturechange' in window;
-  isSmall = $win.width() <= 639;
+  isSmall = $win.width() <= 767;
 
   // Are we on a touch device?
   if (isTouch) {
@@ -643,7 +643,8 @@ var setupFundingSection = function() {
           });
 
       // Pie text
-      $fundingPieText.width(size.radius * 2);
+      var fundingPieTextWidth = isSmall ? '100%' : size.radius * 2;
+      $fundingPieText.width(fundingPieTextWidth);
       $fundingPieTitle.text(getFundingPieTitle());
       $fundingPieSubtitle.text(convertToDollars(getFundingPieTotal(currentPieData)));
 
