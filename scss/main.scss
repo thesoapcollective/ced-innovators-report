@@ -21,8 +21,6 @@ html {
 body {
   width: 100vw;
   height: 100vh;
-  background: image-url('background.jpg') no-repeat fixed 0 0;
-  background-size: cover;
   color: $white;
   font-size: $base-font-size;
   line-height: 1.3;
@@ -314,16 +312,22 @@ body.cover-panel-active {
   }
 }
 
+.page-background-image {
+  background: image-url('background.jpg') no-repeat fixed 0 0;
+  background-size: cover;
+  z-index: 1;
+}
+
 .page-background-overlay {
   background: $light-gray;
-  z-index: 1;
+  z-index: 2;
   opacity: 0.1;
 }
 
 .page-background-linear-gradient-overlay {
   @include background-image(linear-gradient($black, rgba($black, 0)));
   opacity: 0.65;
-  z-index: 2;
+  z-index: 3;
 }
 
 .page-background-radial-gradient-overlay {
@@ -331,7 +335,7 @@ body.cover-panel-active {
   width: 100%;
   top: -80%;
   left: 50%;
-  z-index: 3;
+  z-index: 4;
   opacity: 0.2;
 
   &:before{
@@ -405,7 +409,7 @@ body.cover-panel-active {
 .funding-right {
   width: 40%;
   top: $content-header-height + ($grid-size-double * 2);
-  right: 0
+  right: 0;
 }
 
 .funding-pie-text {
@@ -626,6 +630,267 @@ body.cover-panel-active {
   &.is-active {
     .f-xlight { font-weight: normal; }
     .f-italic { font-style: normal; }
+  }
+}
+
+// ========================================
+// RESPONSIVENESS
+// ========================================
+@media only screen and (max-width: 639px) {
+  body {
+    width: auto;
+    height: auto;
+    font-size: 14px;
+    // background-size: 100% 100%;
+  }
+
+  #cover {
+    overflow: visible;
+  }
+
+  #funders svg,
+  #deals svg {
+    margin-left: -$grid-size-half;
+  }
+
+  .content-section {
+    margin-bottom: $grid-size-double;
+    padding-left: $grid-size-half;
+    padding-right: $grid-size-half;
+  }
+
+  .page-header,
+  .page-footer {
+    display: none;
+  }
+
+  .pos-a {
+    position: static;
+  }
+
+  .fs-base { font-size: 14px; }
+  .fs-small { font-size: 12px; }
+  .fs-xsmall { font-size: 12px; }
+  .fs-h1 { font-size: 48px; }
+  .fs-h2 { font-size: 36px; }
+  .fs-h3 { font-size: 18px; }
+  .fs-h4 { font-size: 24px; } // Oops on ordering
+
+  .text-shadow-large { text-shadow: 0 2px 0 rgba($black, 0.65) }
+  .text-shadow-large-blur { text-shadow: 0 2px 2px $black }
+
+  .page-background-image.fullsize,
+  .page-background-overlay.fullsize,
+  .page-background-linear-gradient-overlay.fullsize {
+    width: 100%;
+    height: 100vh;
+  }
+
+  .page-background-image {
+    background-attachment: scroll;
+  }
+
+  .page-background-radial-gradient-overlay {
+    top: -30%;
+  }
+
+  .cover-view-report {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+
+  .content-title {
+    margin-bottom: $grid-size;
+
+    &.float-r {
+      float: none;
+    }
+  }
+
+  .content-header {
+    height: auto;
+    margin-bottom: $grid-size-double;
+  }
+
+  .filter-list {
+    padding-left: $grid-size;
+  }
+
+  .filter-list-item {
+    margin-bottom: $grid-size;
+    margin-right: 0;
+    white-space: normal;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    &.dis-ib {
+      display: block;
+    }
+  }
+
+  .dropdown-trigger {
+    margin-left: 0;
+    display: block;
+  }
+
+  .dropdown-current {
+    padding-top: 4px;
+  }
+
+  .dropdown-list {
+    margin-top: $grid-size-half;
+    padding-left: $grid-size-half;
+  }
+
+  .dropdown-list-item {
+    margin-bottom: 5px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .funding-left,
+  .funding-right {
+    width: 100%;
+    height: 475px;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .funding-left {
+    margin-bottom: $grid-size;
+  }
+
+  .funding-pie-text {
+    @include translate(0,0);
+    margin-bottom: $grid-size;
+  }
+
+  .funding-pie-title.fs-h2 {
+    @extend .fs-h4;
+  }
+
+  .funding-pie-subtitle.fs-h1 {
+    @extend .fs-h2;
+  }
+
+  .funding-share-box {
+    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .funders-container {
+    height: 400px;
+    top: auto;
+    bottom: auto;
+
+    &.pos-a {
+      position: relative;
+    }
+  }
+
+  .modal-container {
+    padding: $grid-size;
+
+    &.pos-a {
+      position: absolute;
+    }
+  }
+
+  .funders-state-info {
+    @include translate(0,-50%);
+    top: 50%;
+    left: 0;
+    right: 0;
+  }
+
+  .funders-investors-container {
+    @include translate(0,-50%);
+    width: auto;
+    top: 50%;
+    left: 0;
+    right: 0;
+  }
+
+  .funders-investors-list.pos-a,
+  .funders-investors-close.pos-a {
+    position: absolute;
+  }
+
+  .funders-investors-container {
+    height: 400px;
+  }
+
+  .centered-share-box {
+    @include translateX(0);
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .share-box {
+    padding: $grid-size-half;
+  }
+
+  .deals-container {
+    height: 600px;
+
+    &.pos-a {
+      position: relative;
+      top: auto;
+      bottom: auto;;
+    }
+  }
+
+  .deals-text-list-item.pos-a {
+    position: absolute;
+  }
+
+  .exits-list {
+    margin-bottom: $grid-size;
+  }
+
+  .exits-list-item {
+    width: 100%;
+    margin: $grid-size-half 0;
+    padding-top: 100%;
+
+    &.pos-a {
+      position: relative;
+    }
+  }
+
+  .exits-info.pos-a,
+  .exits-logo-container.pos-a,
+  .exits-logo.pos-a,
+  .exits-type.pos-a {
+    position: absolute;
+  }
+
+  .exits-type {
+    top: 20px;
+    right: 30px;
+  }
+
+  .exits-info {
+    @include translateY(-50%);
+    width: 100%;
+    padding: $grid-size;
+    top: 50%;
+    background: rgba($black, 0.9);
+    border: 2px solid $white;
+    border-radius: 18px;
+  }
+
+  .exits-list-item.show-right {
+    .exits-info { left: auto; }
+  }
+
+  .exits-list-item.show-left {
+    .exits-info { right: auto; }
   }
 }
 

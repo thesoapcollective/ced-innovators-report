@@ -1,3 +1,6 @@
+var isTouch = false;
+var isSmall = false;
+
 var $win = null;
 var $body = null;
 var $socialTextbox = null;
@@ -12,6 +15,15 @@ var $dealsList = null;
 
 $(document).ready(function() {
   cacheElements();
+
+  isTouch = 'ontouchstart' in window || 'onmsgesturechange' in window;
+  isSmall = $win.width() <= 639;
+
+  // Are we on a touch device?
+  if (isTouch) {
+    $('body').addClass('is-touch');
+  }
+
   setupJsClickHandler();
 
   setupSocialLinks();
@@ -75,15 +87,17 @@ var setupTwitterShare = function() {
 // NAVIGATION
 // ========================================
 var setupNavigation = function() {
-  $body.panelSnap({
-    $menu: $('.nav-list'),
-    panelSelector: '.content-section',
-    menuSelector: '.nav-list-item a',
-    directionThreshold: $win.outerHeight() / 3,
-    slideSpeed: 500,
-    easing: 'swing',
-    onActivate: snappedToSection
-  });
+  if (!isTouch) {
+    $body.panelSnap({
+      $menu: $('.nav-list'),
+      panelSelector: '.content-section',
+      menuSelector: '.nav-list-item a',
+      directionThreshold: $win.outerHeight() / 3,
+      slideSpeed: 500,
+      easing: 'swing',
+      onActivate: snappedToSection
+    });
+  }
 
   $('.cover-view-report').click(function(event) {
     $('html, body').animate({
@@ -114,27 +128,29 @@ var setupFilters = function() {
 };
 
 var setupDropdown = function(selector) {
-  $(selector + ' .js-dropdown').each(function(i) {
-    var $this = $(this);
-    var $trigger = $('.dropdown-trigger', $this);
-    var $triggerArrow = $('.dropdown-arrow', $this);
-    var $dropdown = $('.dropdown-list', $this);
+  if (!isSmall) {
+    $(selector + ' .js-dropdown').each(function(i) {
+      var $this = $(this);
+      var $trigger = $('.dropdown-trigger', $this);
+      var $triggerArrow = $('.dropdown-arrow', $this);
+      var $dropdown = $('.dropdown-list', $this);
 
-    $trigger.attr('style', '');
-    $dropdown.attr('style', '');
+      $trigger.attr('style', '');
+      $dropdown.attr('style', '');
 
-    var triggerArrowWidth = $triggerArrow.outerWidth(true);
-    var triggerWidth = $trigger.outerWidth(true) + 20;
-    var dropdownWidth = $dropdown.outerWidth(true) + triggerArrowWidth + 20;
+      var triggerArrowWidth = $triggerArrow.outerWidth(true);
+      var triggerWidth = $trigger.outerWidth(true) + 20;
+      var dropdownWidth = $dropdown.outerWidth(true) + triggerArrowWidth + 20;
 
-    if (triggerWidth >= dropdownWidth) {
-      $trigger.width(triggerWidth);
-      $dropdown.width(triggerWidth);
-    } else {
-      $trigger.width(dropdownWidth);
-      $dropdown.width(dropdownWidth);
-    }
-  });
+      if (triggerWidth >= dropdownWidth) {
+        $trigger.width(triggerWidth);
+        $dropdown.width(triggerWidth);
+      } else {
+        $trigger.width(dropdownWidth);
+        $dropdown.width(dropdownWidth);
+      }
+    });
+  }
 
   $(selector + ' .dropdown-trigger').mouseenter(function() {
     var $this = $(this);
@@ -639,7 +655,10 @@ var setupFundingSection = function() {
         width: $barSection.width(),
         barHeight: 36
       };
-      var barComponentHeight = $('.funding-right').height() - $('.funding-share-box').outerHeight();
+      var barComponentHeight = $('.funding-right').height()
+      if (!isSmall) {
+        barComponentHeight -= $('.funding-share-box').outerHeight();
+      }
       barComponentHeight = (barComponentHeight / 4 - fundingBarSize.barHeight) / 2;
       barComponentHeight = Math.min(barComponentHeight, fundingBarSize.barHeight);
       fundingBarSize.titleHeight = barComponentHeight;
@@ -1129,7 +1148,7 @@ var setupFundersSection = function() {
   $mapSection = $(mapSectionSelector);
 
   mapSize = {
-    width: $mapSection.width(),
+    width: isSmall ? $mapSection.width() + 18 : $mapSection.width(),
     height: $mapSection.height(),
     strokeWidth: 2,
   };
@@ -1887,11 +1906,11 @@ var setupDealsSection = function() {
       var $dealsSection = $(dealsSectionSelector);
 
       dealsSize = {
-        width: $dealsSection.width(),
+        width: isSmall ? $dealsSection.width() + 18 : $dealsSection.width(),
         height: $dealsSection.height(),
-        radiusCenter: 120,
-        radiusMin: 70,
-        radiusMax: 110
+        radiusCenter: isSmall ? 90 : 120,
+        radiusMin: 60,
+        radiusMax: isSmall ? 80 : 110
       };
 
       var svg = d3.select(dealsSectionSelector).append('svg')
@@ -1919,26 +1938,44 @@ var setupDealsSection = function() {
           var baseCx = 0;
           var min = 0;
           var max = 0;
-          switch (i) {
-            case 0:
-              baseCx = dealsSize.width / 2;
-              break;
-            case 2:
-              min = dealsSize.radiusMax;
-              max = dealsSize.width / 4 - dealsSize.radiusMax;
-              break;
-            case 1:
-              min = dealsSize.width / 4 + dealsSize.radiusMax;
-              max = dealsSize.width / 2 - dealsSize.radiusCenter - dealsSize.radiusMax;
-              break;
-            case 3:
-              min = dealsSize.width / 2 + dealsSize.radiusCenter + dealsSize.radiusMax;
-              max = dealsSize.width * 3 / 4 - dealsSize.radiusMax;
-              break;
-            case 4:
-              min = dealsSize.width * 3 / 4 + dealsSize.radiusMax
-              max = dealsSize.width - dealsSize.radiusMax;
-              break;
+          if (isSmall) {
+            switch (i) {
+              case 0:
+                baseCx = dealsSize.width / 2;
+                break;
+              case 1:
+              case 3:
+                min = dealsSize.radiusMax;
+                max = dealsSize.width / 2 - dealsSize.radiusMax;
+                break;
+              case 2:
+              case 4:
+                min = dealsSize.width / 2 + dealsSize.radiusMax;
+                max = dealsSize.width - dealsSize.radiusMax;
+                break;
+            }
+          } else {
+            switch (i) {
+              case 0:
+                baseCx = dealsSize.width / 2;
+                break;
+              case 2:
+                min = dealsSize.radiusMax;
+                max = dealsSize.width / 4 - dealsSize.radiusMax;
+                break;
+              case 1:
+                min = dealsSize.width / 4 + dealsSize.radiusMax;
+                max = dealsSize.width / 2 - dealsSize.radiusCenter - dealsSize.radiusMax;
+                break;
+              case 3:
+                min = dealsSize.width / 2 + dealsSize.radiusCenter + dealsSize.radiusMax;
+                max = dealsSize.width * 3 / 4 - dealsSize.radiusMax;
+                break;
+              case 4:
+                min = dealsSize.width * 3 / 4 + dealsSize.radiusMax
+                max = dealsSize.width - dealsSize.radiusMax;
+                break;
+            }
           }
           if (i > 0) { baseCx = getRandomInRange(min, max); }
           d.baseCx = baseCx;
@@ -1948,20 +1985,38 @@ var setupDealsSection = function() {
           var baseCy = 0;
           var min = 0;
           var max = 0;
-          switch (i) {
-            case 0:
-              baseCy = dealsSize.height / 2;
-              break;
-            case 1:
-            case 3:
-              min = dealsSize.radiusMax;
-              max = dealsSize.height / 2;
-              break;
-            case 2:
-            case 4:
-              min = dealsSize.height / 2;
-              max = dealsSize.height - dealsSize.radiusMax;
-              break;
+          if (isSmall) {
+            switch (i) {
+              case 0:
+                baseCy = dealsSize.height / 2;
+                break;
+              case 1:
+              case 2:
+                min = dealsSize.radiusMax;
+                max = dealsSize.height / 2 - dealsSize.radiusCenter;
+                break;
+              case 4:
+              case 3:
+                min = dealsSize.height / 2 + dealsSize.radiusCenter;
+                max = dealsSize.height - dealsSize.radiusMax;
+                break;
+            }
+          } else {
+            switch (i) {
+              case 0:
+                baseCy = dealsSize.height / 2;
+                break;
+              case 1:
+              case 3:
+                min = dealsSize.radiusMax;
+                max = dealsSize.height / 2;
+                break;
+              case 2:
+              case 4:
+                min = dealsSize.height / 2;
+                max = dealsSize.height - dealsSize.radiusMax;
+                break;
+            }
           }
           if (i > 0) { baseCy = getRandomInRange(min, max); }
           d.baseCy = baseCy;
@@ -2001,8 +2056,9 @@ var setupDealsSection = function() {
         }));
         $list.append($item);
         $item.width($circle[0].getBBox().width);
+        var offset = parseFloat(isSmall ? -9 : 0);
         $item.css({
-          left: parseFloat($circle.attr('cx')) - parseFloat($circle.attr('r')) - parseFloat($item.css('paddingLeft').substring(0, $item.css('paddingLeft').length - 2)),
+          left: parseFloat($circle.attr('cx')) - parseFloat($circle.attr('r')) - parseFloat($item.css('paddingLeft').substring(0, $item.css('paddingLeft').length - 2)) + offset,
           top: parseFloat($circle.attr('cy')) - $item.outerHeight() / 2,
         });
       });
@@ -2132,8 +2188,9 @@ var updateDealsSection = function() {
       var shouldHide = isEmpty || d.secondary.value === 0;
       $('.deals-text-list-item-s-title', $item).text(d.secondary.title).toggleClass('dis-n', shouldHide);
       $('.deals-text-list-item-s-value', $item).text(d.secondary.value).toggleClass('dis-n', shouldHide);
+      var offset = parseFloat(isSmall ? -9 : 0);
       $item.css({
-        left: parseFloat($circle.attr('cx')) - parseFloat($circle.attr('r')) - parseFloat($item.css('paddingLeft').substring(0, $item.css('paddingLeft').length - 2)),
+        left: parseFloat($circle.attr('cx')) - parseFloat($circle.attr('r')) - parseFloat($item.css('paddingLeft').substring(0, $item.css('paddingLeft').length - 2)) + offset,
         top: parseFloat($circle.attr('cy')) - $item.outerHeight() / 2,
       });
     });
@@ -2331,33 +2388,60 @@ var setupExitsSection = function() {
     $('.exits-ma-count').text(getExitsMaCount(data));
     $('.exits-ma-title').text(getExitsMaTitle(data));
 
-    $('.exits-list-item').mouseenter(function() {
-      clearTimeout(exitsHoverTimer);
-      $('.exits-list-item.is-active').removeClass('is-active animate-info');
+    if (isTouch) {
+      $('.exits-list-item').click(function() {
+        clearTimeout(exitsHoverTimer);
+        $('.exits-list-item.is-active').removeClass('is-active animate-info');
 
-      var $this = $(this);
-      $this.addClass('is-active');
-      $this.parent().addClass('item-is-active');
+        var $this = $(this);
+        $this.addClass('is-active');
+        $this.parent().addClass('item-is-active');
 
-      var $info = $('.exits-info', $this);
-      var infoWidth = $info.outerWidth();
-      var rightPosition = $this.offset().left + $this.outerWidth() + infoWidth;
+        var $info = $('.exits-info', $this);
+        var infoWidth = $info.outerWidth();
+        var rightPosition = $this.offset().left + $this.outerWidth() + infoWidth;
 
-      $this.removeClass('show-left show-right');
-      if (rightPosition >= $win.outerWidth()) {
-        $this.addClass('show-left animate-info');
-      } else {
-        $this.addClass('show-right animate-info');
-      }
-    });
+        $this.removeClass('show-left show-right');
+        if (rightPosition >= $win.outerWidth()) {
+          $this.addClass('show-left animate-info');
+        } else {
+          $this.addClass('show-right animate-info');
+        }
 
-    $('.exits-list-item').mouseleave(function() {
-      var $this = $(this);
-      exitsHoverTimer = setTimeout(function() {
-        $this.removeClass('is-active animate-info');
-        $this.parent().removeClass('item-is-active');
-      }, 200);
-    });
+        exitsHoverTimer = setTimeout(function() {
+          $this.removeClass('is-active animate-info');
+          $this.parent().removeClass('item-is-active');
+        }, 5000);
+      });
+    } else {
+      $('.exits-list-item').mouseenter(function() {
+        clearTimeout(exitsHoverTimer);
+        $('.exits-list-item.is-active').removeClass('is-active animate-info');
+
+        var $this = $(this);
+        $this.addClass('is-active');
+        $this.parent().addClass('item-is-active');
+
+        var $info = $('.exits-info', $this);
+        var infoWidth = $info.outerWidth();
+        var rightPosition = $this.offset().left + $this.outerWidth() + infoWidth;
+
+        $this.removeClass('show-left show-right');
+        if (rightPosition >= $win.outerWidth()) {
+          $this.addClass('show-left animate-info');
+        } else {
+          $this.addClass('show-right animate-info');
+        }
+      });
+
+      $('.exits-list-item').mouseleave(function() {
+        var $this = $(this);
+        exitsHoverTimer = setTimeout(function() {
+          $this.removeClass('is-active animate-info');
+          $this.parent().removeClass('item-is-active');
+        }, 200);
+      });
+    }
   });
 };
 
