@@ -90,7 +90,22 @@ var setupTwitterShare = function() {
 
 var setupPrinting = function() {
   $('.social-list-item .icons-printer').click(function(event) {
-    window.open(window.location + '?print=' + $('.content-section.active').attr('id'))
+    var filterParams;
+    var section = $('.content-section.active').attr('id');
+
+    switch (section) {
+      case 'funding':
+        filterParams = $.param({filter: JSON.stringify(fundingFilter)});
+        break;
+      case 'funders':
+        filterParams = $.param({filter: JSON.stringify(fundersFilter)});
+        break;
+      case 'deals':
+        filterParams = $.param({filter: JSON.stringify(dealsFilter)});
+        break;
+    }
+
+    window.open(window.location + '?print=' + section + '&' + filterParams);
   });
 };
 
@@ -295,6 +310,19 @@ var setupVariables = function() {
     setTimeout(function() {
       window.print();
     }, 1500);
+
+    var filterParams = JSON.parse($.url().param('filter'));
+    switch (printSection) {
+      case 'funding':
+        fundingFilter = filterParams;
+        break;
+      case 'funders':
+        fundersFilter = filterParams;
+        break;
+      case 'deals':
+        dealsFilter = filterParams;
+        break;
+    }
   }
 
   cedDataColors = [
@@ -712,7 +740,6 @@ var setupFundingSection = function() {
 
       // Gradients
       cedDataColors.forEach(function(color) {
-        console.log(color)
         var gradient = chartDefs.append('linearGradient')
           .attr('id', color.name + '-gradient');
 

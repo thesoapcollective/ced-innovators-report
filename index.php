@@ -424,6 +424,7 @@
   <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/1.4.5/numeral.min.js"></script>
   <script src="javascripts/jquery.ba-throttle-debounce.min.js" type="text/javascript"></script>
   <script src="javascripts/jquery.panelSnap.js" type="text/javascript"></script>
+  <script src="javascripts/purl.js" type="text/javascript"></script>
   <script src="javascripts/main.js" type="text/javascript"></script>
   <script>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
