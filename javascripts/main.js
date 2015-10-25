@@ -133,7 +133,6 @@ var selectNavListItem = function() {
 // FILTERS
 // ========================================
 var setupFilters = function() {
-  // setupFundingDropdowns();
   setupFundersDropdowns();
   setupDealsDropdowns();
 };
@@ -191,7 +190,6 @@ var setupDealsDropdowns = function() {
 };
 
 var refreshFilterBars = function() {
-  // refreshFundingFilterBar();
   refreshFundersFilterBar();
   refreshDealsFilterBar();
 };
