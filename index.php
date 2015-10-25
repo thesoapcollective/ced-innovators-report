@@ -15,9 +15,10 @@
   <link href='http://www.cednc.org/favicon.png' rel='icon' type='image/x-icon'> -->
   <title>Innovators Report - CED</title>
   <link href="./stylesheets/normalize.css" rel="stylesheet" type="text/css" />
-  <link href="./stylesheets/main.css" rel="stylesheet" type="text/css" />
+  <link href="./stylesheets/main.css" rel="stylesheet" media="screen" type="text/css" />
+  <link href="./stylesheets/print.css" rel="stylesheet" media="print" type="text/css" />
 </head>
-<body class="cover-panel-active <?php if(isset($_GET['print']) && $_GET['print'] == '1') { echo 'is-printable'; } ?>">
+<body class="cover-panel-active <?php if(isset($_GET['print']) && $_GET['print'] !== '') { echo 'is-printing printing-' . $_GET['print']; } ?>" data-print-section="<?php if(isset($_GET['print']) && $_GET['print'] !== '') { echo $_GET['print']; } ?>">
   <div class="page-background-image pos-f fullsize"></div>
   <div class="page-background-overlay pos-f fullsize"></div>
   <div class="page-background-linear-gradient-overlay pos-f fullsize"></div>
@@ -35,7 +36,7 @@
       <ul class="list-reset social-list dis-ib vat fs-small">
         <li class="social-list-item dis-ib vam"><a class="icons icons-twitter text-overflow dis-b a-hover-opacity" href="#" target="_blank">Share on Twitter</a></li>
         <li class="social-list-item dis-ib vam"><a class="icons icons-facebook text-overflow dis-b a-hover-opacity" href="#" target="_blank">Share on Facebook</a></li>
-        <!-- <li class="social-list-item dis-ib vam"><a class="icons icons-printer text-overflow dis-b a-hover-opacity js-prevent-default" href="#">Print Screen</a></li> -->
+        <li class="social-list-item dis-ib vam"><a class="icons icons-printer text-overflow dis-b a-hover-opacity js-prevent-default" href="#">Print Section</a></li>
         <li class="social-list-item dis-ib vam f-adelle f-light"></li>
       </ul>
     </header>
@@ -44,6 +45,7 @@
       <section id="cover" class="content-section pos-r fullsize text-ac" data-panel="cover">
         <div class="cover-container centered-column">
           <div class="cover-logo logo-image"></div>
+          <img class="print-logo print-only" src="./images/ced_logo_black.png" alt="CED Logo"/>
           <h1 class="f-inputsans f-italic f-thin fs-h2">Innovators Report</h1>
           <a class="cover-view-report dis-ib f-adelle fs-h3 f-bold js-prevent-default" href="#">View Report</a>
           <div class="cover-copy-container">
@@ -61,6 +63,13 @@
               The Innovators Report is made possible by generous gifts to the CED Annual Fund. Thank you to our many supporters! For more information on how to contribute, please visit <a href="http://www.cednc.org/donate" target="_blank">www.cednc.org/donate</a>.
             </p>
             <h3 class="f-inputsans fs-h3">Connect + Grow</h3>
+            <ul class="color-legend print-only">
+              <li><strong>Sector Legend</strong></li>
+              <li class="color-blue">Tech</li>
+              <li class="color-green">Life Science</li>
+              <li class="color-red">Advanced Manufacturing & Materials</li>
+              <li class="color-white-alt">Cleantech</li>
+            </ul>
           </div>
         </div>
       </section>
@@ -349,6 +358,7 @@
     <li class="exits-list-item dis-ib vat pos-r">
       <div class="exits-logo-container pos-a fullsize">
         <div class="exits-logo pos-a" style="background-image:url('{{logo}}')"></div>
+        <img class="exits-print-logo print-only" src="{{logo}}" />
         <div class="exits-type pos-a fs-small f-inputsans text-ac">{{short_type}}</div>
       </div>
       <div class="exits-info text-shadow pos-a text-al no-pointer-event">

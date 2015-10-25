@@ -1,6 +1,8 @@
 var isTouch = false;
 var isMedium = false;
 var isSmall = false;
+var isPrinting = false;
+var printSection = null;
 
 var $win = null;
 var $body = null;
@@ -16,15 +18,7 @@ var $dealsList = null;
 
 $(document).ready(function() {
   cacheElements();
-
-  isTouch = 'ontouchstart' in window || 'onmsgesturechange' in window;
-  isMedium = $win.width() > 767 && $win.width() <= 1200;
-  isSmall = $win.width() <= 767;
-
-  // Are we on a touch device?
-  if (isTouch) {
-    $('body').addClass('is-touch');
-  }
+  setupVariables();
 
   setupJsClickHandler();
 
@@ -34,10 +28,18 @@ $(document).ready(function() {
   setupFilters();
   refreshFilterBars();
 
-  setTimeout(setupFundingSection, 500);
-  setTimeout(setupFundersSection, 750);
-  setTimeout(setupDealsSection, 1000);
-  setupExitsSection();
+  if (!isPrinting || (isPrinting && printSection === 'funding')) {
+    setTimeout(setupFundingSection, (isPrinting ? 0 : 500));
+  }
+  if (!isPrinting || (isPrinting && printSection === 'funders')) {
+    setTimeout(setupFundersSection, (isPrinting ? 0 : 750));
+  }
+  if (!isPrinting || (isPrinting && printSection === 'deals')) {
+    setTimeout(setupDealsSection, (isPrinting ? 0 : 1000));
+  }
+  if (!isPrinting || (isPrinting && printSection === 'exits')) {
+    setupExitsSection();
+  }
 });
 
 // ========================================
@@ -54,6 +56,7 @@ var setupSocialLinks = function() {
 
   setupFacebookShare();
   setupTwitterShare();
+  setupPrinting();
 };
 
 var setupFacebookShare = function() {
@@ -82,6 +85,12 @@ var setupTwitterShare = function() {
       tweet = tweet.substring(0, tweetLength - 3) + '...';
     }
     $this.attr('href', 'https://twitter.com/share?text=' + encodeURIComponent(tweet) + '&url=' + url + '&hashtags=InnovatorsReport&via=CEDNC');
+  });
+};
+
+var setupPrinting = function() {
+  $('.social-list-item .icons-printer').click(function(event) {
+    window.open(window.location + '?print=' + $('.content-section.active').attr('id'))
   });
 };
 
@@ -255,12 +264,7 @@ var hideCurrentFilterSelection = function() {
 // ========================================
 // HELPERS
 // ========================================
-var cedDataColors = [
-  {name: 'blue', value: '#00dbf9'},
-  {name: 'green', value: '#4aaf77'},
-  {name: 'red', value: '#ff7662'},
-  {name: 'white', value: '#fff'}
-];
+var cedDataColors = [];
 var cedPatternStrokeSize = 3;
 
 var cacheElements = function() {
@@ -274,6 +278,33 @@ var cacheElements = function() {
   $fundingPieSubtitle = $('.funding-pie-subtitle');
 
   $dealsList = $('.deals-text-list');
+};
+
+var setupVariables = function() {
+  isTouch = 'ontouchstart' in window || 'onmsgesturechange' in window;
+  isMedium = $win.width() > 767 && $win.width() <= 1200;
+  isSmall = $win.width() <= 767;
+
+  // Are we on a touch device?
+  if (isTouch) {
+    $body.addClass('is-touch');
+  }
+
+  isPrinting = $body.hasClass('is-printing');
+  printSection = $body.attr('data-print-section');
+
+  if (isPrinting) {
+    setTimeout(function() {
+      window.print();
+    }, 1500);
+  }
+
+  cedDataColors = [
+    {name: 'blue', value: '#00dbf9'},
+    {name: 'green', value: '#4aaf77'},
+    {name: 'red', value: '#ff7662'},
+    {name: 'white', value: (isPrinting ? '#5e5e5e' : '#fff')}
+  ];
 };
 
 var setupJsClickHandler = function() {
@@ -340,7 +371,7 @@ var getSectorColor = function(sector) {
     case 'Cleantech':
       return cedDataColors.find(function(d) { return d.name === 'white'; });
     default:
-      return {name: 'default', value: '#fff'};
+      return {name: 'default', value: '#e0e0e0'};
   }
 };
 
@@ -551,22 +582,24 @@ var setupFundingSection = function() {
         .attr('class', 'pie-chart');
 
       // Pattern slices
-      var patternArcs = g.selectAll('.pattern-arc')
-        .data(fundingPie(currentPieData)).enter()
-        .append('g')
-          .attr('class', 'pattern-arc');
-      patternArcs.append('path')
-        .style('fill', 'url(#pie-pattern)')
-        .each(function(d) { this._current = d; })
-        .transition()
-          .duration(1000)
-          .attrTween('d', function(d) {
-            var i = d3.interpolate(d.startAngle, d.endAngle);
-            return function(t) {
-              d.endAngle = i(t);
-              return fundingArc(d);
-            }
-          });
+      if (!isPrinting) {
+        var patternArcs = g.selectAll('.pattern-arc')
+          .data(fundingPie(currentPieData)).enter()
+          .append('g')
+            .attr('class', 'pattern-arc');
+        patternArcs.append('path')
+          .style('fill', 'url(#pie-pattern)')
+          .each(function(d) { this._current = d; })
+          .transition()
+            .duration(1000)
+            .attrTween('d', function(d) {
+              var i = d3.interpolate(d.startAngle, d.endAngle);
+              return function(t) {
+                d.endAngle = i(t);
+                return fundingArc(d);
+              }
+            });
+      }
 
       // Stroke slices
       var outerArcs = g.selectAll('.outer-arc')
@@ -592,11 +625,11 @@ var setupFundingSection = function() {
       arcs.enter().append('g')
         .attr('data-sector', function(d) { return d.data.sector; })
         .attr('class', 'arc')
-        .attr('mask', 'url(#pie-mask)');
+        .attr('mask', function(d) { return isPrinting ? '' : 'url(#pie-mask)'; });
       arcs.append('path')
         .attr('class', 'is-animating')
         .style('fill', function(d) { return getSectorColor(d.data.sector).value; })
-        .style('fill-opacity', 0.25)
+        .style('fill-opacity', (isPrinting ? 1 : 0.25))
         .each(function(d) { this._current = d; })
         .on('mouseover', function(d, i) {
           if (!d3.select(this).classed('is-animating') && !d3.select(this).classed('no-hover')) {
@@ -616,10 +649,10 @@ var setupFundingSection = function() {
           if (!d3.select(this).classed('is-animating') && !d3.select(this).classed('no-hover')) {
             d3.select(this).transition()
               .duration(250)
-              .style('fill-opacity', 0.25);
+              .style('fill-opacity', (isPrinting ? 1 : 0.25));
 
             d3.select(this.parentNode)
-              .attr('mask', 'url(#pie-mask)');
+              .attr('mask', function(d) { return isPrinting ? '' : 'url(#pie-mask)'; });
 
             d3.selectAll('.funding-bar').transition()
               .duration(250)
@@ -681,6 +714,7 @@ var setupFundingSection = function() {
 
       // Gradients
       cedDataColors.forEach(function(color) {
+        console.log(color)
         var gradient = chartDefs.append('linearGradient')
           .attr('id', color.name + '-gradient');
 
@@ -730,9 +764,9 @@ var setupFundingSection = function() {
               var pieSlice = d3.selectAll('.arc path')[0][i];
               d3.select(pieSlice).transition()
                 .duration(250)
-                .style('fill-opacity', 0.25);
+                .style('fill-opacity', (isPrinting ? 1 : 0.25));
               d3.select(pieSlice.parentNode)
-                .attr('mask', 'url(#pie-mask)');
+                .attr('mask', function(d) { return isPrinting ? '' : 'url(#pie-mask)'; });
             }
           })
           .on('click', function(d) {
@@ -752,7 +786,7 @@ var setupFundingSection = function() {
         .attr('x', -30)
         .attr('y', fundingBarSize.titleHeight / 2)
         .attr('class', 'funding-bar-title f-inputsans f-light f-italic fs-h3 no-pointer-event')
-        .attr('fill', '#fff')
+        .attr('fill', (isPrinting ? '#000' : '#fff'))
         .attr('fill-opacity', 0)
         .transition()
           .duration(1000)
@@ -780,7 +814,7 @@ var setupFundingSection = function() {
         .attr('y', fundingBarSize.titleHeight + fundingBarSize.barHeight / 2)
         .attr('dy', '.35em')
         .attr('class', 'funding-bar-text f-adelle f-light no-pointer-event')
-        .attr('fill', '#fff')
+        .attr('fill', (isPrinting ? '#000' : '#fff'))
         .attr('fill-opacity', 0)
         .transition()
           .duration(1000)
@@ -835,9 +869,9 @@ var updateFundingPieData = function() {
       .classed('no-hover', true)
       .transition()
         .duration(1000)
-        .style('fill-opacity', 0.25)
+        .style('fill-opacity', (isPrinting ? 1 : 0.25))
         .style('fill', function(d) {
-          d3.select(this.parentNode).attr('mask', 'url(#pie-mask)');
+          d3.select(this.parentNode).attr('mask', function(d) { return isPrinting ? '' : 'url(#pie-mask)'; });
           return getSectorColor(fundingFilter.sector).value;
         });
 
@@ -851,9 +885,9 @@ var updateFundingPieData = function() {
       .classed('no-hover', false)
       .transition()
         .duration(1000)
-        .style('fill-opacity', 0.25)
+        .style('fill-opacity', (isPrinting ? 1 : 0.25))
         .style('fill', function(d) {
-          d3.select(this.parentNode).attr('mask', 'url(#pie-mask)');
+          d3.select(this.parentNode).attr('mask', function(d) { return isPrinting ? '' : 'url(#pie-mask)'; });
           return getSectorColor(d.data.sector).value;
         })
         .attrTween('d', function(d) {
@@ -878,16 +912,18 @@ var updateFundingPieData = function() {
           };
         });
 
-    d3.selectAll('.pattern-arc path').data(fundingPie(currentPieData))
-      .transition()
-        .duration(1000)
-        .attrTween('d', function(d) {
-          var i = d3.interpolate(this._current, d);
-          this._current = i(0);
-          return function(t) {
-            return fundingArc(i(t));
-          };
-        });
+    if (!isPrinting) {
+      d3.selectAll('.pattern-arc path').data(fundingPie(currentPieData))
+        .transition()
+          .duration(1000)
+          .attrTween('d', function(d) {
+            var i = d3.interpolate(this._current, d);
+            this._current = i(0);
+            return function(t) {
+              return fundingArc(i(t));
+            };
+          });
+    }
   }
 
   if ($fundingPieTitle.text() !== getFundingPieTitle() ||
@@ -1239,7 +1275,7 @@ var setupFundersSection = function() {
           stateGroups.append('path')
             .attr('d', mapPath)
             .attr('class', 'state-pattern')
-            .style('fill', 'url(#map-pattern)');
+            .style('fill', (isPrinting ? '' : 'url(#map-pattern)'));
           stateGroups.append('path')
             .attr('d', mapPath)
             .attr('class', 'state-section')
@@ -1258,9 +1294,10 @@ var setupFundersSection = function() {
                   return getSectorColor(sector.name).value;
                 }
               }
-              return '#000'
+              return '#e0e0e0'
             })
             .attr('fill-opacity', function(d) {
+              if (isPrinting) { return 1; }
               var region = getStateRegion(d.properties);
               if (region) {
                 return regionHasInvestors(region) ? 0.25 : 0;
@@ -1293,19 +1330,19 @@ var setupFundersSection = function() {
                 d3.select(this)
                   .transition()
                     .duration(250)
-                    .attr('fill-opacity', function(d) { return stateHasInvestors(d.properties) ? 0.25 : 0; });
+                    .attr('fill-opacity', function(d) { return stateHasInvestors(d.properties) ? (isPrinting ? 1 : 0.25) : (isPrinting ? 1 : 0); });
               } else {
                 var region = getStateRegion(d.properties);
                 if (region && regionHasInvestors(region)) {
                   d3.selectAll('.state-section[data-region="' + region + '"]')
                     .transition()
                       .duration(250)
-                      .attr('fill-opacity', 0.25);
+                      .attr('fill-opacity', (isPrinting ? 1 : 0.25));
                 } else if (stateHasInvestors(d.properties)) {
                   d3.select(this)
                     .transition()
                       .duration(250)
-                      .attr('fill-opacity', 0.25);
+                      .attr('fill-opacity', (isPrinting ? 1 : 0.25));
                 }
               }
             })
@@ -1405,9 +1442,10 @@ var updateFundersSection = function() {
           return getSectorColor(sector.name).value;
         }
       }
-      return '#000'
+      return '#e0e0e0'
     })
     .attr('fill-opacity', function(d) {
+      if (isPrinting) { return 1; }
       var region = getStateRegion(d.properties);
       if (region) {
         return regionHasInvestors(region) ? 0.25 : 0;
@@ -1697,6 +1735,7 @@ var mapZoomToRegion = function(node, d, region) {
   stateGroups.selectAll('.state-section').transition()
     .duration(750)
     .attr('fill-opacity', function(d) {
+      if (isPrinting) { return 1; }
       return stateHasInvestors(d.properties) ? 0.25 : 0;
     });
 
@@ -1780,6 +1819,7 @@ var mapReset = function() {
   stateGroups.selectAll('.state-section').transition()
     .duration(500)
     .attr('fill-opacity', function(d) {
+      if (isPrinting) { return 1; }
       var region = getStateRegion(d.properties);
       if (region) {
         return regionHasInvestors(region) ? 0.25 : 0;
@@ -2034,7 +2074,7 @@ var setupDealsSection = function() {
         .attr('stroke', function(d) { return getSectorColor(d.sector).value; })
         .attr('stroke-width', 2)
         .attr('stroke-opacity', 0.25)
-        .style('fill', 'url(#deals-pattern)');
+        .style('fill', (isPrinting ? '' : 'url(#deals-pattern)'));
       g.append('circle')
         .attr('class', 'circle-fill')
         .attr('cx', function(d, i) { return parseFloat(d3.select(d3.selectAll('.circle-pattern')[0][i]).attr('cx')); })
@@ -2044,7 +2084,7 @@ var setupDealsSection = function() {
         .attr('stroke-width', 2)
         .attr('stroke-opacity', 0.25)
         .style('fill', function(d) { return getSectorColor(d.sector).value; })
-        .style('fill-opacity', function(d) { return getSectorColor(d.sector).name === 'default' ? 0 : 0.25; });
+        .style('fill-opacity', function(d) { return getSectorColor(d.sector).name === 'default' ? (isPrinting ? 1 : 0) : (isPrinting ? 1 : 0.25); });
 
       var source = $('#deals-text-item-template').html();
       var template = Handlebars.compile(source);

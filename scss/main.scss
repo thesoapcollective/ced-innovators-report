@@ -117,6 +117,10 @@ h1, h2, h3, h4, h5, h6, p {
   width: 100%;
 }
 
+.print-only {
+  display: none;
+}
+
 // ========================================
 // FONTS
 // ========================================
@@ -819,11 +823,11 @@ body.cover-panel-active {
   }
 
   .funding-pie-title.fs-h2 {
-    @extend .fs-h4;
+    font-size: 24px;
   }
 
   .funding-pie-subtitle.fs-h1 {
-    @extend .fs-h2;
+    font-size: 36px;
   }
 
   .funding-share-box {
@@ -961,14 +965,59 @@ body.cover-panel-active {
 // ========================================
 // PRINTING
 // ========================================
-body.is-printable {
+body.is-printing {
   background: $gray;
 
+  .page-background-image,
   .page-background-overlay,
   .page-background-linear-gradient-overlay,
   .page-background-radial-gradient-overlay,
+  .page-header,
   .page-footer,
-  .share-box-container {
+  .share-box-container,
+  .cover-view-report {
+    display: none;
+  }
+
+  .funders-container,
+  .deals-container,
+  .exits-container {
+    bottom: 0;
+  }
+
+  .cover-copy-container {
+    margin-top: $grid-size-double;
+  }
+}
+
+body.printing-funding {
+  #funders,
+  #deals,
+  #exits {
+    display: none;
+  }
+}
+
+body.printing-funders {
+  #funding,
+  #deals,
+  #exits {
+    display: none;
+  }
+}
+
+body.printing-deals {
+  #funding,
+  #funders,
+  #exits {
+    display: none;
+  }
+}
+
+body.printing-exits {
+  #funding,
+  #funders,
+  #deals {
     display: none;
   }
 }
