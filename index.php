@@ -183,7 +183,7 @@
           </ul>
         </header>
 
-        <div class="funders-container pos-a">
+        <div class="funders-container pos-a filter-content">
           <div class="funders-state-info modal-container pos-a no-pointer-event js-funders-state-info">
             <p class="info-title fs-h3 f-adelle js-funders-state-info-title"></p>
             <div class="info-item">
