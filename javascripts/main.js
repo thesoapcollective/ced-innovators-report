@@ -16,6 +16,8 @@ var $fundingPieSubtitle = null;
 
 var $dealsList = null;
 
+var twitterHeaderTweet = 'Check out the #InnovatorsReport created by @CEDNC!';
+
 $(document).ready(function() {
   cacheElements();
   setupVariables();
@@ -73,7 +75,7 @@ var setupTwitterShare = function() {
   var url = window.location;
 
   // Header
-  var tweet = encodeURIComponent("Check out the #InnovatorsReport created by @CEDNC!");
+  var tweet = encodeURIComponent(twitterHeaderTweet);
   $('.social-list-item .icons-twitter').attr('href', 'https://twitter.com/share?text=' + tweet + '&url=' + url);
 
   // Share box
@@ -86,6 +88,29 @@ var setupTwitterShare = function() {
     }
     $this.attr('href', 'https://twitter.com/share?text=' + encodeURIComponent(tweet) + '&url=' + url + '&hashtags=InnovatorsReport&via=CEDNC');
   });
+};
+
+var refreshSocialShare = function() {
+  var currentSection = $('.content-section.active').attr('id');
+  var currentFilter;
+  switch (currentSection) {
+    case 'funding':
+      currentFilter = JSON.stringify(fundingFilter);
+      break;
+    case 'funders':
+      currentFilter = JSON.stringify(fundersFilter);
+      break;
+    case 'deals':
+      currentFilter = JSON.stringify(dealsFilter);
+      break;
+  }
+  var urlParams = $.param({section: currentSection, filter: currentFilter});
+
+  var tweet = encodeURIComponent(twitterHeaderTweet);
+  var url = window.location + '?' + urlParams;
+
+  $('.social-list-item .icons-twitter').attr('href', 'https://twitter.com/share?text=' + tweet + '&url=' + url);
+  $('.social-list-item .icons-facebook').attr('href', 'http://www.facebook.com/share.php?u=' + url);
 };
 
 var setupPrinting = function() {
@@ -137,6 +162,7 @@ var snappedToSection = function($section) {
   currentSectionIndex = index;
   selectNavListItem();
   $body.toggleClass('cover-panel-active', index === 0);
+  refreshSocialShare();
 };
 
 var selectNavListItem = function() {
@@ -306,23 +332,46 @@ var setupVariables = function() {
   isPrinting = $body.hasClass('is-printing');
   printSection = $body.attr('data-print-section');
 
+  var loadSection ;
+  var urlSection = $.url().param('section');
+  var urlFilter = $.url().param('filter');
+  if (isPrinting) {
+    loadSection = printSection
+  } else if (urlSection && urlSection !== '') {
+    loadSection = urlSection
+  }
+
+  if (loadSection) {
+    if (urlFilter) {
+      var filterParams = JSON.parse(urlFilter);
+      if (filterParams) {
+        switch (loadSection) {
+          case 'funding':
+            fundingFilter = filterParams;
+            break;
+          case 'funders':
+            fundersFilter = filterParams;
+            break;
+          case 'deals':
+            dealsFilter = filterParams;
+            break;
+        }
+      }
+    }
+
+    if (!isPrinting) {
+      setTimeout(function() {
+        $('html, body').animate({
+          scrollTop: $('#' + loadSection).offset().top
+        }, 500);
+      }, 0);
+    }
+  }
+
   if (isPrinting) {
     setTimeout(function() {
       window.print();
     }, 1500);
-
-    var filterParams = JSON.parse($.url().param('filter'));
-    switch (printSection) {
-      case 'funding':
-        fundingFilter = filterParams;
-        break;
-      case 'funders':
-        fundersFilter = filterParams;
-        break;
-      case 'deals':
-        dealsFilter = filterParams;
-        break;
-    }
   }
 
   cedDataColors = [
@@ -874,6 +923,7 @@ var setupFundingSection = function() {
 var refreshFundingData = function() {
   refreshFundingFilterBar();
   updateFundingPieData();
+  refreshSocialShare();
 };
 
 var updateFundingPieData = function() {
@@ -1449,6 +1499,7 @@ var setupFundersSection = function() {
 };
 
 var updateFundersSection = function() {
+  refreshSocialShare();
   mapReset();
 
   var stateGroups = mapGroup.selectAll('.state-group');
@@ -2181,6 +2232,7 @@ var setupDealsSection = function() {
 }
 
 var updateDealsSection = function() {
+  refreshSocialShare();
   var currentDealsData = getCurrentDealsData();
 
   var dealTotals = currentDealsData.filter(function(d, i) { return i > 0; }).map(function(d) { return d.primary.value; });
