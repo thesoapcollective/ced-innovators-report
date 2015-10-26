@@ -107,7 +107,7 @@ var refreshSocialShare = function() {
   var urlParams = $.param({section: currentSection, filter: currentFilter});
 
   var tweet = encodeURIComponent(twitterHeaderTweet);
-  var url = window.location.origin + window.location.pathname + '?' + urlParams;
+  var url = encodeURIComponent(window.location.origin + window.location.pathname + '?' + urlParams);
 
   $('.social-list-item .icons-twitter').attr('href', 'https://twitter.com/share?text=' + tweet + '&url=' + url);
   $('.social-list-item .icons-facebook').attr('href', 'http://www.facebook.com/share.php?u=' + url);
