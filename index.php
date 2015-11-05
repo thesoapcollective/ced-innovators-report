@@ -1,4 +1,15 @@
-<!DOCTYPE html>
+<?php
+$quotes = [];
+$file = fopen('./data/quotes.txt', 'r');
+if ($file) {
+  while (!feof($file)) {
+    $line = trim(fgets($file));
+    if ($line === '') { continue; }
+    array_push($quotes, $line);
+  }
+  fclose($file);
+}
+?><!DOCTYPE html>
 <html>
 <head>
   <meta charset='utf-8'>
@@ -131,7 +142,7 @@
 
         <div class="share-box-container funding-share-box pos-a">
           <div class="share-box clearfix">
-            <p class="f-inputsans f-xlight f-italic">NC entrepreneurial companies raised 70% more funding in 2015 Q1/Q2 vs. 2014 Q1/Q2.</p>
+            <p class="f-inputsans f-xlight f-italic"><?php echo $quotes[0]; ?></p>
             <ul class="list-reset share-box-list float-r">
               <li class="share-box-list-item dis-ib vam f-adelle">Share:</li>
               <li class="share-box-list-item dis-ib vam"><a class="icons icons-twitter text-overflow dis-b a-hover-opacity" href="#" target="_blank">Twitter</a></li>
@@ -217,7 +228,7 @@
 
         <div class="share-box-container centered-share-box centered-column pos-a">
           <div class="share-box clearfix">
-            <p class="f-inputsans f-xlight f-italic">NC companies snag $$ from 2 big U.S. funding hubs – 19 Northeast & 15 California investors.</p>
+            <p class="f-inputsans f-xlight f-italic"><?php echo $quotes[1]; ?></p>
             <ul class="list-reset share-box-list float-r">
               <li class="share-box-list-item dis-ib vam f-adelle">Share:</li>
               <li class="share-box-list-item dis-ib vam"><a class="icons icons-twitter text-overflow dis-b a-hover-opacity" href="#" target="_blank">Twitter</a></li>
@@ -300,7 +311,7 @@
 
         <div class="share-box-container centered-share-box centered-column pos-a">
           <div class="share-box clearfix">
-            <p class="f-inputsans f-xlight f-italic">85 NC entrepreneurial companies did 90 equity deals in Q1/Q2 and raised nearly $427m.</p>
+            <p class="f-inputsans f-xlight f-italic"><?php echo $quotes[2]; ?></p>
             <ul class="list-reset share-box-list float-r">
               <li class="share-box-list-item dis-ib vam f-adelle">Share:</li>
               <li class="share-box-list-item dis-ib vam"><a class="icons icons-twitter text-overflow dis-b a-hover-opacity" href="#" target="_blank">Twitter</a></li>
@@ -324,7 +335,7 @@
 
         <div class="share-box-container centered-share-box centered-column pos-a">
           <div class="share-box clearfix">
-            <p class="f-inputsans f-xlight f-italic">NC entrepreneurial companies saw one IPO and 10 M&As in first half of 2015.</p>
+            <p class="f-inputsans f-xlight f-italic"><?php echo $quotes[3]; ?></p>
             <ul class="list-reset share-box-list float-r">
               <li class="share-box-list-item dis-ib vam f-adelle">Share:</li>
               <li class="share-box-list-item dis-ib vam"><a class="icons icons-twitter text-overflow dis-b a-hover-opacity" href="#" target="_blank">Twitter</a></li>
