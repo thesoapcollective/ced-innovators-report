@@ -342,7 +342,7 @@ if ($file) {
       </section>
 
       <div class="pos-f modal-container no-data-modal f-adelle text-ac">
-        <p>Oops! There's no data for that filter,<br />please select a different one.</p>
+        <p>Grants &amp; Awards data are not released<br />until the end of the calendar year.</p>
       </div>
     </article>
 
