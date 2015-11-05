@@ -27,7 +27,7 @@
     <header class="page-header pos-f">
       <div class="logo-container dis-ib vat pos-r">
         <div class="logo-background pos-a"></div>
-        <div class="logo logo-image pos-a"></div>
+        <div class="logo pos-a"><a class="logo-image text-overflow dis-b" href="/">CED</a></div>
       </div>
       <div class="page-title-container dis-ib vat pos-r">
         <div class="page-title-background pos-a"></div>
@@ -44,7 +44,7 @@
     <article class="page-content fullsize pos-a">
       <section id="cover" class="content-section pos-r fullsize text-ac" data-panel="cover">
         <div class="cover-container centered-column">
-          <div class="cover-logo logo-image"></div>
+          <div class="cover-logo"><a class="logo-image text-overflow dis-b" href="/">CED</a></div>
           <img class="print-logo print-only" src="./images/ced_logo_black.png" alt="CED Logo"/>
           <h1 class="f-inputsans f-italic f-thin fs-h2">Innovators Report</h1>
           <a class="cover-view-report dis-ib f-adelle fs-h3 f-bold js-prevent-default" href="#">View Report</a>

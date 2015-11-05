@@ -209,6 +209,17 @@ h1, h2, h3, h4, h5, h6, p {
 .logo-image {
   background: image-url('ced_logo.png') no-repeat center center;
   background-size: contain;
+  pointer-events: auto;
+
+  .logo & {
+    width: 54px;
+    height: 36px;
+  }
+
+  .cover-logo & {
+    width: 177px;
+    height: 118px;
+  }
 }
 
 .page-title-container {
