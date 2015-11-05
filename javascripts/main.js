@@ -52,8 +52,8 @@ $(document).ready(function() {
   setupSocialLinks();
   setupNavigation();
 
-  setupFilters();
-  refreshFilterBars();
+  setupFundersDropdowns();
+  refreshFundersFilterBar();
 
   if (!isPrinting || (isPrinting && printSection === 'funding')) {
     setTimeout(setupFundingSection, (isPrinting ? 0 : 500));
@@ -198,11 +198,6 @@ var selectNavListItem = function() {
 // ========================================
 // FILTERS
 // ========================================
-var setupFilters = function() {
-  setupFundersDropdowns();
-  setupDealsDropdowns();
-};
-
 var setupDropdown = function(selector) {
   if (!isSmall) {
     $(selector + ' .js-dropdown').each(function(i) {
@@ -253,11 +248,6 @@ var setupFundersDropdowns = function() {
 
 var setupDealsDropdowns = function() {
   setupDropdown('#deals');
-};
-
-var refreshFilterBars = function() {
-  refreshFundersFilterBar();
-  refreshDealsFilterBar();
 };
 
 var refreshFundingFilterBar = function() {
@@ -1957,14 +1947,10 @@ var dealsSize = null;
 
 var setupDealsSection = function() {
   d3.csv('./data/deals_deals.csv', function(d) {
-    return {
+    var adjustedData = {
       type: 'Deals',
       sector: d['Sector'],
-      years: [
-        {year: 2015, value: convertToNumber(d['2015'])},
-        {year: 2014, value: convertToNumber(d['2014'])},
-        {year: 2013, value: convertToNumber(d['2013'])},
-      ],
+      years: [],
       locations: [
         {name: 'Triangle Region', value: convertToNumber(d['Triangle Region'])},
         {name: 'Asheville', value: convertToNumber(d['Asheville'])},
@@ -1994,16 +1980,33 @@ var setupDealsSection = function() {
         {name: '50m+', value: convertToNumber(d['50m+'])},
       ],
     };
+
+    // Gather all unique years.
+    var years = [];
+    for (var column in d) {
+      if (column.substr(0,2) === '20') { // Will work until the year 2100.
+        var year = parseInt(column);
+        if (years.indexOf(year) < 0) {
+          years.push(year);
+        }
+      }
+    }
+    years.sort(numberSortDesc);
+
+    // Add year data.
+    years.forEach(function(year) {
+      adjustedData.years.push({
+        year: year, value: convertToNumber(d[+year])
+      })
+    });
+
+    return adjustedData;
   }, function(error, dealsData) {
     d3.csv('./data/deals_companies.csv', function(d) {
-      return {
+      var adjustedData = {
         type: 'Companies',
         sector: d['Sector'],
-        years: [
-          {year: 2015, value: convertToNumber(d['2015'])},
-          {year: 2014, value: convertToNumber(d['2014'])},
-          {year: 2013, value: convertToNumber(d['2013'])},
-        ],
+        years: [],
         locations: [
           {name: 'Triangle Region', value: convertToNumber(d['Triangle Region'])},
           {name: 'Asheville', value: convertToNumber(d['Asheville'])},
@@ -2033,6 +2036,27 @@ var setupDealsSection = function() {
           {name: '50m+', value: convertToNumber(d['50m+'])},
         ],
       };
+
+      // Gather all unique years.
+      var years = [];
+      for (var column in d) {
+        if (column.substr(0,2) === '20') { // Will work until the year 2100.
+          var year = parseInt(column);
+          if (years.indexOf(year) < 0) {
+            years.push(year);
+          }
+        }
+      }
+      years.sort(numberSortDesc);
+
+      // Add year data.
+      years.forEach(function(year) {
+        adjustedData.years.push({
+          year: year, value: convertToNumber(d[+year])
+        })
+      });
+
+      return adjustedData;
     }, function(error, companiesData) {
       cedDealsData = dealsData.map(function(dd, i) {
         return {
@@ -2045,6 +2069,16 @@ var setupDealsSection = function() {
       });
 
       var currentDealsData = getCurrentDealsData();
+
+      // Populate year dropdown
+      companiesData[0].years.forEach(function(year) {
+        var source = $('#deals-filter-year-item-template').html();
+        var template = Handlebars.compile(source);
+        var html = template({year: year.year});
+        $('.js-deals-year-dropdown .dropdown-list').append(html);
+      });
+      setupDealsDropdowns();
+      refreshDealsFilterBar();
 
       var dealsSectionSelector = '.deals-container';
       var $dealsSection = $(dealsSectionSelector);

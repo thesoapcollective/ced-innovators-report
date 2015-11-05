@@ -242,7 +242,7 @@ if ($file) {
         <header class="content-header pos-r clearfix">
           <h2 class="content-title float-r f-inputsans f-thin f-italic fs-h2">Deals</h2>
           <ul class="list-reset filter-list pos-a">
-            <li class="filter-list-item dis-ib vat pos-r js-dropdown js-deals-segment-dropdown">
+            <li class="filter-list-item dis-ib vat pos-r js-dropdown js-deals-segment-dropdown js-deals-year-dropdown">
               <span class="dropdown-title dis-ib vam f-inputsans f-thin">Year</span>
               <span class="dropdown-slash dropdown-slash-first dis-ib vam"></span>
               <span class="dropdown-slash dis-ib vam"></span>
@@ -250,11 +250,7 @@ if ($file) {
                 <span class="dropdown-current dis-ib vam f-adelle">2015</span>
                 <span class="dropdown-arrow float-r dis-ib vam icons icons-down-arrow"></span>
               </a>
-              <ul class="list-reset dropdown-list pos-a f-adelle">
-                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="2015">2015</a></li>
-                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="2014">2014</a></li>
-                <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="2013">2013</a></li>
-              </ul>
+              <ul class="list-reset dropdown-list pos-a f-adelle"></ul>
             </li>
             <li class="filter-list-item dis-ib vat pos-r js-dropdown js-deals-segment-dropdown">
               <span class="dropdown-title dis-ib vam f-inputsans f-thin">Size</span>
@@ -363,6 +359,10 @@ if ($file) {
 
   <script id="funding-filter-year-item-template" type="text/x-handlebars-template">
     <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-funding-filter-year" href="#" data-year="{{year}}">{{year}}</a></li>
+  </script>
+
+  <script id="deals-filter-year-item-template" type="text/x-handlebars-template">
+    <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="{{year}}">{{year}}</a></li>
   </script>
 
   <script id="exits-item-template" type="text/x-handlebars-template">
