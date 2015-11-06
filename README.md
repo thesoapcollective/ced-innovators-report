@@ -13,6 +13,7 @@
   - Advanced Manufacturing & Materials
   - Cleantech
 - All filter columns are hardcoded to match the CSV data except data that is based on years (Funding/Deals data). For data that is filterable by year you can add new year columns to the data and the site will update itself accordingly.
+- Social quotes are read from a file located at `data/quotes.txt`. There are four sections on the site for social quotes and each quote should be on it's own line within `quotes.txt`.
 
 ## Funding Data Notes
 
