@@ -94,8 +94,8 @@ if ($file) {
               <span class="dropdown-slash dropdown-slash-first dis-ib vam"></span>
               <span class="dropdown-slash dis-ib vam"></span>
               <a class="dropdown-trigger dis-ib vam js-prevent-default" href="#">
-                <span class="dropdown-current dis-ib vam f-adelle">2015</span>
                 <span class="dropdown-arrow float-r dis-ib vam icons icons-down-arrow"></span>
+                <span class="dropdown-current dis-ib vam f-adelle">2015</span>
               </a>
               <ul class="list-reset dropdown-list pos-a f-adelle"></ul>
             </li>
@@ -104,8 +104,8 @@ if ($file) {
               <span class="dropdown-slash dropdown-slash-first dis-ib vam"></span>
               <span class="dropdown-slash dis-ib vam"></span>
               <a class="dropdown-trigger dis-ib vam js-prevent-default" href="#">
-                <span class="dropdown-current dis-ib vam f-adelle">All</span>
                 <span class="dropdown-arrow float-r dis-ib vam icons icons-down-arrow"></span>
+                <span class="dropdown-current dis-ib vam f-adelle">All</span>
               </a>
               <ul class="list-reset dropdown-list pos-a f-adelle">
                 <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-funding-filter-sector" href="#" data-sector="All">All</a></li>
@@ -120,8 +120,8 @@ if ($file) {
               <span class="dropdown-slash dropdown-slash-first dis-ib vam"></span>
               <span class="dropdown-slash dis-ib vam"></span>
               <a class="dropdown-trigger dis-ib vam js-prevent-default" href="#">
-                <span class="dropdown-current dis-ib vam f-adelle">All</span>
                 <span class="dropdown-arrow float-r dis-ib vam icons icons-down-arrow"></span>
+                <span class="dropdown-current dis-ib vam f-adelle">All</span>
               </a>
               <ul class="list-reset dropdown-list pos-a f-adelle">
                 <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-funding-filter-type" href="#" data-type="All">All</a></li>
@@ -161,8 +161,8 @@ if ($file) {
               <span class="dropdown-slash dropdown-slash-first dis-ib vam"></span>
               <span class="dropdown-slash dis-ib vam"></span>
               <a class="dropdown-trigger dis-ib vam js-prevent-default" href="#">
-                <span class="dropdown-current dis-ib vam f-adelle">All</span>
                 <span class="dropdown-arrow float-r dis-ib vam icons icons-down-arrow"></span>
+                <span class="dropdown-current dis-ib vam f-adelle">All</span>
               </a>
               <ul class="list-reset dropdown-list pos-a f-adelle">
                 <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-funders-filter-sector" href="#" data-sector="All">All</a></li>
@@ -177,8 +177,8 @@ if ($file) {
               <span class="dropdown-slash dropdown-slash-first dis-ib vam"></span>
               <span class="dropdown-slash dis-ib vam"></span>
               <a class="dropdown-trigger dis-ib vam js-prevent-default" href="#">
-                <span class="dropdown-current dis-ib vam f-adelle">All</span>
                 <span class="dropdown-arrow float-r dis-ib vam icons icons-down-arrow"></span>
+                <span class="dropdown-current dis-ib vam f-adelle">All</span>
               </a>
               <ul class="list-reset dropdown-list pos-a f-adelle">
                 <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-funders-filter-type" href="#" data-type="All">All</a></li>
@@ -247,8 +247,8 @@ if ($file) {
               <span class="dropdown-slash dropdown-slash-first dis-ib vam"></span>
               <span class="dropdown-slash dis-ib vam"></span>
               <a class="dropdown-trigger dis-ib vam js-prevent-default" href="#">
-                <span class="dropdown-current dis-ib vam f-adelle">2015</span>
                 <span class="dropdown-arrow float-r dis-ib vam icons icons-down-arrow"></span>
+                <span class="dropdown-current dis-ib vam f-adelle">2015</span>
               </a>
               <ul class="list-reset dropdown-list pos-a f-adelle"></ul>
             </li>
@@ -257,8 +257,8 @@ if ($file) {
               <span class="dropdown-slash dropdown-slash-first dis-ib vam"></span>
               <span class="dropdown-slash dis-ib vam"></span>
               <a class="dropdown-trigger dis-ib vam js-prevent-default" href="#">
-                <span class="dropdown-current dis-ib vam f-adelle">None</span>
                 <span class="dropdown-arrow float-r dis-ib vam icons icons-down-arrow"></span>
+                <span class="dropdown-current dis-ib vam f-adelle">None</span>
               </a>
               <ul class="list-reset dropdown-list pos-a f-adelle">
                 <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="0-999k">0-999k</a></li>
@@ -274,8 +274,8 @@ if ($file) {
               <span class="dropdown-slash dropdown-slash-first dis-ib vam"></span>
               <span class="dropdown-slash dis-ib vam"></span>
               <a class="dropdown-trigger dis-ib vam js-prevent-default" href="#">
-                <span class="dropdown-current dis-ib vam f-adelle">None</span>
                 <span class="dropdown-arrow float-r dis-ib vam icons icons-down-arrow"></span>
+                <span class="dropdown-current dis-ib vam f-adelle">None</span>
               </a>
               <ul class="list-reset dropdown-list pos-a f-adelle">
                 <li class="dropdown-list-item"><a class="dis-b js-prevent-default js-deals-filter-segment" href="#" data-segment="Triangle Region">Triangle Region</a></li>
